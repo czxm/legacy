@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <onStart>
+    <execute os="Linux">
+<![CDATA[
+#for JAVA_HOME
+source /home/user/.bashrc
+HOST=`hostname`
+]]>
+    </execute>  
+  </onStart>
+
+  <item value="(.+)">
+    <execute os="Linux" runas="root">
+<![CDATA[
+host=`hostname`
+master=%master%
+is_master=`echo $master | grep "$host"`
+if [ -n "$is_master" ]; then
+  echo "$is_master"
+  exit 0
+else
+  echo "$master" $HOST
+fi
+cd deploy_scripts
+cat > config.properties << EOF
+hadoop_head_node=%master%
+hadoop_storage_dirs=/data/1,/data/2
+bigtop_yumrepo_uri=%hadoop_repo_url%
+bigtop_dir=bigtop
+ntp_server=192.168.10.1
+ganglia_install=true
+ganglia_master_web_node=%master%
+EOF
+sh bigtop_install.sh
+sleep %TTL_Seconds%
+]]>
+    </execute>
+  </item>
+  
+  <onFinish>
+  </onFinish>
+</config>

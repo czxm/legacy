@@ -1,0 +1,139 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.BigtopDeployFeature">
+<variables>
+    <variable name="target">
+      <values>
+        <value>CentOS 6.2</value>
+        <value>CentOS 6.3</value>
+        <value>CentOS 6.4</value>
+      </values> 
+    </variable>
+    <variable name="bigtop_svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/QA/IBIGTOP/bigtop_0_8_0/TRUNK/bigtop</value>
+      </values>
+    </variable>   
+    <variable name="bigtop_svn_rev">
+    </variable> 
+    <variable name="deploy_scripts_svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/QA/IBIGTOP/bigtop_0_8_0/TRUNK/deploy_scripts</value>
+      </values>
+    </variable>   
+    <variable name="deploy_scripts_svn_rev">
+    </variable>
+    <variable name="hadoop_repo_url">
+      <values>
+        <value>http://cts-gateway.sh.intel.com/bigtop-0.8.0-local-repo/</value>
+      </values>
+    </variable>
+     <variable name="cluster_TTL">
+     <values>
+        <value>20</value>
+      </values>
+    </variable> 
+     <variable name="memory">
+      <values>
+        <value>2</value>
+        <value>4</value>
+        <value>8</value>
+      </values>
+    </variable>
+    <variable name="cpu">
+      <values>
+        <value>2</value>
+        <value>4</value>
+      </values>
+    </variable>
+    <variable name="node">
+      <values>
+      	<value>1</value>
+        <value>2</value>
+        <value>3</value>
+        <value>4</value>
+      </values>
+    </variable>
+    <variable name="resultFolder">
+    	<values>
+        <value>bigtop</value>
+      </values>
+    </variable>  
+    <variable name="master">
+    </variable> 
+    <variable name="TTL_Seconds">
+    </variable>                
+</variables>
+
+<tasklets>
+    <tasklet public="true" id="Bigtop.Deploy.Master" sharable="none">
+		<desc>Deploy master node</desc>
+		<contributer>Big Data Quality Assurance Team</contributer>
+		<provider>com.intel.cedar.features.MasterDeployer</provider>
+    </tasklet>
+    <tasklet public="true" id="Bigtop.Deploy.Slave" sharable="none">
+		<desc>Deploy slave nodes</desc>
+		<contributer>Big Data Quality Assurance Team</contributer>
+		<provider>com.intel.cedar.features.ParallelDeploy</provider>
+    </tasklet>   
+</tasklets>
+
+<ui>
+    <window id="ui" title="Bigtop Deployer Parameters" >
+        <form>
+            <combo label="Target" id="target" bind="target"/>
+            <combo label="Memory" id="memory" bind="memory"/>
+            <combo label="CPU Cores" id="cpu_cores" bind="cpu"/>
+            <combo label="Machine Number" id="node" bind="node"/> 
+            <textfield label="Cluster TTL Hours" id="ttl" bind="cluster_TTL"/>           
+            <svn id="svn" label="Bigtop Source" max="100">
+                <url bind="bigtop_svn_url" id="bigtop_svnurl"/>
+                <rev bind="bigtop_svn_rev" id="bigtop_svnrev"/>
+                <log id="svnlog"/> 
+            </svn>
+            <svn id="script_svn" label="Bigtop Deploy Scripts Source" max="100">
+                <url bind="deploy_scripts_svn_url" id="bigtop_scripts_svnurl"/>
+                <rev bind="deploy_scripts_svn_rev" id="bigtop_scripts_svnrev"/>
+                <log id="scripts_svnlog"/> 
+            </svn>
+            <textfield label="Bigtop Hadoop Repo URL" id="repo_url" bind="hadoop_repo_url"/> 
+        <submit>
+            <formItem depends="target"/>             
+            <formItem depends="memory"/>
+            <formItem depends="cpu_cores"/> 
+            <formItem depends="node"/>
+            <formItem depends="ttl"/>
+            <formItem depends="bigtop_svnurl"/> 
+            <formItem depends="bigtop_svnrev"/>     
+            <formItem depends="bigtop_scripts_svnurl"/>     
+            <formItem depends="bigtop_scripts_svnrev"/> 
+            <formItem depends="repo_url"/>                           
+       </submit>
+       </form>
+    </window>
+</ui>
+
+<flow>
+    <sequence>
+        <tasklet name="master.deploy" id="Bigtop.Deploy.Master" timeout="7200" onfail="exit" debug="false">
+            <items provider="embedded"/>
+        </tasklet>
+        <tasklet name="slave.deploy" id="Bigtop.Deploy.Slave" onfail="exit" debug="false">
+            <items provider="embedded"/>
+        </tasklet>
+        <machine recycle="false" visible="true">
+            <properties>
+             <property name="use" value="autodeploy" />
+             <property name="target" value="$target" />
+            </properties>
+            <count min="1" max="4">$node</count>
+            <cpu min="2" max="4">$cpu</cpu>
+            <mem min="4" max="8">$memory</mem>        <!-- unit is G -->
+            <disk min="20" max="20">20</disk>   	  <!-- unit is G -->
+        </machine>                 
+    </sequence>
+</flow> 
+<launches>
+</launches>
+
+<triggers>
+</triggers>
+</feature>

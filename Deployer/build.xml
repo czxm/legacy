@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<project name="Bigtop.AutoDeploy" default="all" basedir="."> 
+	<property name="build.dir" 				value="${basedir}/build" />
+    <property name="build.classes" 			value="${build.dir}" />
+    <property name="build.src" 				value="${basedir}/src" />
+	<property name="dist.dir" 				value="${basedir}/dist" />
+	<property name="conf.dir" 				value="${build.dir}/conf" />
+	<property name="lib.dir" 				value="${build.dir}/lib"/>
+	<property name="resource.dir" 			value="${build.dir}/resource"/>
+	<property name="scripts.dir" 			value="${build.dir}/scripts"/>
+	<property name="debuglevel" 			value="source,lines,vars"/>
+    <property name="target" 				value="1.6"/>
+    <property name="source" 				value="1.6"/>
+	
+    <path id="test.classpath">
+        <fileset dir="${basedir}/lib">
+	      <include name="**/*.jar" />
+	</fileset>
+    </path>     
+	
+	<scriptdef name="propertyreset" language="javascript"
+	    description="Allows to assign @{property} new value">
+	    <attribute name="name"/>
+	    <attribute name="value"/>
+	        project.setProperty(attributes.get("name"), attributes.get("value"));
+	</scriptdef>
+	
+	<target name="all" depends="build">
+	</target>
+		
+	<target name="build">
+	    <property name="jar.name" value="Bigtop.AutoDeploy.jar"/>
+	    <echo message="Building ${jar.name}" />
+       	    <tstamp>
+              <format property="build.date" pattern="yyyyMMdd-HHmmss" />
+            </tstamp>        		
+		<antcall target="jar"/>
+		<copy file="${dist.dir}/${jar.name}" tofile="${basedir}/../${jar.name}" overwrite="true"/>
+	</target>
+	
+	<!-- ================================================================= -->
+    <!-- jar                                                             -->
+   	<!-- ================================================================= -->
+	<target name="jar" depends="compile, moveResource">
+		 <jar destfile="${dist.dir}/${jar.name}" basedir="${build.dir}">
+		 	  <manifest>
+                <attribute name="Feature-Name" value="Bigtop Deployer Feature" />
+		 	  	<attribute name="Feature-ShortName" value="Bigtop Deployer" />
+                <attribute name="Feature-Hint" value="Deployer for Apache Bigtop"/>
+                <attribute name="Feature-Version" value="${build.date}"/>
+                <attribute name="Feature-Contributer" value="STO BigData QA Team"/>
+                <attribute name="Feature-Icons" value="resource/logo.png"/>
+                <attribute name="Feature-Descriptor" value="feature.xml" />	 	  	
+		 	  	<attribute name="Feature-Dependences" value="lib/svnkit-javahl.jar lib/svnkit.jar" />		 	  	
+		 	  </manifest>		 	
+		 </jar>
+	</target>
+
+	<!-- ================================================================= -->
+    <!-- Compile the source                                                -->
+    <!-- ================================================================= -->
+    <target name="compile" depends="prepare">
+        <javac srcdir="${build.src}"
+               destdir="${build.classes}" 
+        	   debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
+            <src path="${build.src}" />
+        	<classpath refid="test.classpath"/>
+        </javac>
+    </target>
+	
+	<!-- ================================================================= -->
+	<!-- clean                                                             -->
+	<!-- ================================================================= -->
+	<target name="clean">
+        <delete dir="${build.dir}" quiet="true" />
+        <delete dir="${dist.dir}" quiet="true" />
+    </target>
+
+	<!-- ================================================================= -->
+  	<!-- prepare                                                           -->
+   	<!-- ================================================================= -->
+    <target name="prepare" depends="clean">
+        <tstamp />
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.classes}" />
+        <mkdir dir="${dist.dir}" />
+    </target>
+	
+	<!-- ================================================================= -->
+	<!-- copy resorce                                                           -->
+	<!-- ================================================================= -->
+	<target name="moveResource" depends="prepare">
+		<copy todir="${conf.dir}/">  
+		 	<fileset dir="conf" />  
+		</copy>  
+		<copy todir="${resource.dir}">
+			<fileset dir="resource"></fileset>
+		</copy>
+		<copy todir="${scripts.dir}">
+			<fileset dir="scripts"></fileset>
+		</copy>
+		<copy todir="${lib.dir}" failonerror="false">
+			<fileset dir="lib">
+				<exclude name="**/cedar-*.jar" />
+				<exclude name="**/commons-codec-1.4*.jar" />
+				<exclude name="**/commons-fileupload-1.2*.jar" />
+				<exclude name="**/commons-io-2.*.jar" />
+				<exclude name="**/commons-logging*.jar" />
+				<!--
+				<exclude name="**/httpclient-4.1.jar" />
+				<exclude name="**/httpcore-4.1.jar" />
+				<exclude name="**/httpmime-4.1.jar" />
+				-->
+				<exclude name="**/jetty6-6.1.19.jar" />
+				<exclude name="**/jetty6-ajp-6.1.19.jar" />
+				<exclude name="**/jetty6-client-6.1.19.jar" />
+				<exclude name="**/jetty6-html-6.1.19.jar" />
+				<exclude name="**/jetty6-management-6.1.19.jar" />
+				<exclude name="**/jetty6-naming-6.1.19.jar" />
+				<exclude name="**/jetty6-rewrite-handler-6.1.19.jar" />
+				<exclude name="**/jetty6-servlet-tester-6.1.19.jar" />
+				<exclude name="**/jetty6-sslengine-6.1.19.jar" />
+				<exclude name="**/jetty6-util-6.1.19.jar" />
+				<exclude name="**/log4j-1.2.16.jar" />
+				<exclude name="**/org.apache.commons.lang_2.4.0.v20081016-1030.jar" />
+				<exclude name="**/servlet-api.jar" />
+				<exclude name="**/slf4j-api-1.6.1.jar" />
+				<exclude name="**/slf4j-log4j12-1.6.1.jar" />
+				<exclude name="**/xstream-1.3.1.jar" />				
+				<exclude name="**/gxt.jar" />
+				<exclude name="**/xalan-*.jar" />
+				<exclude name="**/serializer-*.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${build.dir}">
+			<fileset dir=".">
+				<include name="**/*.properties"/>
+				<include name="**/feature.xml"/>
+			</fileset>
+		</copy>			
+	</target>
+</project>

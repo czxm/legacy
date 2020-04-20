@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="HcatalogDriver" class="com.intel.soak.plugin.hcatalog.driver.HcatalogDriver"/>
+
+    <bean id="PerformanceTransaction" class="com.intel.soak.plugin.hcatalog.transaction.PerformanceTransaction" scope="prototype"/>
+    <bean id="LoadTransaction"         class="com.intel.soak.plugin.hcatalog.transaction.LoadTransaction" scope="prototype"/>
+</beans>

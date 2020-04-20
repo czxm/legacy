@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig name="shellscript"
+             xmlns="http://www.intel.com/loadmeter/config">
+
+    <LoadMeasureConfig>
+        <MergeSource>shellScriptDriver.*</MergeSource>
+        <MergeResult>mergedYcsbShell</MergeResult>
+        <ChartConfig name="response" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Response Time (ms)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>YcsbShell_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_MED</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Response (YcsbShell)</Title>
+        </ChartConfig>
+
+        <ChartConfig name="throughput" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Throughput (TX/s)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>YcsbShell_CNT/50</Serie>
+                    <Label>Throughput</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Throughput (YcsbShell)</Title>
+        </ChartConfig>
+
+        <ChartConfig name="ycsb runtime" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Runtime (ms)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>YcsbShell_Runtime_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_Runtime_MED</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_Runtime_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Ycsb Runtime</Title>
+        </ChartConfig>
+
+        <ChartConfig name="ycsb throughput" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Throughput (ops/sec)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>YcsbShell_Throughput_AVG * YcsbShell_Runtime_MED /1000 * YcsbShell_Throughput_CNT / 50</Serie>
+                    <Label>Throughput</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Ycsb Throughput</Title>
+        </ChartConfig>
+        <ChartConfig name="ycsb update latency" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Update Latency (us)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>YcsbShell_UpdateMinLatency_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_UpdateAvgLatency_AVG</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_UpdateMaxLatency_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Ycsb Update Latency</Title>
+        </ChartConfig>
+
+        <ChartConfig name="ycsb read latency" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Read Latency (us)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>YcsbShell_ReadMinLatency_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_ReadAvgLatency_AVG</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_ReadMaxLatency_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Ycsb Read Latency</Title>
+        </ChartConfig>
+
+    </LoadMeasureConfig>
+
+    <GangliaMetricsConfig>
+        <GangliaMetrics>load_one cpu_user cpu_system cpu_wio</GangliaMetrics>
+        <MergeResult>mergedGangliaMetrics</MergeResult>
+        <ChartConfig name="load_one" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>load 1 min</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>load_one_AVG/20</Serie>
+                    <Label>load_one</Label>
+                </YSerie>
+            </YSeries>
+            <Title>Cluster Load_one (YcsbShell)</Title>
+        </ChartConfig>
+
+        <ChartConfig name="CPU" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="1m">
+            <XAxisName>Time (50 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>CPU(%)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>cpu_user_AVG/20</Serie>
+                    <Label>cpu_user</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_system_AVG/20</Serie>
+                    <Label>cpu_system</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_wio_AVG/20</Serie>
+                    <Label>cpu_wio</Label>
+                </YSerie>
+            </YSeries>
+            <Title>Cluster CPU (YcsbShell)</Title>
+        </ChartConfig>
+    </GangliaMetricsConfig>
+
+    <SummaryConfig>
+        <ActiveUsers>1 2 3 4 5 6 7 8 9 10</ActiveUsers>
+        <MergeResult>summary</MergeResult>
+        <ChartConfig name="summary" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10">
+            <XAxisName>Active Users</XAxisName>
+            <XSerie>ActiveUsers_SUM</XSerie>
+            <YAxisName>Response Time (ms)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>YcsbShell_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_MED</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>YcsbShell_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>CPU(%)</SecondYAxisName>
+            <SecondYSeries>
+                <YSerie>
+                    <Serie>cpu_user_AVG/20</Serie>
+                    <Label>cpu_user</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_system_AVG/20</Serie>
+                    <Label>cpu_system</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_wio_AVG/20</Serie>
+                    <Label>cpu_wio</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>YcsbShell Performance Summary</Title>
+        </ChartConfig>
+    </SummaryConfig>
+
+</MergeConfig>

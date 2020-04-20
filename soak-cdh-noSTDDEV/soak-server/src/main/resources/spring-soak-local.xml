@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="localGangliaAgent" class="com.intel.soak.agent.service.metrix.ganglia.LocalGangliaMetricServiceImpl"/>
+
+    <!-- Plugin APIs -->
+    <bean id="plugins" class="com.intel.soak.plugin.Plugins" scope="prototype">
+        <property name="pluginMaster" ref="${PluginMaster}" />
+        <property name="pluginSlave" ref="localPluginSlave" />
+    </bean>
+
+    <!-- Soak local servers -->
+    <bean id="localSoakMaster" class="com.intel.soak.master.LocalSoakMaster"
+          scope="prototype">
+        <property name="gauge" ref="${GaugeMaster}" />
+        <property name="slave" ref="${SoakSlave}" />
+        <property name="plugins" ref="plugins"/>
+    </bean>
+
+    <bean id="localSoakSlave" class="com.intel.soak.agent.LocalSoakSlave"
+          scope="prototype">
+        <property name="gauge" ref="${GaugeSlave}" />
+        <property name="soakConfig" ref="soakConfig" />
+        <property name="plugins" ref="plugins" />
+    </bean>
+
+</beans>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans.xsd">
+               
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name="locations">
+        <list>
+             <value>classpath:cluster.conf</value>
+        </list>
+      </property>
+    </bean>
+                      
+    <bean id="soakConfig" class="com.intel.soak.config.SoakConfig" scope="singleton">
+        <property name="configSource" value="cluster.conf"/>
+        <property name="localMode" value="false"/>
+    </bean>
+</beans>

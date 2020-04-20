@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="jarExecutor" class="com.intel.soak.plugin.mapreduce.executor.JarExecutor" scope="prototype" />
+
+    <bean id="toolExecutor" class="com.intel.soak.plugin.mapreduce.executor.ToolExecutor" scope="prototype" />
+
+    <bean id="mapReduceDriver" class="com.intel.soak.plugin.mapreduce.driver.MapReduceDriver" scope="prototype"/>
+
+    <bean id="jarMapReduceTransaction" class="com.intel.soak.plugin.mapreduce.transaction.JarMapReduceTransaction" scope="prototype">
+        <property name="executor" ref="jarExecutor"/>
+    </bean>
+
+    <bean id="toolMapReduceTransaction" class="com.intel.soak.plugin.mapreduce.transaction.ToolMapReduceTransaction" scope="prototype">
+        <property name="executor" ref="toolExecutor"/>
+    </bean>
+
+    <bean id="pi" class="com.intel.soak.plugin.mapreduce.sample.Pi" scope="prototype"/>
+
+</beans>

@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.intel.soak</groupId>
+		<artifactId>soak</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>soak-server</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.intel.soak</groupId>
+			<artifactId>soak-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+        <dependency>
+            <groupId>com.intel.soak</groupId>
+            <artifactId>soak-gauge</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-daemon</groupId>
+            <artifactId>commons-daemon</artifactId>
+            <version>${app.commons-daemon.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rrd4j</groupId>
+            <artifactId>rrd4j</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+
+	</dependencies>
+    <properties>
+        <app.commons-daemon.version>1.0.10</app.commons-daemon.version>
+        <app.jsvc.jar>commons-daemon-${app.commons-daemon.version}.jar</app.jsvc.jar>
+    </properties>
+</project>

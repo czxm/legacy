@@ -1,0 +1,7 @@
+This product includes software developed by Intel (http://www.intel.com).
+
+In addition, this product includes software developed by:
+
+Akka
+
+Spring

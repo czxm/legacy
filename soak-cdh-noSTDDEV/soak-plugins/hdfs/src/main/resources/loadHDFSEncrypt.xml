@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="hdfs_encrypt" interval="60">
+
+    <VirtualUserConfig total="1"/>
+
+    <BatchConfig wait="10">
+        <BatchUsers>1</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="600">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="HDFSDriver">
+            <Param name="CLASSPATH">/etc/hadoop/conf:/usr/lib/hadoop/client:/usr/lib/hadoop-mapreduce</Param>
+            <Transaction name="HDFSEncryptTransaction">
+                <Param name="checkResult">false</Param>
+                <Param name="testRoot">#TESTROOT#/hdfs</Param>
+                <Param name="genDataPath">/benchmarks/TestDFSIO/io_data/test_io_0</Param>
+                <Param name="encryptDataPath">${testRoot}/${user}/encryption/result/test_io_0.encrypt</Param>
+                <Param name="decryptDataPath">${testRoot}/${user}/decryption/result/test_io_0.decrypt</Param>
+                <Param name="keystoreType">JCEKS</Param>
+                <Param name="kspasswd">12345678</Param>
+                <Param name="encrypt"><![CDATA[hadoop distcrypto -op encrypt -ek KEY01 -keyProviderParameters keyStoreUrl=file:///${plugin_home}/sharedpassword.keystore&keyStoreType=${keystoreType}&password=${kspasswd} -dst ${encryptDataPath} ${genDataPath}]]></Param>
+                <Param name="decrypt"><![CDATA[hadoop distcrypto -op decrypt -dk KEY01 -keyProviderParameters keyStoreUrl=file:///${plugin_home}/sharedpassword.keystore&keyStoreType=${keystoreType}&password=${kspasswd} -dst ${decryptDataPath} ${encryptDataPath}]]></Param>
+                <Param name="unEncryptPath">${plugin_home}/${user}/unEncrypt</Param>
+                <Param name="decryptedPath">${plugin_home}/${user}/decrypted</Param>
+                <Param name="md5Original">md5sum ${unEncryptPath}</Param>
+                <Param name="md5Decrypted">md5sum ${decryptedPath}</Param>
+            </Transaction>
+        </TaskDriver>
+    </TaskConfig>
+    <Description>HDFS Encryption</Description>
+</LoadConfig>

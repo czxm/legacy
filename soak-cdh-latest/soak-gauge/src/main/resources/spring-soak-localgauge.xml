@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="localGaugeMaster" class="com.intel.soak.gauge.LocalGaugeMaster"
+      scope="singleton">
+    <property name="storage" ref="${GaugeStorage}" />
+    <property name="gangliaAgent" ref="${GangliaAgent}"/>
+</bean>
+<bean id="localGaugeSlave" class="com.intel.soak.gauge.LocalGaugeSlave"
+      scope="singleton">
+    <property name="master" ref="${GaugeMaster}" />
+</bean>
+<bean id="localFileStorage" class="com.intel.soak.gauge.storage.impl.LocalFileStorage"
+      scope="singleton" />
+<bean id="localTxLogger" class="com.intel.soak.gauge.log.logger.LocalTransactionLogger"
+      scope="prototype" />
+<bean id="localDrvLogger" class="com.intel.soak.gauge.log.logger.LocalDriverLogger"
+      scope="prototype" />      
+</beans>

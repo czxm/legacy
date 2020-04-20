@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.intel.com/loadmeter/config"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://www.intel.com/loadmeter/config">
+
+	<element name="LoadConfig">
+		<complexType>
+			<sequence>
+				<element name="VirtualUserConfig"
+					type="tns:VirtualUserConfigType">
+				</element>
+				<element name="BatchConfig" type="tns:BatchConfigType"
+					minOccurs="0" maxOccurs="1">
+				</element>
+				<element name="TaskConfig" type="tns:TaskConfigType"></element>
+				<element name="Description" type="string" minOccurs="0"
+					maxOccurs="1">
+				</element>
+				<element name="Result" type="tns:ResultType" minOccurs="0" maxOccurs="1"></element>
+			</sequence>
+			<attribute name="name" type="string" use="optional"></attribute>
+			<attribute name="interval" type="int" use="optional"></attribute>
+		</complexType>
+	</element>
+
+	<complexType name="VirtualUserConfigType">
+		<sequence>
+			<element name="Param" type="tns:ParamType" minOccurs="0"
+				maxOccurs="unbounded">
+			</element>
+		</sequence>
+		<attribute name="provider" type="string" use="optional"></attribute>
+		<attribute name="total" type="int" use="required"></attribute>
+	</complexType>
+
+	<complexType name="BatchConfigType">
+		<sequence>
+			<element name="BatchUsers" type="int" minOccurs="1"
+				maxOccurs="unbounded">
+			</element>
+		</sequence>
+		<attribute name="wait" type="int" use="required"></attribute>
+	</complexType>
+
+	<complexType name="TaskConfigType">
+		<sequence>
+			<element name="Delay" type="tns:DelayType"></element>
+			<element name="TaskDriver" type="tns:TaskDriverType"></element>
+		</sequence>
+		<attribute name="duration" type="int" use="optional"></attribute>
+		<attribute name="iterations" type="int" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="DelayType">
+		<choice>
+			<element name="FixDelay" type="tns:FixDelayType"></element>
+			<element name="VariableDelay" type="tns:VariableDelayType"></element>
+		</choice>
+	</complexType>
+
+	<complexType name="FixDelayType">
+		<sequence>
+			<element name="Delay" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="VariableDelayType">
+		<sequence>
+			<element name="MinDelay" type="int"></element>
+			<element name="MaxDelay" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="FixedCredentialType">
+		<sequence>
+			<element name="Username" type="string"></element>
+			<element name="Password" type="string" maxOccurs="1"
+				minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="IndexedCredentialType">
+		<sequence>
+			<element name="UsernamePattern" type="string"></element>
+			<element name="Password" type="string" maxOccurs="1"
+				minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="TaskDriverType">
+		<sequence>
+			<element name="Param" type="tns:ParamType" minOccurs="0"
+				maxOccurs="unbounded">
+			</element>
+			<element name="Transaction" type="tns:TransactionType"
+				minOccurs="1" maxOccurs="unbounded">
+			</element>
+		</sequence>
+		<attribute name="driver" type="string" use="required"></attribute>
+		<attribute name="ordered" type="boolean" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="ParamsType">
+		<sequence>
+			<element name="Param" type="tns:ParamType" minOccurs="0"
+				maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ParamType">
+		<simpleContent>
+			<extension base="string">
+				<attribute name="name" type="string"></attribute>
+			</extension>
+		</simpleContent>
+	</complexType>
+
+
+	<complexType name="MonitorConfigType">
+		<sequence>
+			<element name="output" type="string"></element>
+			<element name="name" type="string"></element>
+			<element name="interval" type="int"></element>
+			<element name="RemoteConfig" type="tns:RemoteConfigType"
+				minOccurs="0" maxOccurs="unbounded">
+			</element>
+		</sequence>
+
+	</complexType>
+
+	<complexType name="RemoteConfigType">
+		<sequence>
+			<element name="name" type="string" minOccurs="0" maxOccurs="1"></element>
+			<element name="server" type="string"></element>
+			<element name="process" type="tns:ProcessConfig" minOccurs="0"
+				maxOccurs="unbounded">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessConfig">
+		<choice minOccurs="1" maxOccurs="1">
+			<element name="pid" type="int"></element>
+			<element name="name" type="string"></element>
+		</choice>
+		<attribute name="java" type="boolean" use="optional"></attribute>
+	</complexType>
+
+	<element name="MergeConfig">
+		<complexType>
+			<sequence>
+				<element name="LoadMeasureConfig" type="tns:LoadMeasureConfigType">
+				</element>
+				<element name="GangliaMetricsConfig" type="tns:GangliaMetricsConfigType"></element>
+				<element name="SummaryConfig" type="tns:SummaryConfigType">
+				</element>
+			</sequence>
+			<attribute name="name" type="string" use="required"></attribute>
+		</complexType>
+	</element>
+
+	<complexType name="RemoteMeasureConfig"></complexType>
+
+	<complexType name="SummaryConfigType">
+		<sequence>
+			<element name="ActiveUsers" type="string" minOccurs="0"
+				maxOccurs="1"></element>
+			<element name="MergeResult" type="string" minOccurs="0"
+				maxOccurs="1"></element>
+			<element name="ChartConfig" type="tns:ChartConfigType"
+				minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="LoadMeasureConfigType">
+		<sequence>
+			<element name="MergeSource" type="string" minOccurs="0"
+				maxOccurs="1">
+			</element>
+			<element name="MergeResult" type="string" minOccurs="0"
+				maxOccurs="1">
+			</element>
+			<element name="ChartConfig" type="tns:ChartConfigType"
+				minOccurs="0" maxOccurs="unbounded">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ChartConfigType">
+		<sequence>
+			<element name="XAxisName" type="string" minOccurs="0"
+				maxOccurs="1">
+			</element>
+			<element name="XSerie" type="string" minOccurs="0"
+				maxOccurs="1">
+			</element>
+			<element name="YAxisName" type="string" minOccurs="0"
+				maxOccurs="1">
+			</element>
+			<element name="YSeries" type="tns:YSeriesType" minOccurs="0"
+				maxOccurs="1">
+			</element>
+			<element name="SecondYAxisName" type="string" minOccurs="0"
+				maxOccurs="1">
+			</element>
+			<element name="SecondYSeries" type="tns:YSeriesType"
+				minOccurs="0" maxOccurs="1">
+			</element>
+			<element name="Title" type="string" minOccurs="0" maxOccurs="1"></element>
+		</sequence>
+		<attribute name="width" type="int" use="optional"></attribute>
+		<attribute name="height" type="int" use="optional"></attribute>
+		<attribute name="name" type="string" use="required"></attribute>
+		<attribute name="datasetSize" type="int" use="optional"></attribute>
+		<attribute name="titleFontSize" type="int" use="optional"></attribute>
+		<attribute name="labelFontSize" type="int" use="optional"></attribute>
+		<attribute name="tickUnit" type="string" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="RemoteMeasureConfigType">
+		<sequence>
+			<element name="File" type="string"></element>
+			<element name="ChartConfig" type="tns:ChartConfigType"
+				minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="TransactionType">
+		<sequence>
+			<element name="Param" type="tns:ParamType" minOccurs="0"
+				maxOccurs="unbounded">
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+		<attribute name="weight" type="int" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="MetricType"></complexType>
+
+	<complexType name="ScheduleConfigType"></complexType>
+
+	<element name="GaugeConfig">
+		<complexType>
+			<sequence>
+				<element name="Param" type="tns:ParamType" minOccurs="0"
+					maxOccurs="unbounded">
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+
+	<complexType name="YSeriesType">
+		<sequence minOccurs="1" maxOccurs="unbounded">
+			<element name="YSerie" type="tns:YSerieType" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="decimal" type="boolean" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="YSerieType">
+        <sequence>
+            <element name="Serie" type="string" minOccurs="1" maxOccurs="1">
+            </element>
+            <element name="Label" type="string" minOccurs="0"
+                maxOccurs="1">
+            </element>
+        </sequence>
+    </complexType>
+
+
+	<complexType name="GangliaMetricsConfigType">
+		<sequence>
+			<element name="GangliaMetrics" type="string" minOccurs="0"
+				maxOccurs="1"></element>
+			<element name="MergeResult" type="string" minOccurs="0"
+				maxOccurs="1"></element>
+			<element name="ChartConfig" type="tns:ChartConfigType"
+				minOccurs="0" maxOccurs="unbounded">
+			</element>
+		</sequence>
+	</complexType>
+
+    <element name="Cluster">
+        <complexType>
+            <sequence>
+                <element name="Node" type="tns:Node" minOccurs="0" maxOccurs="unbounded">
+                </element>
+            </sequence>
+            <attribute name="name" type="string" use="required"></attribute>
+        </complexType>
+    </element>
+
+    <complexType name="Node">
+        <attribute name="hostName" type="string" use="required"></attribute>
+        <attribute name="hostIdentifier" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="ResultType">
+        <sequence>
+            <element name="LoadMeasureConfig" type="tns:LoadMeasureConfigType" minOccurs="0" maxOccurs="1">
+            </element>
+            <element name="GangliaMetricsConfig" type="tns:GangliaMetricsConfigType" minOccurs="0" maxOccurs="1"></element>
+            <element name="SummaryConfig" type="tns:SummaryConfigType" minOccurs="0" maxOccurs="1">
+            </element>
+        </sequence>
+    </complexType>
+</schema>

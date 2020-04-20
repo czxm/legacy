@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  name="faults" interval="60" xmlns="http://www.intel.com/loadmeter/config">
+
+	<VirtualUserConfig total="1" />
+
+	<BatchConfig wait="10">
+		<BatchUsers>1</BatchUsers>
+		<BatchUsers>2</BatchUsers>
+		<BatchUsers>3</BatchUsers>
+		<BatchUsers>4</BatchUsers>
+		<BatchUsers>5</BatchUsers>
+	</BatchConfig>
+
+	<TaskConfig iterations="2">
+		<Delay>
+			<FixDelay>
+				<Delay>0</Delay>
+			</FixDelay>
+		</Delay>
+		<TaskDriver driver="faultsDriver">
+            <Param name="cm_username">admin</Param>
+            <Param name="cm_password">admin</Param>
+            <Param name="cm_host">localhost</Param>
+            <Param name="cm_port">7180</Param>
+            <Param name="cm_cluster">cluster</Param>
+
+            <Transaction name="dfsFaultTransaction">
+			</Transaction>
+            <Transaction name="hmsDownFaultTransaction">
+            </Transaction>
+		</TaskDriver>
+	</TaskConfig>
+	<Description>CDH Faults Injections</Description>
+</LoadConfig>

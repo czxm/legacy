@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="pig_tpch" interval="10">
+
+    <VirtualUserConfig total="1"/>
+
+    <BatchConfig wait="10">
+        <BatchUsers>1</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="600">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="PigBasicDriver">
+            <Transaction name="PigBasicTransaction">
+                <Param name="testPigScriptEntry">${plugin_home}/runPigTPCH.sh</Param>
+                <Param name="pigPluginHome">${plugin_home}</Param>
+                <Param name="rootHomeOnHDFS">#TESTROOT#</Param>
+            </Transaction>
+        </TaskDriver>
+    </TaskConfig>
+    <Description>Pig TPCH</Description>
+</LoadConfig>

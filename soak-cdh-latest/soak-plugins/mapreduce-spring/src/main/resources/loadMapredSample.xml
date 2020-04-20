@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="mr_sample" interval="10">
+
+    <VirtualUserConfig total="1" />
+
+    <BatchConfig wait="10">
+        <BatchUsers>1</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="3000">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="mapReduceDriver">
+            <Param name="core-site">/etc/hadoop/conf/core-site.xml</Param>
+            <Param name="mr-site">/etc/hadoop/conf/mapred-site.xml</Param>
+            <Param name="local-forbidden">true</Param>
+
+            <!--<Transaction name="jarMapReduceTransaction">-->
+                <!--<Param name="jar">/usr/lib/hadoop/hadoop-examples.jar</Param>-->
+                <!--<Param name="Main-Class">org.apache.hadoop.examples.ExampleDriver</Param>-->
+                <!--<Param name="arguments">wordcount input output/%UUID%</Param>-->
+                <!--<Param name="hadoopArgs">hadoop-cfg.properties</Param>-->
+                <!--<Param name="user">joshua</Param>-->
+            <!--</Transaction>-->
+
+            <!--<Transaction name="toolMapReduceTransaction">-->
+                <!--<Param name="jar">/usr/lib/hadoop/hadoop-examples.jar</Param>-->
+                <!--<Param name="tool-class">org.apache.hadoop.examples.MultiFileWordCount</Param>-->
+                <!--<Param name="arguments">input output/%UUID%</Param>-->
+                <!--<Param name="hadoopArgs">hadoop-cfg.properties</Param>-->
+            <!--</Transaction>-->
+
+            <Transaction name="toolMapReduceTransaction">
+                <Param name="tool-ref">pi</Param>    <!-- Spring Bean Id-->
+                <Param name="arguments">3 3</Param>
+                <Param name="hadoopArgs">hadoop-cfg.properties</Param>
+            </Transaction>
+
+        </TaskDriver>
+    </TaskConfig>
+    <Description>MapReduce Executor Sample</Description>
+</LoadConfig>

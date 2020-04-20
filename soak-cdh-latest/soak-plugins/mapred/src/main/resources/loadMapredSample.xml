@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="mr_sample" interval="10">
+
+    <VirtualUserConfig total="10" />
+
+    <BatchConfig wait="10">
+        <BatchUsers>1</BatchUsers>
+        <BatchUsers>2</BatchUsers>
+        <BatchUsers>3</BatchUsers>
+        <BatchUsers>4</BatchUsers>
+        <BatchUsers>5</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="3000">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="mrDriver">
+            <!-- Optional, core-site.xml in classpath by default-->
+            <Param name="core-site">/etc/hadoop/conf/core-site.xml</Param>
+            <!-- Optional, mapred-site.xml in classpath by default-->
+            <Param name="mr-site">/etc/hadoop/conf/mapred-site.xml</Param>
+
+            <!-- localMRTransaction uses local shell executor to execute hadoop jar command to submit jobs -->
+            <Transaction name="mrLocalTransaction">
+                <!-- Required, to localMRTransaction, execObj is the path of MR job which you want to execute -->
+                <!-- Note that, all the MR job should be designed to support executing concurrently. E.g. pls. don't hard code output dir in a job -->
+                <Param name="execObj">/usr/lib/hadoop/hadoop-examples.jar</Param>
+                <!-- Optional parameters of your MR job -->
+                <Param name="jobParams">wordcount input output/${UUID}</Param>
+                <!-- Optional hadoop arguments. e.g. -Dmapred.map.max.attempts=10 -->
+                <Param name="hadoopArgs">-Dmapred.map.max.attempts=10 -Dmapred.reduce.max.attempts=10</Param>
+                <!-- Optional, if true, -Dmapred.map.max.attempts=10 -Dmapred.reduce.max.attempts=10-->
+                <Param name="isReliability">true</Param>
+            </Transaction>
+
+            <!-- remoteMRTransaction uses Hadoop API to submit jobs -->
+            <Transaction name="mrRemoteTransaction">
+                <!-- Required, to remoteMRTransaction, execObj is the class name of the job class you want to execute. The class should be an instance of org.apache.hadoop.utils.Tool -->
+                <!-- Note that, all the MR job should be designed to support executing concurrently. E.g. pls. don't hard code output dir in a job -->
+                <Param name="execObj">com.intel.mr.test.WordCount</Param>
+                <!-- Optional parameters of your MR job -->
+                <Param name="jobParams">input output/${UUID}</Param>
+                <!-- Optional hadoop arguments. e.g. -Dmapred.map.max.attempts=10 -->
+                <Param name="hadoopArgs">-Dmapred.map.max.attempts=10 -Dmapred.reduce.max.attempts=10</Param>
+                <!-- Optional, if true, -Dmapred.map.max.attempts=10 -Dmapred.reduce.max.attempts=10-->
+                <Param name="isReliability">true</Param>
+                <!-- Optional, [task|tracker] task: used to terminate 50% running tasks for the job. tracker: used to restart TT at runtime-->
+                <Param name="faultInjectionType">task</Param>
+            </Transaction>
+
+        </TaskDriver>
+    </TaskConfig>
+    <Description>Shell Script</Description>
+</LoadConfig>

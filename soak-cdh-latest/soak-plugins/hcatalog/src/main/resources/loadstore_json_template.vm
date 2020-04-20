@@ -1,0 +1,31 @@
+{
+"executionTime": "$dateTool.getDate()",
+#set($testSeparator = "")
+"results": [
+#foreach( $hcatStat in $hcatStats )
+    #set ($map = $hcatStat.timedStats.statisticsByTag )
+    #set($resultSeparator = "")
+    $testSeparator
+    {
+        "$hcatStat.FileName":
+        {
+    #foreach ($result in $map.entrySet())
+        #set ($statistics = $result.value)
+            $resultSeparator
+            "$result.key":
+            {
+                "avg": $statistics.Mean,
+                "min": $statistics.Min,
+                "max": $statistics.Max,
+                "standardDeviation": $statistics.StandardDeviation,
+                "count": $statistics.Count,
+                "chartUrl": "$hcatStat.ChartUrl"
+            }
+        #set($resultSeparator = ",")
+    #end
+        }
+    }
+    #set($testSeparator = ",")
+#end
+]
+}

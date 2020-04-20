@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="configBean" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>soak-mr.properties</value>
+        </property>
+    </bean>
+
+    <bean id="localJobExecutor" class="com.intel.soak.plugin.mapred.executor.LocalJobExecutor" scope="prototype">
+        <property name="mapredHome">
+            <value>${mapred.home}</value>
+        </property>
+        <property name="mrCommand">
+            <value>${mapred.command}</value>
+        </property>
+    </bean>
+
+    <bean id="remoteJobExecutor" class="com.intel.soak.plugin.mapred.executor.RemoteJobExecutor" scope="prototype"/>
+
+    <bean id="mrDriver" class="com.intel.soak.plugin.mapred.driver.MRDriver" scope="prototype"/>
+
+    <bean id="mrLocalTransaction" class="com.intel.soak.plugin.mapred.transaction.MRTransaction" scope="prototype">
+        <property name="executor" ref="localJobExecutor"/>
+    </bean>
+
+    <bean id="mrRemoteTransaction" class="com.intel.soak.plugin.mapred.transaction.MRTransaction" scope="prototype">
+        <property name="executor" ref="remoteJobExecutor"/>
+    </bean>
+
+
+</beans>

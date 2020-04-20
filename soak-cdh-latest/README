@@ -1,0 +1,4 @@
+Soak, a distributed soak/scale Test Framework is designed for convenient and flexible testing to hadoop cluster.
+Benchmarks and test cases as plugins into the framework which provides flexible scheduler strategy, comprehensive
+data collection mechanism, deepness data analysis and automatical report. Thus it can be used as Hadoop
+Comprehensive Evaluation and Performance Tuning.

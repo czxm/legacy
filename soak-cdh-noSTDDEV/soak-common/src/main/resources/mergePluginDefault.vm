@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig name="${job}"
+             xmlns="http://www.intel.com/loadmeter/config">
+
+    <LoadMeasureConfig>
+        <MergeSource>${Driver}.*</MergeSource>
+        <MergeResult>merged_${Driver}</MergeResult>
+        <ChartConfig name="response" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10">
+            <XAxisName>Time (${interval}s interval)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Response Time (ms)</YAxisName>
+            <YSeries>
+#foreach( ${Transaction} in ${TransactionList} )
+                <YSerie>
+                    <Serie>${Transaction}_AVG</Serie>
+                    <Label>${Transaction} Average</Label>
+                </YSerie>
+#end
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Response (${Driver})</Title>
+        </ChartConfig>
+
+        <ChartConfig name="throughput" height="300" width="600"
+            titleFontSize="15" labelFontSize="10">
+            <XAxisName>Time (${interval}s interval)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Throughput (TX/s)</YAxisName>
+            <YSeries>
+#foreach( ${Transaction} in ${TransactionList} )
+                <YSerie>
+                    <Serie>${Transaction}_CNT/${interval}</Serie>
+                    <Label>${Transaction} Throughput</Label>
+                </YSerie>
+#end
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Throughput (${Driver})</Title>
+        </ChartConfig>
+
+        <ChartConfig name="error_rate" height="300" width="600"
+            titleFontSize="15" labelFontSize="10">
+            <XAxisName>Time (${interval}s interval)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Error Rate (%)</YAxisName>
+            <YSeries>
+#foreach( ${Transaction} in ${TransactionList} )
+                <YSerie>
+                    <Serie>${Transaction}_NCNT*100/(${Transaction}_NCNT+${Transaction}_CNT)</Serie>
+                    <Label>${Transaction} Error Rate</Label>
+                </YSerie>
+#end
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Error Rate (${Driver})</Title>
+        </ChartConfig>
+    </LoadMeasureConfig>
+    <GangliaMetricsConfig>
+        <GangliaMetrics>load_one cpu_user cpu_system cpu_wio</GangliaMetrics>
+        <MergeResult>merged_GangliaMetrics</MergeResult>
+        <ChartConfig name="load_one" height="300" width="600"
+            titleFontSize="15" labelFontSize="10">
+            <XAxisName>Time (${interval}s interval)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>load 1 min</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>load_one_AVG</Serie>
+                    <Label>load_one</Label>
+                </YSerie>
+            </YSeries>
+            <Title>Cluster load_one</Title>
+        </ChartConfig>
+
+        <ChartConfig name="CPU" height="300" width="600"
+            titleFontSize="15" labelFontSize="10">
+            <XAxisName>Time (${interval}s interval)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>CPU(%)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>cpu_user_AVG/${nodes}</Serie>
+                    <Label>cpu_user</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_system_AVG/${nodes}</Serie>
+                    <Label>cpu_system</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_wio_AVG/${nodes}</Serie>
+                    <Label>cpu_wio</Label>
+                </YSerie>
+            </YSeries>
+            <Title>Cluster CPU%</Title>
+        </ChartConfig>
+    </GangliaMetricsConfig>
+    <SummaryConfig>
+        <ActiveUsers>${ActiveUsers}</ActiveUsers>
+        <MergeResult>summary</MergeResult>
+	    <ChartConfig name="summary" height="300" width="600"
+           titleFontSize="15" labelFontSize="10">
+           <XAxisName>Active Users</XAxisName>
+           <XSerie>ActiveUsers_SUM</XSerie>
+           <YAxisName>Response Time (ms)</YAxisName>
+           <YSeries>
+#foreach( ${Transaction} in ${TransactionList} )
+               <YSerie>
+                   <Serie>${Transaction}_AVG</Serie>
+                   <Label>${Transaction} Average</Label>
+               </YSerie>
+#end
+           </YSeries>
+           <SecondYAxisName>CPU(%)</SecondYAxisName>
+           <SecondYSeries>
+               <YSerie>
+                   <Serie>cpu_user_AVG/${nodes}</Serie>
+                   <Label>cpu_user</Label>
+               </YSerie>
+               <YSerie>
+                   <Serie>cpu_system_AVG/${nodes}</Serie>
+                   <Label>cpu_system</Label>
+               </YSerie>
+               <YSerie>
+                   <Serie>cpu_wio_AVG/${nodes}</Serie>
+                   <Label>cpu_wio</Label>
+               </YSerie>
+           </SecondYSeries>
+           <Title>${Driver} Performance Summary</Title>
+       </ChartConfig>
+    </SummaryConfig>
+</MergeConfig>

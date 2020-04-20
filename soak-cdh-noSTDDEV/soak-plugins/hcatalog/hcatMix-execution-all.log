@@ -1,0 +1,12 @@
+2014-08-28 20:32:44,435  WARN (HiveConf.java) - hive-site.xml not found on CLASSPATH
+2014-08-28 20:32:44,953  INFO (HiveMetaStore.java) - 0: Opening raw store with implemenation class:org.apache.hadoop.hive.metastore.ObjectStore
+2014-08-28 20:32:44,989  INFO (ObjectStore.java) - ObjectStore, initialize called
+2014-08-28 20:32:45,285 ERROR (Log4JLogger.java) - Bundle "org.eclipse.jdt.core" requires "org.eclipse.core.resources" but it cannot be resolved.
+2014-08-28 20:32:45,286 ERROR (Log4JLogger.java) - Bundle "org.eclipse.jdt.core" requires "org.eclipse.core.runtime" but it cannot be resolved.
+2014-08-28 20:32:45,287 ERROR (Log4JLogger.java) - Bundle "org.eclipse.jdt.core" requires "org.eclipse.text" but it cannot be resolved.
+2014-08-28 20:32:45,455  INFO (Log4JLogger.java) - Property datanucleus.cache.level2 unknown - will be ignored
+2014-08-28 20:32:45,458  INFO (Log4JLogger.java) - Property javax.jdo.option.NonTransactionalRead unknown - will be ignored
+2014-08-28 20:32:45,459  INFO (Log4JLogger.java) - ================= Persistence Configuration ===============
+2014-08-28 20:32:45,464  INFO (Log4JLogger.java) - DataNucleus Persistence Factory - Vendor: "DataNucleus"  Version: "2.0.3"
+2014-08-28 20:32:45,465  INFO (Log4JLogger.java) - DataNucleus Persistence Factory initialised for datastore URL="jdbc:derby:;databaseName=metastore_db;create=true" driver="org.apache.derby.jdbc.EmbeddedDriver" userName="APP"
+2014-08-28 20:32:45,465  INFO (Log4JLogger.java) - ===========================================================

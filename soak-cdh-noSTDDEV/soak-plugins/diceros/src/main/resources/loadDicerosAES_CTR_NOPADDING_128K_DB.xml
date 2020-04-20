@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  name="diceroEncryption" interval="5" xmlns="http://www.intel.com/loadmeter/config">
+
+	<VirtualUserConfig total="10" />
+
+	<BatchConfig wait="10">
+		<BatchUsers>1</BatchUsers>
+		<BatchUsers>2</BatchUsers>
+		<BatchUsers>3</BatchUsers>
+		<BatchUsers>4</BatchUsers>
+		<BatchUsers>5</BatchUsers>
+	</BatchConfig>
+
+	<TaskConfig duration="60">
+		<Delay>
+			<FixDelay>
+				<Delay>0</Delay>
+			</FixDelay>
+		</Delay>
+		<TaskDriver driver="dicerosDriver">
+			<Transaction name="dicerosEncryptionTransaction">
+                <Param name="transformation">AES/CTR/NOPADDING</Param>
+                <Param name="provider">DC</Param>
+                <Param name="inputSize">128KB</Param>
+                <Param name="directBuffer">true</Param>
+			</Transaction>
+		</TaskDriver>
+	</TaskConfig>
+	<Description>Diceros Encryption, AES/CTR/NOPADDING, 128KB input, direct buffer</Description>
+</LoadConfig>

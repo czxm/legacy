@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig name="PigBasic"
+             xmlns="http://www.intel.com/loadmeter/config">
+
+    <LoadMeasureConfig>
+        <MergeSource>PigBasicDriver.*</MergeSource>
+        <MergeResult>mergedPigBasic</MergeResult>
+        <ChartConfig name="response" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="10">
+            <XAxisName>Time (5 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Response Time (ms)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>PigBasic_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>PigBasic_MED</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>PigBasic_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Response (PigBasic)</Title>
+        </ChartConfig>
+    </LoadMeasureConfig>
+
+    <GangliaMetricsConfig>
+        <GangliaMetrics>load_one cpu_user cpu_system cpu_wio</GangliaMetrics>
+        <MergeResult>mergedGangliaMetrics</MergeResult>
+
+    </GangliaMetricsConfig>
+
+    <SummaryConfig>
+        <ActiveUsers>1 2 3 4 5 6 7 8 9 10</ActiveUsers>
+        <MergeResult>summary</MergeResult>
+
+    </SummaryConfig>
+
+</MergeConfig>

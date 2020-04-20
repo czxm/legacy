@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="mr_encryption" interval="10">
+
+    <VirtualUserConfig total="1" />
+
+    <BatchConfig wait="10">
+        <BatchUsers>1</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="120">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="mapReduceDriver">
+            <Param name="core-site">/etc/hadoop/conf/core-site.xml</Param>
+            <Param name="mr-site">/etc/hadoop/conf/mapred-site.xml</Param>
+            <Param name="local-forbidden">true</Param>
+
+            <!--<Transaction name="toolMapReduceTransaction">-->
+                <!--<Param name="jar">/usr/lib/hadoop/hadoop-examples.jar</Param>-->
+                <!--<Param name="tool-class">com.intel.soak.plugin.mapreduce.sample.TestEncryptionWithTxtInputFormat</Param>-->
+                <!--<Param name="arguments">/data/txtinputformat/tera /result/%UUID% true true mapoutput AES 123456 128 default</Param>-->
+                <!--<Param name="hadoopArgs">hadoop-cfg.properties</Param>-->
+                <!--<Param name="user">joshua</Param>-->
+            <!--</Transaction>-->
+
+            <Transaction name="toolMapReduceTransaction">
+                <Param name="tool-ref">encryption</Param>    <!-- Spring Bean Id-->
+                <!-- input dir, output dir, need encryption?, need compression?, encryption stage, crypto algorithm, key profile, key length, compression algorithm -->
+                <!--
+                    input dir:              (required) HDFS dir where save your test data.
+                    output dir:             (required) HDFS dir where save your test result.
+                    need encryption:        (required) [true|false]
+                    need compression:       (required) [true|false]
+                    encryption stage:       (optional) [input|mapoutput|output]
+                    crypto algorithm        (optional) [AES]
+                    key profile:            (optional) The secret of crypto algorithm
+                    key length:             (optional) [128|256]
+                    compression algorithm:  (optional) [default|deflate|gzip|snappy]
+                -->
+                <Param name="arguments">/data/txtinputformat/tera /result/%UUID% true true mapoutput AES 123456 128 default</Param>
+                <Param name="hadoopArgs">hadoop-cfg.properties</Param>
+                <Param name="user">joshua</Param>
+            </Transaction>
+
+        </TaskDriver>
+    </TaskConfig>
+    <Description>MapReduce Encryption Sample</Description>
+</LoadConfig>

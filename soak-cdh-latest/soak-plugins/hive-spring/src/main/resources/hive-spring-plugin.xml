@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" />
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" scope="prototype">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="hiveClientFactory" class="com.intel.soak.plugin.hive.HiveClientFactoryBean" />
+    
+    <bean id="hiveAuthzTemplate" class="com.intel.soak.plugin.hive.transaction.HiveAuthzTemplate" scope="prototype">
+        <property name="hiveClientFactory" ref="hiveClientFactory" />
+    </bean>
+    
+    <bean id="hiveDriver" class="com.intel.soak.plugin.hive.driver.HiveDriver">
+        <property name="hiveClientFactoryBean" ref="&amp;hiveClientFactory" />
+        <property name="hiveDataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="hiveThrift" class="com.intel.soak.plugin.hive.transaction.HiveThriftTransaction" scope="prototype">
+        <property name="hiveAuthzTemplate" ref="hiveAuthzTemplate" />
+    </bean>
+
+    <bean id="hiveExample" class="com.intel.soak.plugin.hive.transaction.HiveExampleTransaction" scope="prototype">
+        <property name="hiveAuthzTemplate" ref="hiveAuthzTemplate" />
+    </bean>
+
+    <bean id="hiveJdbc" class="com.intel.soak.plugin.hive.transaction.HiveJdbcTransaction" scope="prototype" >
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+
+    <bean id="hiveCLI" class="com.intel.soak.plugin.hive.transaction.HiveCLITransaction" scope="prototype" />
+    <bean id="hiveTPCH" class="com.intel.soak.plugin.hive.transaction.HiveTPCHTransaction" scope="prototype" />
+</beans>

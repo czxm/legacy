@@ -1,0 +1,2 @@
+2014-08-28 20:32:46,723  INFO (TestHCatalogLoad.java) - Will look in directory:/C:/Users/niweimin/Desktop/hcatmix-master/hcatmix-master/hcatmix/target/classes/load for load test configuration files
+2014-08-28 20:32:46,731  INFO (TestLoadStoreScripts.java) - Will load yaml file: hcatmix_load_store_tests.yml

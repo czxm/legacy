@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig name="hdfsEncrypt"
+             xmlns="http://www.intel.com/loadmeter/config">
+
+    <LoadMeasureConfig>
+        <MergeSource>HDFSEncryptDriver.*</MergeSource>
+        <MergeResult>mergedHDFSEncrypt</MergeResult>
+        <ChartConfig name="response" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="10">
+            <XAxisName>Time (5 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Response Time (ms)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>HDFSEncrypt_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>HDFSEncrypt_MED</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>HDFSEncrypt_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Response (HDFSEncrypt)</Title>
+        </ChartConfig>
+
+        <ChartConfig name="throughput" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="10s">
+            <XAxisName>Time (5 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>Throughput (TX/s)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>HDFSEncrypt_CNT/5</Serie>
+                    <Label>Throughput</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Workload Throughput (HDFSEncrypt)</Title>
+        </ChartConfig>
+    </LoadMeasureConfig>
+
+    <GangliaMetricsConfig>
+        <GangliaMetrics>load_one cpu_user cpu_system cpu_wio</GangliaMetrics>
+        <MergeResult>mergedGangliaMetrics</MergeResult>
+        <ChartConfig name="load_one" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="15s">
+            <XAxisName>Time (5 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>load 1 min</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>load_one</Serie>
+                </YSerie>
+            </YSeries>
+            <Title>Cluster Load_one (HDFSEncrypt)</Title>
+        </ChartConfig>
+
+        <ChartConfig name="CPU" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10" tickUnit="15s">
+            <XAxisName>Time (5 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>CPU</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>cpu_user</Serie>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_system</Serie>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_wio</Serie>
+                </YSerie>
+            </YSeries>
+            <Title>Cluster CPU (HDFSEncrypt)</Title>
+        </ChartConfig>
+    </GangliaMetricsConfig>
+
+    <SummaryConfig>
+        <ActiveUsers>1 2 3 4 5 6 7 8 9 10</ActiveUsers>
+        <MergeResult>summary</MergeResult>
+        <ChartConfig name="summary" height="300" width="600"
+                     titleFontSize="15" labelFontSize="10">
+            <XAxisName>Active Users</XAxisName>
+            <XSerie>ActiveUsers_SUM</XSerie>
+            <YAxisName>Response Time (ms)</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>HDFSEncrypt_MIN</Serie>
+                    <Label>Minimum</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>HDFSEncrypt_MED</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>HDFSEncrypt_MAX</Serie>
+                    <Label>Maximum</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>CPU</SecondYAxisName>
+            <SecondYSeries>
+                <YSerie>
+                    <Serie>cpu_user</Serie>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_system</Serie>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_wio</Serie>
+                </YSerie>
+            </SecondYSeries>
+            <Title>HDFSEncrypt Performance Summary</Title>
+        </ChartConfig>
+    </SummaryConfig>
+
+</MergeConfig>

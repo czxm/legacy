@@ -1,0 +1,65 @@
+#!/bin/sh
+if [[ @${JAVA_HOME}@ == @@ ]]
+then
+  echo "No JAVA_HOME defined!"
+  exit 1
+fi
+export JAVA_CMD=${JAVA_HOME}/bin/java
+export PATH=$JAVA_HOME/bin:$PATH
+
+if [[ @${SOAK_HOME}@ == @@ ]]
+then
+  export SOAK_HOME=`pwd`
+fi
+
+JARS=.:$SOAK_HOME/conf
+JARS=$JARS:/etc/hadoop/conf
+
+for jar in `ls /usr/lib/hadoop`
+do
+  JARS="$JARS:/usr/lib/hadoop/$jar"
+done
+
+for jar in `ls /usr/lib/hadoop/lib`
+do
+  JARS="$JARS:/usr/lib/hadoop/lib/$jar"
+done
+
+for jar in `ls /usr/lib/hadoop-hdfs`
+do
+  JARS="$JARS:/usr/lib/hadoop-hdfs/$jar"
+done
+
+for jar in `ls /usr/lib/hadoop-hdfs/lib`
+do
+  JARS="$JARS:/usr/lib/hadoop-hdfs/lib/$jar"
+done
+
+for jar in `ls /usr/lib/hadoop-yarn`
+do
+  JARS="$JARS:/usr/lib/hadoop-yarn/$jar"
+done
+
+for jar in `ls /usr/lib/hadoop-yarn/lib`
+do
+  JARS="$JARS:/usr/lib/hadoop-yarn/lib/$jar"
+done
+
+for jar in `ls /usr/lib/hadoop-mapreduce`
+do
+  JARS="$JARS:/usr/lib/hadoop-mapreduce/$jar"
+done
+
+for jar in `ls /usr/lib/hadoop-mapreduce/lib`
+do
+  JARS="$JARS:/usr/lib/hadoop-mapreduce/lib/$jar"
+done
+
+for jar in `ls ${SOAK_HOME}/lib`
+do
+  JARS="$JARS:${SOAK_HOME}/lib/$jar"
+done
+
+echo $JARS
+
+$JAVA_CMD -Dsoak.home=${SOAK_HOME} -cp $JARS Runner $@

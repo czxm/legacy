@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="hdfs_basic" interval="60">
+
+    <VirtualUserConfig total="1"/>
+
+    <BatchConfig wait="10">
+        <BatchUsers>10</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="600">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="HDFSDriver">
+            <Param name="CLASSPATH"></Param>
+            <Transaction name="HDFSBasicTransaction">
+                <Param name="testRoot">#TESTROOT#/hcat</Param>
+                <Param name="user">${user}</Param>
+                <Param name="test_cache_dir">${plugin_home}/clitest_data</Param>
+                <Param name="testConf">testHcatalogConf.xml</Param>
+            </Transaction>
+        </TaskDriver>
+    </TaskConfig>
+    <Description>HDFS CLI Tests</Description>
+</LoadConfig>

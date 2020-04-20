@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="soakContainer" class="com.intel.soak.InMemSoakContainer" scope="singleton">
+        <property name="SoakConfig" ref="soakConfig"/>
+    </bean>
+
+    <!-- Plugin Validators-->
+    <bean id="pluginManifestValidator" class="com.intel.soak.plugin.validator.PluginManifestValidator" scope="prototype"/>
+    <bean id="pluginSpringConfValidator" class="com.intel.soak.plugin.validator.PluginSpringConfValidator" scope="prototype"/>
+
+    <!-- Plugin Loaders -->
+    <bean id="pluginInfoLoader" class="com.intel.soak.plugin.loader.GenericPluginInfoLoader" scope="prototype" />
+    <bean id="localPluginFetcher" class="com.intel.soak.plugin.loader.LocalPluginFetcher" scope="prototype" />
+    <bean id="clusterPluginFetcher" class="com.intel.soak.plugin.loader.RemotePluginFetcher" scope="prototype" />
+
+    <!-- Plugin Managers -->
+    <bean id="simplePluginManager" class="com.intel.soak.plugin.manager.SimplePluginManager" />
+
+    <!-- Plugin Masters-->
+    <bean id="localPluginMaster" class="com.intel.soak.plugin.LocalPluginMaster" scope="prototype">
+        <property name="exitOnError" value="false" />
+        <property name="validators">
+            <list>
+                <ref bean="pluginManifestValidator" />
+                <ref bean="pluginSpringConfValidator" />
+            </list>
+        </property>
+        <property name="manager" ref="simplePluginManager" />
+        <property name="pluginInfoLoader" ref="pluginInfoLoader" />
+    </bean>
+
+    <bean id="clusterPluginMaster" class="com.intel.soak.plugin.ClusterPluginMaster" scope="prototype">
+        <property name="exitOnError" value="false" />
+        <property name="validators">
+            <list>
+                <ref bean="pluginManifestValidator" />
+                <ref bean="pluginSpringConfValidator" />
+            </list>
+        </property>
+        <property name="manager" ref="simplePluginManager" />
+        <property name="pluginInfoLoader" ref="pluginInfoLoader" />
+    </bean>
+
+    <!-- Plugin Slaves-->
+    <bean id="localPluginSlave" class="com.intel.soak.plugin.LocalPluginSlave" scope="prototype">
+        <property name="pluginFetcher" ref="localPluginFetcher" />
+    </bean>
+
+    <bean id="clusterPluginSlave" class="com.intel.soak.plugin.ClusterPluginSlave" scope="prototype">
+        <property name="pluginFetcher" ref="clusterPluginFetcher" />
+    </bean>
+
+
+    <bean id="defaultDriver" class="com.intel.soak.driver.GenericDriver"
+          scope="prototype">
+    </bean>
+
+    <bean id="defaultVUserFeeder" class="com.intel.soak.vuser.DefaultVUserFeeder"
+          scope="singleton">
+    </bean>
+
+</beans>

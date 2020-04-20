@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  name="ImpalaJDBC" interval="5" xmlns="http://www.intel.com/loadmeter/config">
+
+	<VirtualUserConfig total="100" />
+
+	<BatchConfig wait="10">
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+		<BatchUsers>10</BatchUsers>
+	</BatchConfig>
+
+	<TaskConfig duration="1000">
+		<Delay>
+			<FixDelay>
+				<Delay>0</Delay>
+			</FixDelay>
+		</Delay>
+		<TaskDriver driver="hiveDriver">
+                    <Param name="CLASSPATH">/usr/lib/hive/lib:/usr/lib/hadoop:/usr/lib/hadoop/lib</Param>
+                    <Param name="jdbcUrl">jdbc:hive2://nightly57-4.gce.cloudera.com:21050/default;ssl=true;sslTrustStore=/etc/cdep-ssl-conf/CA_STANDARD/truststore.jks;trustStorePassword=cloudera;principal=impala/nightly57-4.gce.cloudera.com@gce.cloudera.com</Param>
+                    <Param name="secure">true</Param>
+			<Transaction name="hiveJdbc">
+                    	      <Param name="closeStatement">true</Param>
+                              <Param name="query">select count(*) from customers</Param>
+			</Transaction>
+		</TaskDriver>
+	</TaskConfig>
+	<Description>Hello World</Description>
+</LoadConfig>
+

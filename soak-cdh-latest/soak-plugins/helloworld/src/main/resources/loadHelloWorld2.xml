@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  name="helloworld" interval="5" xmlns="http://www.intel.com/loadmeter/config">
+
+	<VirtualUserConfig total="10" provider="defaultVUserFeeder"/>
+
+	<BatchConfig wait="10">
+		<BatchUsers>1</BatchUsers>
+		<BatchUsers>2</BatchUsers>
+		<BatchUsers>3</BatchUsers>
+		<BatchUsers>4</BatchUsers>
+		<BatchUsers>5</BatchUsers>
+	</BatchConfig>
+
+	<TaskConfig duration="60">
+		<Delay>
+			<FixDelay>
+				<Delay>0</Delay>
+			</FixDelay>
+		</Delay>
+		<TaskDriver driver="helloWorldDriver" ordered="false">
+			<Transaction name="helloWorldTransaction" weight="10"/>
+            <Transaction name="helloWorldTransaction" weight="20"/>
+            <Transaction name="helloWorldTransaction" weight="30"/>            			
+		</TaskDriver>
+	</TaskConfig>
+	<Description>Hello World</Description>
+</LoadConfig>

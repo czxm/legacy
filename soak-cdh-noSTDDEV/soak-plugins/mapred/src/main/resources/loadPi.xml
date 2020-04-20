@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="mr_encryption" interval="10">
+
+    <VirtualUserConfig total="1" />
+
+    <BatchConfig wait="10">
+        <BatchUsers>1</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="3600">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="mrDriver">
+            <Param name="CLASSPATH">/etc/hadoop/conf:/usr/lib/hadoop:/usr/lib/hadoop/lib</Param>
+            <Param name="core-site">/etc/hadoop/conf/core-site.xml</Param>
+            <Param name="mr-site">/etc/hadoop/conf/mapred-site.xml</Param>
+
+            <Transaction name="mrRemoteTransaction">
+                <Param name="execObj">com.intel.soak.plugin.mapred.encryption.Pi</Param>
+                <!-- input dir, output dir, need encryption?, need compression?, encryption stage, crypto algorithm, key profile, key length, compression algorithm -->
+                <!--
+                    input dir:              (required) HDFS dir where save your test data.
+                    output dir:             (required) HDFS dir where save your test result.
+                    need encryption:        (required) [true|false]
+                    need compression:       (required) [true|false]
+                    encryption stage:       (optional) [input|mapoutput|output]
+                    crypto algorithm        (optional) [AES]
+                    key profile:            (optional) The secret of crypto algorithm
+                    key length:             (optional) [128|256]
+                    compression algorithm:  (optional) [default|deflate|gzip|snappy]
+                -->
+                <Param name="jobParams">3 3</Param>
+                <Param name="isReliability">false</Param>
+                <Param name="faultInjectionType">task</Param>
+            </Transaction>
+
+        </TaskDriver>
+    </TaskConfig>
+    <Description>Benchmark to test the reliability of MR encryption</Description>
+</LoadConfig>

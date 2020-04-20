@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig xmlns="http://www.intel.com/loadmeter/config" name="shellscript" interval="10">
+
+    <VirtualUserConfig total="10" />
+
+    <BatchConfig wait="10">
+        <BatchUsers>1</BatchUsers>
+        <BatchUsers>2</BatchUsers>
+        <BatchUsers>3</BatchUsers>
+        <BatchUsers>4</BatchUsers>
+        <BatchUsers>5</BatchUsers>
+    </BatchConfig>
+
+    <TaskConfig duration="600">
+        <Delay>
+            <FixDelay>
+                <Delay>0</Delay>
+            </FixDelay>
+        </Delay>
+        <TaskDriver driver="shellScriptDriver">
+            <Transaction name="ycsbShellTransaction">
+                <Param name="arg0">ycsb-intel/bin/ycsb</Param>
+                <Param name="arg1">run</Param>
+                <Param name="arg2">hbase</Param>
+                <Param name="arg3">-P</Param>
+                <Param name="arg4">ycsb-intel/workloads/workloada</Param>
+            </Transaction>
+        </TaskDriver>
+    </TaskConfig>
+    <Description>Shell Script</Description>
+</LoadConfig>

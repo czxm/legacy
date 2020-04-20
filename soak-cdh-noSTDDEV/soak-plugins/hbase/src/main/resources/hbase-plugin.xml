@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="HBaseDriver" class="com.intel.soak.plugin.hbase.driver.HBaseDriver" scope="prototype"/>
+    <bean id="HBaseBaseTransaction" class="com.intel.soak.plugin.hbase.transaction.HBaseBaseTransaction" scope="prototype"/>
+    <bean id="HBaseDummyTransaction" class="com.intel.soak.plugin.hbase.transaction.HBaseDummyTransaction" scope="prototype"/>
+    <bean id="HBaseScanTransaction" class="com.intel.soak.plugin.hbase.transaction.HBaseScanTransaction" scope="prototype"/>
+    <bean id="HBaseAggregationTransaction" class="com.intel.soak.plugin.hbase.transaction.HBaseAggregationTransaction" scope="prototype"/>
+    <bean id="HBaseScanWithComparisonFilterTransaction" class="com.intel.soak.plugin.hbase.transaction.HBaseScanWithComparisonFilterTransaction" scope="prototype"/>
+</beans>

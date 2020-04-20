@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig name="helloworld"
+	xmlns="http://www.intel.com/loadmeter/config">
+
+	<LoadMeasureConfig>
+		<MergeSource>helloWorldDriver.*</MergeSource>
+		<MergeResult>mergedHelloWorld</MergeResult>
+		<ChartConfig name="response" height="300" width="600"
+			titleFontSize="15" labelFontSize="10" tickUnit="10">
+			<XAxisName>Time (5 seconds)</XAxisName>
+			<XSerie>Timestamp</XSerie>
+			<YAxisName>Response Time (ms)</YAxisName>
+			<YSeries>
+				<YSerie>
+					<Serie>HelloWorld_MIN</Serie>
+					<Label>Minimum</Label>
+				</YSerie>
+				<YSerie>
+					<Serie>HelloWorld_MED</Serie>
+					<Label>Medium</Label>
+				</YSerie>
+				<YSerie>
+					<Serie>HelloWorld_MAX</Serie>
+					<Label>Maximum</Label>
+				</YSerie>
+			</YSeries>
+			<SecondYAxisName>Active Users</SecondYAxisName>
+			<SecondYSeries decimal="true">
+				<YSerie>
+					<Serie>ActiveUsers_SUM</Serie>
+					<Label>Active Users</Label>
+				</YSerie>
+			</SecondYSeries>
+			<Title>Workload Response (HelloWorld)</Title>
+		</ChartConfig>
+
+		<ChartConfig name="throughput" height="300" width="600"
+			titleFontSize="15" labelFontSize="10" tickUnit="10s">
+			<XAxisName>Time (5 seconds)</XAxisName>
+			<XSerie>Timestamp</XSerie>
+			<YAxisName>Throughput (TX/s)</YAxisName>
+			<YSeries>
+				<YSerie>
+					<Serie>HelloWorld_CNT/5</Serie>
+					<Label>Throughput</Label>
+				</YSerie>
+			</YSeries>
+			<SecondYAxisName>Active Users</SecondYAxisName>
+			<SecondYSeries decimal="true">
+				<YSerie>
+					<Serie>ActiveUsers_SUM</Serie>
+					<Label>Active Users</Label>
+				</YSerie>
+			</SecondYSeries>
+			<Title>Workload Throughput (HelloWorld)</Title>
+		</ChartConfig>
+		
+        <ChartConfig name="customized_metric0" height="300" width="600"
+            titleFontSize="15" labelFontSize="10" tickUnit="10s">
+            <XAxisName>Time (5 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>metric0</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>HelloWorld_metric0_MED</Serie>
+                    <Label>metric0</Label>
+                </YSerie>
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Customized Metric0 (HelloWorld)</Title>
+        </ChartConfig>		
+        
+        <ChartConfig name="customized_metric1" height="300" width="600"
+            titleFontSize="15" labelFontSize="10" tickUnit="10s">
+            <XAxisName>Time (5 seconds)</XAxisName>
+            <XSerie>Timestamp</XSerie>
+            <YAxisName>metric1</YAxisName>
+            <YSeries>
+                <YSerie>
+                    <Serie>HelloWorld_metric1_MIN</Serie>
+                    <Label>Min</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>HelloWorld_metric1_MED</Serie>
+                    <Label>Medium</Label>
+                </YSerie>
+                <YSerie>
+                    <Serie>HelloWorld_metric1_MAX</Serie>
+                    <Label>Max</Label>
+                </YSerie>                                
+            </YSeries>
+            <SecondYAxisName>Active Users</SecondYAxisName>
+            <SecondYSeries decimal="true">
+                <YSerie>
+                    <Serie>ActiveUsers_SUM</Serie>
+                    <Label>Active Users</Label>
+                </YSerie>
+            </SecondYSeries>
+            <Title>Customized Metric1 (HelloWorld)</Title>
+        </ChartConfig>          
+	</LoadMeasureConfig>
+
+	<GangliaMetricsConfig>
+		<GangliaMetrics>load_one cpu_user cpu_system cpu_wio</GangliaMetrics>
+		<MergeResult>mergedGangliaMetrics</MergeResult>
+		<ChartConfig name="load_one" height="300" width="600"
+			titleFontSize="15" labelFontSize="10" tickUnit="15s">
+			<XAxisName>Time (5 seconds)</XAxisName>
+			<XSerie>Timestamp</XSerie>
+			<YAxisName>load 1 min</YAxisName>
+			<YSeries>
+				<YSerie>
+					<Serie>load_one</Serie>
+				</YSerie>
+			</YSeries>
+			<Title>Cluster Load_one (HelloWorld)</Title>
+		</ChartConfig>
+
+		<ChartConfig name="CPU" height="300" width="600"
+			titleFontSize="15" labelFontSize="10" tickUnit="15s">
+			<XAxisName>Time (5 seconds)</XAxisName>
+			<XSerie>Timestamp</XSerie>
+			<YAxisName>CPU</YAxisName>
+			<YSeries>
+				<YSerie>
+					<Serie>cpu_user</Serie>
+				</YSerie>
+                <YSerie>
+                    <Serie>cpu_system</Serie>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_wio</Serie>
+                </YSerie>                				
+			</YSeries>
+			<Title>Cluster CPU (HelloWorld)</Title>
+		</ChartConfig>
+	</GangliaMetricsConfig>
+
+	<SummaryConfig>
+		<ActiveUsers>1 2 3 4 5 6 7 8 9 10</ActiveUsers>
+		<MergeResult>summary</MergeResult>
+		<ChartConfig name="summary" height="300" width="600"
+			titleFontSize="15" labelFontSize="10">
+			<XAxisName>Active Users</XAxisName>
+			<XSerie>ActiveUsers_SUM</XSerie>
+			<YAxisName>Response Time (ms)</YAxisName>
+			<YSeries>
+				<YSerie>
+					<Serie>HelloWorld_MIN</Serie>
+					<Label>Minimum</Label>
+				</YSerie>
+				<YSerie>
+					<Serie>HelloWorld_MED</Serie>
+					<Label>Medium</Label>
+				</YSerie>
+				<YSerie>
+					<Serie>HelloWorld_MAX</Serie>
+					<Label>Maximum</Label>
+				</YSerie>
+			</YSeries>
+            <SecondYAxisName>CPU</SecondYAxisName>
+            <SecondYSeries>
+                <YSerie>
+                    <Serie>cpu_user</Serie>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_system</Serie>
+                </YSerie>
+                <YSerie>
+                    <Serie>cpu_wio</Serie>
+                </YSerie>                               
+            </SecondYSeries>			
+			<Title>HelloWorld Performance Summary</Title>
+		</ChartConfig>
+	</SummaryConfig>
+
+</MergeConfig>

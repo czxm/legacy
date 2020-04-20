@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.intel.soak</groupId>
+		<artifactId>soak</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>soak-plugins</artifactId>
+	<packaging>pom</packaging>
+
+
+	<modules>
+		<module>helloworld</module>
+        <module>shellscript</module>
+        <module>mapred</module>
+        <module>hdfs</module>
+        <module>commons</module>
+        <!--module>mapreduce-spring</module-->
+        <module>hbase</module>
+        <module>hive-spring</module>
+        <module>pig</module>
+        <!--module>hcatalog</module-->
+        <!--module>faults</module-->
+    </modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>		
+	</properties>
+
+	<dependencies>
+        <dependency>
+            <groupId>com.intel.soak</groupId>
+            <artifactId>soak-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+	</dependencies>
+</project>

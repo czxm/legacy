@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<TITLE>Soak Test Report</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<STYLE type=text/css>
+body {	font-family: Verdana, Arial, sans-serif;	font-size: 10pt;	background-color: white;	color: black;}
+table {	font-size: 10pt;}h1 {	font-size: 12pt;	font-weight: bold;	margin-bottom: 0.25em;}
+h2 {	font-size: 11pt;	font-weight: bold;	margin-bottom: 0.25em;}
+h1, h2 {	/* Account for table border */	margin-left: 3px;}
+th {	font-weight: bold;	background-color: #a6caf0;	vertical-align: top;}
+td {	background-color: #eeeee0;}
+th, td {	padding: 3px 5px;}
+tbody th, tfoot th {	text-align: right;}
+table#details th {  text-align: left;}
+pre{margin-left:3px;margin-bottom:10pt;line-height:115%;}
+p{margin-left:3px;margin-bottom:10pt;line-height:17pt;}
+</STYLE>
+</HEAD>
+<BODY>
+#foreach( ${job} in $report.getJobReports() )
+<H1>$job.description&nbsp;&nbsp;<A HREF="$job.name/job_report.html">$job.name</A></H1>
+<H5>Job is started at $job.getStartDate(),&nbsp;&nbsp;&nbsp;&nbsp;and finished after $job.getDurationText()</H5>
+#foreach( ${summary} in $job.getSummaries() )
+<H1>$summary.name Summary</H1>
+<TABLE id=details width="100%">
+<TBODY>
+<TR>$summary.getHTMLHeaders()</TR>
+  #foreach( ${metrics} in $summary.getMetricsList() )
+<TR>$metrics.toHTMLString()</TR>
+  #end
+</TBODY>
+</TABLE>
+#end
+<HR>
+#foreach( ${chart} in $job.getMajorCharts() )
+<IMG SRC="$job.name/${chart.name}.jpg"></IMG>
+<HR>
+#end
+#end
+<H1>Charts for <A HREF="ganglia/metrics.csv">Ganglia Metrics</A></H1>
+#foreach( ${chart} in $report.getGangliaReport().getCharts() )
+<IMG SRC="ganglia/${chart.name}.jpg"></IMG>
+<HR>
+#end
+<H5>Powered by IDH QA Team ($genDate)</H5>
+<BODY>
+</HTML>

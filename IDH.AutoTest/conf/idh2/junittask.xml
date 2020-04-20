@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<onStart>
+		<execute runas="user" os="Linux">
+<![CDATA[
+source /home/user/.bashrc
+
+#purge cached hbase/hive/hadoop from maven and ivy repository
+find ~/.m2/ -name "hbase*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "hbase*" -xtype d -exec rm -rf {} \;
+find ~/.m2/ -name "hadoop*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "hadoop*" -xtype d -exec rm -rf {} \;
+find ~/.m2/ -name "hive*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "hive*" -xtype d -exec rm -rf {} \;
+find ~/.m2/ -name "avro*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "avro*" -xtype d -exec rm -rf {} \;
+
+[[ ! -d ~/pigtest/conf ]] && mkdir -p ~/pigtest/conf
+rm -f ~/pigtest/conf/*
+
+mkdir hadoop_tmp
+mkdir hbase_tmp
+mkdir hive_tmp
+mkdir pig_tmp
+mkdir zk_tmp
+mkdir flume_tmp
+mkdir mahout_tmp
+mkdir sqoop_tmp  
+mkdir oozie_tmp
+mkdir solr_tmp
+
+TMPDIR=`pwd`/hive_tmp
+
+cd %resultFolder%
+cp -f license/IntelLicense.java sources/hadoop*/src/core/org/apache/hadoop/util/
+
+#prepare for bypassing svn authentication
+SVNOPTIONS="--username=lab_xmldev --password=qnn8S*NP"
+SVNPATH=`svn info $SVNOPTIONS |grep URL |cut -d" " -f2`
+rm -rf ~/.subversion
+echo p | svn info $SVNPATH $SVNOPTIONS
+echo yes | svn info $SVNPATH $SVNOPTIONS
+
+#force "xml" report for JUnit tests
+find -name "build.xml" -exec perl -i -np -e 's/value="plain"/value="xml"/g' {} \;
+
+#revert some hive config
+echo p | svn merge $SVNOPTIONS -r9185:8505 sources/hive-0.9.0-Intel/src/common/src/java/org/apache/hadoop/hive/conf/HiveConf.java sources/hive-0.9.0-Intel/src/common/src/java/org/apache/hadoop/hive/conf/HiveConf.java
+
+cd sources
+
+#disable hive unittest failure detection
+hive_with_version=`ls | grep hive`
+pushd $hive_with_version
+perl -i -np -e 's/<fail(.*)fail>/<!--fail$1fail-->/' build-common.xml
+perl -i -np -e 's/18200000/36000000/' build-common.xml
+HIVE_SRC=`pwd`
+popd
+
+#make sure cppunit can run
+zookeeper_with_version=`ls | grep zookeeper`
+pushd $zookeeper_with_version
+chmod +x src/c/configure
+find -name "*.sh" -exec chmod +x {} \;
+popd
+
+#force single thread for hbase testing
+hbase_with_version=`ls | grep hbase`
+pushd $hbase_with_version
+perl -i -np -e 's/\$\{surefire.secondPartThreadCount\}/1/' pom.xml
+perl -i -np -e 's|<forkedProcessTimeoutInSeconds>\d+</forkedProcessTimeoutInSeconds>|<forkedProcessTimeoutInSeconds>3600</forkedProcessTimeoutInSeconds>|' pom.xml
+popd
+
+#make sure hadoop jars are installed locally
+#this is just for IDH3
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ -e $hadoop2_with_version ]]
+then
+  cd ..
+  make hadoop-rpm
+fi
+
+NIST_SRC=`pwd`/%nist_src%
+if [[ -e %nist_src% ]]
+then
+  pushd %nist_src%
+  patch -p1 < ../nist.diff
+  #customize nist options
+  perl -i -np -e "s|full_hive_src|$HIVE_SRC|g" src/main/resources/conf.properties
+  perl -i -np -e "s|full_nist_src|$NIST_SRC|g" src/main/resources/conf.properties
+  perl -i -np -e "s|full_tmp_dir|$TMPDIR|g" src/main/resources/conf.properties
+  mvn compile
+  popd
+fi
+]]>
+		</execute>
+	</onStart>
+    <item value="(hadoop-2.+) commit">
+        <execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hadoop_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+cd %resultFolder%/sources/%1%/hadoop-common-project
+mvn $MAVEN_OPTS -Pnative test
+]]>
+        </execute>
+    </item>
+    
+    <item value="(hadoop-2.+) full">
+        <execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hadoop_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+cd %resultFolder%/sources/%1%
+mvn $MAVEN_OPTS -Pnative test
+]]>
+        </execute>
+    </item>
+    	
+	<item value="(hadoop-.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hadoop_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+ANT_OPTS="-Djava.io.tmpdir=$TMPDIR -Dcompile.native=true"
+cd %resultFolder%/sources/%1%
+ant $ANT_OPTS test-commit
+]]>
+		</execute>
+	</item>
+	
+	<item value="(hadoop-.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hadoop_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+ANT_OPTS="-Djava.io.tmpdir=$TMPDIR -Dcompile.native=true"
+cd %resultFolder%/sources/%1%
+#ant -Dtestcase=%.case% test
+ant $ANT_OPTS test
+]]>
+		</execute>
+	</item>
+
+    <item value="(mr1-.+) commit">
+        <execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/mr1_tmp
+
+mr1_version="%.mr1_version%"
+hbase_version="%.hbase_version%"
+ANT_OPTS="-Djava.io.tmpdir=$TMPDIR -Dcompile.native=true"
+cd %resultFolder%/sources/%1%
+ant $ANT_OPTS test-commit
+]]>
+        </execute>
+    </item>
+    
+    <item value="(mr1-.+) full">
+        <execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/mr1_tmp
+
+mr1_version="%.mr1_version%"
+hbase_version="%.hbase_version%"
+ANT_OPTS="-Djava.io.tmpdir=$TMPDIR -Dcompile.native=true"
+cd %resultFolder%/sources/%1%
+#ant -Dtestcase=%.case% test
+ant $ANT_OPTS test
+]]>
+        </execute>
+    </item>
+
+	<item value="(hbase-.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hbase_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+cd %resultFolder%/sources
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ -e $hadoop2_with_version ]]
+then
+  MAVEN_OPTS="-Dhadoop.profile=2.0 $MAVEN_OPTS"
+fi
+cd %1%
+mvn -P runDevTests $MAVEN_OPTS test
+]]>
+		</execute>
+	</item>
+	
+	<item value="(hbase-.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hbase_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+cd %resultFolder%/sources
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ -e $hadoop2_with_version ]]
+then
+  MAVEN_OPTS="-Dhadoop.profile=2.0 $MAVEN_OPTS"
+fi
+cd %1%
+mvn -P runAllTests $MAVEN_OPTS test
+]]>
+		</execute>
+	</item>
+
+	<item value="(hive-0.12.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hive_tmp
+
+find ~/.m2/ -name "hive*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "hive*" -xtype d -exec rm -rf {} \;
+
+export ANT_OPTS="-XX:MaxPermSize=2048m"
+export MAVEN_OPTS="-XX:MaxPermSize=2048m"
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+
+bom2props() {
+cat <<__EOT__ 
+hbase.version=$hbase_version
+zookeeper.version=3.4.5-Intel
+hadoop.version=$hadoop_version
+hadoop.security.version=$hadoop_version
+hadoop-0.23.version=$hadoop_version
+__EOT__
+}
+
+cd %resultFolder%/sources
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ -e $hadoop2_with_version ]]
+then
+  cd %1%
+  bom2props >> ivy/libraries.properties
+  bom2props >> build.properties
+  # The following is a workaround for Hadoop 0.23 layout
+  cat >> build.properties << __EOT__
+hadoop.mapreduce.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-client-core-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.test.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-test-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.tools.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-tools-\${hadoop.version.ant-internal}.jar
+__EOT__
+
+  ant `bom2props | sed -e 's#^#-D#'`  -Dhadoop.security.version.prefix=0.23 -Dshims.include=0.23 -Dhadoop.mr.rev=23 -Dtest.include=ql/**/Test* -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=72000000 package
+else
+  cd %1%
+  [[ -f testutils/hadoop ]] && chmod +x testutils/hadoop
+  ant -Dtest.include=ql/**/Test* -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=36000000 -Dcrypto=true package
+fi
+ant -Dtest.include=ql/**/Test* test
+]]>
+		</execute>
+	</item>
+	
+	<item value="(hive-0.12.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hive_tmp
+
+find ~/.m2/ -name "hive*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "hive*" -xtype d -exec rm -rf {} \;
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+export ANT_OPTS="-XX:MaxPermSize=2048m"
+export MAVEN_OPTS="-XX:MaxPermSize=2048m"
+
+bom2props() {
+cat <<__EOT__ 
+hbase.version=$hbase_version
+zookeeper.version=3.4.5-Intel
+hadoop.version=$hadoop_version
+hadoop.security.version=$hadoop_version
+hadoop-0.23.version=$hadoop_version
+__EOT__
+}
+
+cd %resultFolder%/sources
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ -e $hadoop2_with_version ]]
+then
+  cd %1%
+  bom2props >> ivy/libraries.properties
+  bom2props >> build.properties
+  # The following is a workaround for Hadoop 0.23 layout
+  cat >> build.properties << __EOT__
+hadoop.mapreduce.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-client-core-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.test.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-test-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.tools.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-tools-\${hadoop.version.ant-internal}.jar
+__EOT__
+
+  ant `bom2props | sed -e 's#^#-D#'`  -Dhadoop.security.version.prefix=0.23 -Dshims.include=0.23 -Dhadoop.mr.rev=23 -Dtest.include=ql/**/Test* -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=72000000 package
+else
+  cd %1%
+  [[ -f testutils/hadoop ]] && chmod +x testutils/hadoop
+  ant -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=36000000 -Dcrypto=true package
+fi
+ant test
+]]>
+		</execute>
+	</item>
+
+	<item value="(hive-.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hive_tmp
+
+find ~/.m2/ -name "hive*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "hive*" -xtype d -exec rm -rf {} \;
+
+export ANT_OPTS="-XX:MaxPermSize=2048m"
+export MAVEN_OPTS="-XX:MaxPermSize=2048m"
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+
+bom2props() {
+cat <<__EOT__ 
+hbase.version=$hbase_version
+zookeeper.version=3.4.5-Intel
+hadoop.version=$hadoop_version
+hadoop.security.version=$hadoop_version
+hadoop-0.23.version=$hadoop_version
+__EOT__
+}
+
+cd %resultFolder%/sources
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ -e $hadoop2_with_version ]]
+then
+  cd %1%
+  bom2props >> src/ivy/libraries.properties
+  bom2props >> src/build.properties
+  # The following is a workaround for Hadoop 0.23 layout
+  cat >> src/build.properties << __EOT__
+hadoop.mapreduce.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-client-core-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.test.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-test-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.tools.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-tools-\${hadoop.version.ant-internal}.jar
+__EOT__
+
+  cd src
+  ant `bom2props | sed -e 's#^#-D#'`  -Dhadoop.security.version.prefix=0.23 -Dshims.include=0.23 -Dhadoop.mr.rev=23 -Dtest.include=ql/**/Test* -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=72000000 package
+else
+  cd %1%/src
+  [[ -f testutils/hadoop ]] && chmod +x testutils/hadoop
+  ant -Dtest.include=ql/**/Test* -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=36000000 -Dcrypto=true package
+fi
+ant -Dtest.include=ql/**/Test* test
+]]>
+		</execute>
+	</item>
+	
+	<item value="(hive-.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hive_tmp
+
+find ~/.m2/ -name "hive*" -xtype d -exec rm -rf {} \;
+find ~/.ivy2/ -name "hive*" -xtype d -exec rm -rf {} \;
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+export ANT_OPTS="-XX:MaxPermSize=2048m"
+export MAVEN_OPTS="-XX:MaxPermSize=2048m"
+
+bom2props() {
+cat <<__EOT__ 
+hbase.version=$hbase_version
+zookeeper.version=3.4.5-Intel
+hadoop.version=$hadoop_version
+hadoop.security.version=$hadoop_version
+hadoop-0.23.version=$hadoop_version
+__EOT__
+}
+
+cd %resultFolder%/sources
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ -e $hadoop2_with_version ]]
+then
+  cd %1%
+  bom2props >> src/ivy/libraries.properties
+  bom2props >> src/build.properties
+  # The following is a workaround for Hadoop 0.23 layout
+  cat >> src/build.properties << __EOT__
+hadoop.mapreduce.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-client-core-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.test.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-test-\${hadoop.version.ant-internal}.jar
+hadoop.mapreduce.tools.jar=\${hadoop.root}/share/hadoop/mapreduce/hadoop-mapreduce-tools-\${hadoop.version.ant-internal}.jar
+__EOT__
+
+  cd src
+  ant `bom2props | sed -e 's#^#-D#'`  -Dhadoop.security.version.prefix=0.23 -Dshims.include=0.23 -Dhadoop.mr.rev=23 -Dtest.include=ql/**/Test* -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=72000000 package
+else
+  cd %1%/src
+  [[ -f testutils/hadoop ]] && chmod +x testutils/hadoop
+  ant -Djava.io.tmpdir=$TMPDIR -Dtest.timeout=36000000 -Dcrypto=true package
+fi
+ant test
+]]>
+		</execute>
+	</item>
+	
+	<item value="(pig-.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/pig_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+
+cd %resultFolder%/sources/%1%
+ant -DdebugArgs="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128M" -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} test-commit
+]]>
+		</execute>
+	</item>
+	
+	<item value="(pig-.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/pig_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+
+cd %resultFolder%/sources/%1%
+#ant -Dtestcase=%.case% test
+ant -DdebugArgs="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128M" -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} test
+]]>
+		</execute>
+	</item>	
+
+	<item value="(zookeeper-.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/zk_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+ANT_OPTS="-Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version}"
+
+cd %resultFolder%/sources/%1%
+ant $ANT_OPTS test-core-java
+]]>
+		</execute>
+	</item>
+	
+	<item value="(zookeeper-.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/zk_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+ANT_OPTS="-Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version}"
+
+cd %resultFolder%/sources/%1%
+#ant -Dtestcase=%.case% test
+ant $ANT_OPTS test
+]]>
+		</execute>
+	</item>	
+		<item value="(flume-.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/flume_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+
+cd %resultFolder%/sources/%1%
+mvn -P hadoop-Intel $MAVEN_OPTS test
+]]>
+		</execute>
+	</item>
+	
+	<item value="(flume-.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/flume_tmp
+
+cd %resultFolder%
+make flume-rpm
+
+FLUME_DIST=`find /home/user/.m2/repository/org/apache/flume/ -name "flume*-dist*-bin.tar.gz"`
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+
+cd sources/%1%
+#mvn -P hadoop-Intel $MAVEN_OPTS -Dtest=%.case% test
+mvn -P hadoop-Intel $MAVEN_OPTS test -Dflume.dist.tarball=$FLUME_DIST
+]]>
+		</execute>
+	</item>	
+
+	<item value="(mahout-.+) commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/mahout_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+
+cd %resultFolder%/sources/%1%
+mvn $MAVEN_OPTS test
+]]>
+		</execute>
+	</item>
+	
+	<item value="(mahout-.+) full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/mahout_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+
+cd %resultFolder%/sources/%1%
+#mvn $MAVEN_OPTS -Dtest=%.case% test
+mvn $MAVEN_OPTS test
+]]>
+		</execute>
+	</item>
+	
+	<item value="(sqoop-.+).*">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/sqoop_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+ANT_OPTS="-Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version}"
+cd %resultFolder%/sources
+hadoop2_with_version=`ls | grep hadoop-2`
+if [[ ! -e $hadoop2_with_version ]]
+then
+  ANT_OPTS="-Dhadoopversion=20 $ANT_OPTS"
+fi
+cd %1%
+ant $ANT_OPTS test
+]]>
+		</execute>
+	</item>
+
+    <item value="(oozie-.+).*">
+        <execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/oozie_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+MAVEN_OPTS="-Dtest.build.data.basedirectory=$TMPDIR -Djava.io.tmpdir=$TMPDIR -Dhadoop.version=${hadoop_version} -Dhbase.version=${hbase_version} -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true"
+
+cd %resultFolder%/sources/%1%
+mvn $MAVEN_OPTS test
+]]>
+        </execute>
+    </item>
+
+    <item value="(solr-.+).*">
+        <execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/solr_tmp
+
+hadoop_version="%.hadoop_version%"
+hbase_version="%.hbase_version%"
+
+cd %resultFolder%/sources/%1%/solr
+ant test
+]]>
+        </execute>
+    </item>
+
+    <item value="nist test.*">
+        <execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+TMPDIR=`pwd`/hive_tmp
+
+export ANT_OPTS="-XX:MaxPermSize=2048m"
+
+cd %nist_src%
+mvn exec:java -Dexec.mainClass=com.intel.ssg.ssd.sotc.cloud.hive.testweb.servlet.MainServlet -Dexec.args="%.option%" -Dexec.classpathScope=test
+]]>
+        </execute>
+    </item>     
+    
+	<onFinish>
+	</onFinish>
+</config>

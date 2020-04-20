@@ -1,0 +1,220 @@
+diff --git a/pom.xml b/pom.xml
+index 4328ed8..d809683 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -7,6 +7,9 @@
+ 	<version>1.0-SNAPSHOT</version>
+ 	<name>hive.testweb Maven Webapp</name>
+ 	<url>http://maven.apache.org</url>
++    <properties>
++    <jettyVersion>8.0.0.M3</jettyVersion>
++    </properties>
+ 	<dependencies>
+ 		<dependency>
+ 			<groupId>org.apache.httpcomponents</groupId>
+@@ -14,12 +17,16 @@
+ 			<version>4.1.2</version>
+ 			<scope>test</scope>
+ 		</dependency>
+-		<dependency>
+-			<groupId>javax.servlet</groupId>
+-			<artifactId>servlet-api</artifactId>
+-			<version>2.4</version>
+-			<scope>provided</scope>
+-		</dependency>
++        <dependency>
++            <groupId>org.eclipse.jetty</groupId>
++            <artifactId>jetty-server</artifactId>
++            <version>${jettyVersion}</version>
++        </dependency>
++        <dependency>
++            <groupId>org.eclipse.jetty</groupId>
++            <artifactId>jetty-plus</artifactId>
++            <version>${jettyVersion}</version>
++        </dependency>
+ 		<dependency>
+ 			<groupId>junit</groupId>
+ 			<artifactId>junit</artifactId>
+diff --git a/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/servlet/MainServlet.java b/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/servlet/MainServlet.java
+index cf26c8b..df1eef0 100644
+--- a/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/servlet/MainServlet.java
++++ b/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/servlet/MainServlet.java
+@@ -1,5 +1,6 @@
+ package com.intel.ssg.ssd.sotc.cloud.hive.testweb.servlet;
+ 
++import java.io.FileOutputStream;
+ import java.io.IOException;
+ import java.io.PrintWriter;
+ import java.util.Arrays;
+@@ -263,4 +264,54 @@ public class MainServlet extends HttpServlet {
+ 		started = true;
+ 		finished = false;
+ 	}
++	
++	public static void main(String[] args) throws Exception{
++	    MainServlet ms = new MainServlet();
++	    String startCase = args[0];
++            String batch = args[1];
++            String total = args[2];
++	    ms.container = new Container();
++        SQLTool.reviewSQL(ms.container);
++        ms.container.setSeqSet(new HashSet(new HashSet<String>()));
++	    if(args.length > 3){
++	        for(int i = 3; i < args.length; i++){
++	            String s = args[i];
++	            if(s.equalsIgnoreCase("sub"))
++	                ms.container.getSeqSet().addAll(Arrays.asList(ms.sub));
++	            else if(s.equalsIgnoreCase("mt"))
++	                ms.container.getSeqSet().addAll(Arrays.asList(ms.mt));
++	            else if(s.equalsIgnoreCase("tpch"))
++	                ms.container.getSeqSet().addAll(Arrays.asList(ms.tpch));
++	        }
++	    }
++        else{
++            for (int j = 0; j < Constants.beginReviewNum; j++) {
++                ms.container.getSeqSet().add(String.format("%04d", j));
++            }
++            for (Entry<String, String[]> sqlTag : ms.container.getSQLTagMap()
++                    .entrySet()) {
++                ms.container.getSeqSet().add(sqlTag.getKey());
++            }
++        }
++        TaskThread tt = new TaskThread(ms.container, Integer.parseInt(startCase), Integer.parseInt(batch), Integer.parseInt(total));
++        tt.run();
++        FileOutputStream fos = new FileOutputStream("failures.csv");
++        for (String[] e : ms.container.getDetail()) {            
++            fos.write(e[0].getBytes());
++            fos.write("#".getBytes());
++            fos.write(e[1].getBytes());
++            fos.write("#".getBytes());
++            fos.write(e[2].getBytes());
++            fos.write("\n".getBytes());
++        }
++        for (String[] e : ms.container.getUnionDetail()) {
++            fos.write(e[0].getBytes());
++            fos.write("#".getBytes());
++            fos.write(e[1].getBytes());
++            fos.write("#".getBytes());
++            fos.write(e[2].getBytes());
++            fos.write("\n".getBytes());
++        }
++        fos.close();
++	}
+ }
+diff --git a/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/tool/TaskThread.java b/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/tool/TaskThread.java
+index 281b017..fae8358 100644
+--- a/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/tool/TaskThread.java
++++ b/src/main/java/com/intel/ssg/ssd/sotc/cloud/hive/testweb/tool/TaskThread.java
+@@ -25,8 +25,12 @@ public class TaskThread extends Thread {
+ 	String svn = "svn up";
+ 	String build = PropertiesUtil.getBuildCmd();
+ 	Container container;
+-	int everyBatch = 1300;
+ 
++	int totalCase = 1073;
++	int everyBatch = 500;
++	int startCase = 0;
++	boolean disttest = false;
++	
+ 	public TaskThread(Container container) {
+ 		this.container = container;
+ 		this.cmd = this.container.getConf().getCmd();
+@@ -41,12 +45,31 @@ public class TaskThread extends Thread {
+ 			logDir = dir;
+ 		}
+ 	}
+-
++	
++	public TaskThread(Container container, int startCase, int batch, int total) {
++	    this.container = container;
++        this.cmd = this.container.getConf().getCmd();
++        this.dir = this.container.getConf().getDir();
++        this.logDir = this.container.getConf().getLogDir();
++        this.base = this.container.getConf().getBase();
++        this.qf = this.container.getConf().getQf();
++        this.svn = this.container.getConf().getSvn();
++        this.build = this.container.getConf().getBuild();        
++        if (logDir == null) {
++            logDir = dir;
++        }
++        this.startCase = startCase;
++        this.everyBatch = batch;
++        this.totalCase = total;
++        disttest = true;
++	}
++	
+ 	@Override
+ 	public void run() {
+ 		init();
+ 		long beginTime = System.currentTimeMillis();
+ 		int i = 0;
++		int caseNum = startCase;
+ 		try {
+ 			FileOutputStream rf = new FileOutputStream(new File(logDir,
+ 					System.currentTimeMillis() / 1000 + ".rpt"));
+@@ -63,20 +86,24 @@ public class TaskThread extends Thread {
+ 			Iterator<String> seqIterator = seqList.iterator();
+ 			int batchNum = 0;
+ 			Set<String> tmpSet = new HashSet<String>();
+-			while (seqIterator.hasNext()) {
+-				if (batchNum++ < everyBatch) {
+-					tmpSet.add(seqIterator.next());
+-					if (batchNum == everyBatch || !seqIterator.hasNext()) {
+-						batchNum = 0;
+-					}
+-				}
++			while (caseNum < totalCase) {
++                batchNum++;
++                String caseNumStr = String.format("%04d", caseNum++);
++                if (container.getSeqSet() == null ||
++                        container.getSeqSet().contains(caseNumStr)) {
++                    tmpSet.add(caseNumStr);
++                }
++
++                if (batchNum == everyBatch || caseNum == totalCase) {
++                    batchNum = 0;
++                }
+ 				if (batchNum == 0) {
+ 					File[] fa = new File(qf + "/plus").listFiles();
+ 					for (File f : fa) {
+ 						f.delete();
+ 					}
+ 					for (String seq : tmpSet) {
+-						String caseNumStr = String.format("%04d",
++						caseNumStr = String.format("%04d",
+ 								Integer.valueOf(seq));
+ 						copy(qf + "/plusd/" + caseNumStr + ".q", qf + "/plus/"
+ 								+ caseNumStr + ".q");
+@@ -121,6 +148,7 @@ public class TaskThread extends Thread {
+ 					nf.close();
+ 					isr.close();
+ 					tmpSet.clear();
++                    break;
+ 				}
+ 			}
+ 
+diff --git a/src/main/resources/conf.properties b/src/main/resources/conf.properties
+index 4e7eebb..93344b6 100644
+--- a/src/main/resources/conf.properties
++++ b/src/main/resources/conf.properties
+@@ -1,14 +1,14 @@
+ # hive source code root path
+-hive.src.path=/home/frank/work/hive-release-0.9.0-src-sql-support
++hive.src.path = full_hive_src
+ 
+ # hive nist test base directory
+-hive.test.base = /home/frank/work/hive-0.9.0-plsql-support/src/hive.testweb
++hive.test.base = full_nist_src
+ 
+ # nist test log path
+-hive.test.log= /tmp
++hive.test.log = full_tmp_dir
+ 
+ # ant unit test command
+-hive.test.cmd=ant test -Dtestcase=PTestCliDriver -Dhbase.version=0.92.1 -Dhadoop-0.20S.version=1.0.2 -Doffline=true -Doverwrite=true
++hive.test.cmd=ant test -Dtestcase=PTestCliDriver -Doverwrite=true
+ 
+ # ant build command
+-hive.build.cmd=ant clean package -Dhbase.version=0.92.1 -Dhadoop-0.20S.version=1.0.2 -Doffline=true
+\ No newline at end of file
++hive.build.cmd=ant clean package

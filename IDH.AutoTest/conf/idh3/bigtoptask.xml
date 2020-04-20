@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <onStart>
+    <execute os="Linux">
+<![CDATA[
+echo "user    ALL=(ALL)       NOPASSWD:ALL" >> /etc/sudoers
+HOST=`hostname -s`
+sed -i -e "s/localhost.localdomain/$HOST/g" /etc/sysconfig/network
+sh silent_install.sh -pfn %package_file_full_name% -plf %platform_info_for_repo%
+#for JAVA_HOME
+source /root/.bashrc
+
+if [[ %imTestEnabled% == "false" ]]
+then
+  #for gethostip
+  yum install -y syslinux
+  tar zxvf config.tgz
+  rm -rf /etc/puppet/config/* /etc/intelcloud/conf/*
+  cp -ar config/puppet/* /etc/puppet/config
+  cp -ar config/intelcloud/* /etc/intelcloud/conf
+  hostip=`gethostip -d $HOST`
+  cd /etc/puppet/config
+  find -xtype f -exec perl -i -np -e "s/HOSTNAME/$HOST/g" {} \;
+  find -xtype f -exec perl -i -np -e "s/HOSTIP/$hostip/g" {} \;
+  mv cluster-HOSTNAME.csv cluster-$HOST.csv
+  cd /etc/intelcloud/conf
+  find -xtype f -exec perl -i -np -e "s/HOSTNAME/$HOST/g" {} \;
+  find -xtype f -exec perl -i -np -e "s/HOSTIP/$hostip/g" {} \;
+  export SCRIPTPATH=/usr/lib/intelcloudui/webapps/webui/war/WEB-INF/scripts
+  echo "export JAVA_HOME=$JAVA_HOME" >> /usr/lib/deploy/puppet/modules/hadoop/templates/hadoop
+  echo "export JAVA_HOME=$JAVA_HOME" >> /etc/default/hadoop
+  sh /usr/lib/deploy/script/puppet_client_apply.sh $HOST
+  sh /usr/lib/intelcloud/scripts/initialize.sh $HOST
+  
+  sh /usr/lib/deploy/puppet/scripts/zookeeper-cluster.sh start
+  sh /usr/lib/deploy/puppet/scripts/hdfs-cluster.sh start
+  sh /usr/lib/deploy/puppet/scripts/yarn-cluster.sh start
+  sh /usr/lib/deploy/puppet/scripts/hive-cluster.sh start
+  sh /usr/lib/deploy/puppet/scripts/hbase-cluster.sh start
+  sh /usr/lib/deploy/puppet/scripts/oozie-cluster.sh start
+  sleep 60
+fi
+#just a workaround for the feature
+mkdir /var/log/hadoop-httpfs
+]]>
+    </execute>  
+  </onStart>
+
+  <item value="(.+) bigtop">
+    <execute os="Linux" runas="user">
+<![CDATA[
+source /home/user/.bashrc
+M2_REPO=~/.m2/repository
+
+export HADOOP_HOME=/usr/lib/hadoop
+export HADOOP_CONF_DIR=/etc/hadoop/conf
+export HDFS_HOME=/usr/lib/hadoop-hdfs
+export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce/
+export HBASE_HOME=/usr/lib/hbase
+export HBASE_CONF_DIR=/etc/hbase/conf
+export ZOOKEEPER_HOME=/usr/lib/zookeeper
+export HIVE_HOME=/usr/lib/hive
+export PIG_HOME=/usr/lib/pig
+export FLUME_HOME=/usr/lib/flume
+export SQOOP_HOME=/usr/lib/sqoop
+export OOZIE_URL=http://localhost:11000/oozie
+
+export HADOOP_VERSION=%.hadoop_version%
+export HBASE_VERSION=%.hbase_version%
+export PIG_VERSION=%.pig_version%
+export SQOOP_VERSION=%.sqoop_version%
+export REGION_SERVERS="localhost"
+export IM_HOST=`hostname -s`
+
+cd test
+
+if [[ %.basename% == "manager" ]]
+then
+perl -i -np -e "s/dummy/$IM_HOST/g" bigtop-tests/test-artifacts/manager/src/main/resources/com/intel/manager/test/restapi/uploadLic.json
+cat > bigtop-tests/test-artifacts/manager/src/main/resources/com/intel/manager/test/restapi/config.json <<EOF
+{ "dnsresolution":"true",
+  "racks":[{"rack1":["$IM_HOST"]}],
+  "services":["hdfs","yarn","hbase","hive","zookeeper","oozie","pig","flume","sqoop","hcatalog"],
+  "nodes":
+    [{"hostname":"$IM_HOST",
+      "username":"root",
+      "password":"123456",
+      "roles":["Manager", "PrimaryNameNode", "DataNode", "ResourceManager", "NodeManager", "HistoryServer", "HBaseRegionServer","ZooKeeper","HBaseMaster", "HiveServer", "HiveMetastore", "Oozie", "HCatalog"]
+      }
+    ],
+  "proxy":{"scheme":"http","host":"proxy01.cd.intel.com","port":"911","username":"","password":""}
+}
+EOF
+export TEST_GROUP=com.intel.hadoop.bigtop.group.IntelManagerCheckinTest
+fi
+
+if [[ %.isCheckIn% == "true" ]]
+then
+  export TEST_GROUP=com.intel.hadoop.bigtop.group.IntelManagerCheckinTest
+fi
+
+#download the world and then install into your ~/.m2 dir.
+#artifacts building maybe failed for this stage
+mvn install
+pushd bigtop-test-framework
+mvn -DskipTests install
+popd
+pushd bigtop-tests/test-artifacts
+mvn install
+popd
+
+# TODO: make bigtop uses the jars in /usr/lib/hbase in bigtop-tests/test-execution/smokes/hbase/pom.xml
+cp ${HADOOP_HOME}/hadoop-common-${HADOOP_VERSION}.jar ${M2_REPO}/org/apache/hadoop/hadoop-common/${HADOOP_VERSION}/
+cp ${HADOOP_HOME}/hadoop-common-${HADOOP_VERSION}-tests.jar ${M2_REPO}/org/apache/hadoop/hadoop-common/${HADOOP_VERSION}/
+cp ${HDFS_HOME}/hadoop-hdfs-${HADOOP_VERSION}.jar ${M2_REPO}/org/apache/hadoop/hadoop-hdfs/${HADOOP_VERSION}/
+cp ${HADOOP_MAPRED_HOME}/hadoop-mapreduce-client-common-${HADOOP_VERSION}.jar ${M2_REPO}/org/apache/hadoop/hadoop-mapreduce-client-common/${HADOOP_VERSION}/
+cp ${HBASE_HOME}/hbase-${HBASE_VERSION}.jar ${M2_REPO}/org/apache/hbase/hbase/${HBASE_VERSION}/
+cp ${HBASE_HOME}/hbase-${HBASE_VERSION}-tests.jar ${M2_REPO}/org/apache/hbase/hbase/${HBASE_VERSION}/
+cp ${SQOOP_HOME}/sqoop-${SQOOP_VERSION}.jar ${M2_REPO}/org/apache/sqoop/sqoop/${SQOOP_VERSION}/
+cp ${SQOOP_HOME}/sqoop-test-${SQOOP_VERSION}.jar ${M2_REPO}/org/apache/sqoop/sqoop-test/${SQOOP_VERSION}/
+
+#build artifacts and executions again
+#artifacts building should not be failed now
+pushd bigtop-tests/test-artifacts/%.basename%
+mvn install
+popd
+pushd bigtop-tests/test-execution
+mvn install
+popd
+
+if [[ %.basename% == "hadoop" ]]
+then
+  #avoid TestCLI failure
+  umask 077
+fi
+
+cd bigtop-tests/test-execution/smokes/%.basename%
+mvn verify
+]]>
+    </execute>
+  </item>
+  
+  <onFinish>
+  </onFinish>
+</config>

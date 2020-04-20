@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <onStart>
+    <execute os="Linux">
+<![CDATA[
+#for JAVA_HOME
+source /home/user/.bashrc
+HOST=`hostname`
+sed -i -e "s/localhost.localdomain/$HOST/g" /etc/sysconfig/network
+sh silent_install.sh -pfn %package_file_full_name% -plf %platform_info_for_repo%
+]]>
+    </execute>  
+  </onStart>
+
+  <item value="(.+) bigtop">
+    <execute os="Linux" runas="user">
+<![CDATA[
+source /home/user/.bashrc
+M2_REPO=~/.m2/repository
+
+export HADOOP_HOME=/usr/lib/hadoop
+export HADOOP_CONF_DIR=/etc/hadoop/conf
+export HBASE_HOME=/usr/lib/hbase
+export HBASE_CONF_DIR=/etc/hbase/conf
+export ZOOKEEPER_HOME=/usr/lib/zookeeper
+export HIVE_HOME=/usr/lib/hive
+export PIG_HOME=/usr/lib/pig
+export FLUME_HOME=/usr/lib/flume
+export SQOOP_HOME=/usr/lib/sqoop
+export OOZIE_URL=http://localhost:11000/oozie
+
+export HADOOP_VERSION=%.hadoop_version%
+export HBASE_VERSION=%.hbase_version%
+export PIG_VERSION=%.pig_version%
+export SQOOP_VERSION=%.sqoop_version%
+export REGION_SERVERS="localhost"
+export IM_HOST=`hostname -s`
+
+cd test
+
+if [[ %.basename% == "manager" ]]
+then
+perl -i -np -e "s/dummy/$IM_HOST/g" bigtop-tests/test-artifacts/manager/src/main/resources/com/intel/manager/test/restapi/uploadLic.json
+cat > bigtop-tests/test-artifacts/manager/src/main/resources/com/intel/manager/test/restapi/config.json <<EOF
+{ "dnsresolution":"true",
+  "racks":[{"rack1":["$IM_HOST"]}],
+  "services":["hdfs","mapred","hbase","hive","zookeeper","oozie","pig","flume","sqoop"],
+  "nodes":
+    [{"hostname":"$IM_HOST",
+      "username":"root",
+      "password":"123456",
+      "roles":["Manager", "PrimaryNameNode", "DataNode", "JobTracker", "TaskTracker","HBaseRegionServer","ZooKeeper","HBaseMaster", "HiveServer", "Oozie"]
+      }
+    ],
+  "proxy":{"scheme":"http","host":"proxy01.cd.intel.com","port":"911","username":"","password":""}
+}
+EOF
+export TEST_GROUP=com.intel.hadoop.bigtop.group.IntelManagerCheckinTest
+fi
+
+if [[ %.isCheckIn% == "true" ]]
+then
+  export TEST_GROUP=com.intel.hadoop.bigtop.group.IntelManagerCheckinTest
+fi
+
+#download the world and then install into your ~/.m2 dir.
+#artifacts building maybe failed for this stage
+mvn -DskipTests -f bigtop-test-framework/pom.xml  install
+mvn -f bigtop-tests/test-artifacts/pom.xml  install
+
+# TODO: make bigtop uses the jars in /usr/lib/hbase in bigtop-tests/test-execution/smokes/hbase/pom.xml
+cp ${HADOOP_HOME}/hadoop-core-${HADOOP_VERSION}.jar ${M2_REPO}/org/apache/hadoop/hadoop-core/${HADOOP_VERSION}/
+cp ${HADOOP_HOME}/hadoop-test-${HADOOP_VERSION}.jar ${M2_REPO}/org/apache/hadoop/hadoop-test/${HADOOP_VERSION}/
+cp ${HBASE_HOME}/hbase-${HBASE_VERSION}.jar ${M2_REPO}/org/apache/hbase/hbase/${HBASE_VERSION}/
+cp ${HBASE_HOME}/hbase-${HBASE_VERSION}-tests.jar ${M2_REPO}/org/apache/hbase/hbase/${HBASE_VERSION}/
+cp ${SQOOP_HOME}/sqoop-${SQOOP_VERSION}.jar ${M2_REPO}/org/apache/sqoop/sqoop/${SQOOP_VERSION}/
+cp ${SQOOP_HOME}/sqoop-test-${SQOOP_VERSION}.jar ${M2_REPO}/org/apache/sqoop/sqoop-test/${SQOOP_VERSION}/
+
+#build artifacts and executions again
+#artifacts building should not be failed now
+mvn -f bigtop-tests/test-artifacts/%.basename%/pom.xml  install
+
+mvn -f bigtop-tests/test-execution/conf/pom.xml  install
+mvn -f bigtop-tests/test-execution/common/pom.xml  install 
+
+if [[ %.basename% == "hadoop" ]]
+then
+  #avoid TestCLI failure
+  umask 077
+fi
+
+cd bigtop-tests/test-execution/smokes/%.basename%
+mvn verify
+]]>
+    </execute>
+  </item>
+  
+  <onFinish>
+  </onFinish>
+</config>

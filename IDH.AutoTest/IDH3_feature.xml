@@ -1,0 +1,522 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.IDH.AutoTestFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+</import>
+<variables>
+    <variable name="target">
+      <values>
+        <value>CentOS 6.2</value>
+        <value>SLES11 SP2</value>
+      </values>
+    </variable>  
+    <variable name="svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/IDH/trunk/IDH3_OSS</value>
+      </values>
+    </variable>
+    <variable name="svn_rev">
+      <values>
+        <value>HEAD</value>
+      </values>    
+    </variable>
+    <variable name="BUILDTOOLS_svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/IDH/BUILD_TOOLS</value>
+      </values>
+    </variable>
+    <variable name="BUILDTOOLS_svn_rev">
+      <values>
+        <value>HEAD</value>
+      </values>
+    </variable>
+    <variable name="IM_svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/IM/trunk</value>
+      </values>
+    </variable>
+    <variable name="IM_svn_rev">
+      <values>
+        <value>HEAD</value>
+      </values>
+    </variable>
+    <variable name="ISOBUILD_svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/INSTALL/isobuild</value>
+      </values>
+    </variable>
+    <variable name="ISOBUILD_svn_rev">
+      <values>
+        <value>HEAD</value>
+      </values>
+    </variable>
+     <variable name="IDHTOOLS_svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/IDH/trunk/IDH3_OSS/tools</value>
+      </values>
+    </variable>
+    <variable name="IDHTOOLS_svn_rev">
+      <values>
+        <value>HEAD</value>
+      </values>
+    </variable>
+    <variable name="enable_resmon">
+      <values>
+        <value>YES</value>
+        <value>NO</value>
+      </values>
+    </variable>    
+    <variable name="svn_username">
+      <values>
+        <value>lab_xmldev</value>
+      </values>
+    </variable>    
+    <variable name="svn_password">
+      <values>
+        <value>qnn8S*NP</value>
+      </values>
+    </variable>
+    <variable name="build_type">
+      <values>
+        <value>TGZ</value>
+        <value>ISO</value>
+        <value>ALL</value>
+        <value>RPM</value>
+      </values>
+    </variable>
+    <variable name="iso_name_prefix">
+      <values>
+        <value>intelhadoop</value>
+      </values>
+    </variable>
+    <variable name="iso_release_version">
+      <values>
+        <value>3.0.1</value>
+        <value>3.0</value>
+      </values>
+    </variable>
+    <variable name="iso_language">
+      <values>
+        <value>EN</value>
+        <value>CH</value>
+      </values>
+    </variable>
+    <variable name="license_type">
+      <values>
+        <value>Evaluation</value>
+        <value>Commercial</value>
+      </values>
+    </variable>
+    <variable name="enable_callhome">
+      <values>
+        <value>YES</value>
+        <value>NO</value>
+      </values>
+    </variable>
+    <variable name="build_script_zip_url_2d0">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/IDH2.0_autobuild_sh.zip</value>
+      </values>
+    </variable>
+    <variable name="build_script_zip_url_3d0">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/IDH3.0_autobuild_sh.zip</value>
+      </values>
+    </variable>
+    <variable name="package_file_full_name">
+    </variable>
+    <variable name="platform_info_for_repo">
+      <values>
+        <value>cent6.2</value>
+      </values>
+    </variable>
+    <variable name="silent_install_script_name">
+      <values>
+        <value>silent_install.sh</value>
+      </values>   
+    </variable>
+    <variable name="conf_tmpl_file_name">
+      <values>
+        <value>ui_installer_conf_tmpl</value>
+      </values>   
+    </variable>
+    <variable name="install_script_zip_url">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/idh3/silent_install.zip</value>
+      </values>
+    </variable>     
+    <variable name="junitTest">
+      <values>
+        <value>Skip</value>    
+        <value>Commit</value>
+        <value>Full</value>        
+      </values>
+    </variable>
+    <variable name="bigtopTest">
+      <values>
+        <value>Skip</value>
+        <value>Commit</value>
+        <value>Full</value>            
+      </values>
+    </variable>
+    <variable name="imTestEnabled">
+      <values>
+        <value>true</value>
+      </values>
+    </variable>    
+    <variable name="components">
+      <values>
+        <value>hadoop</value>        
+        <value>hbase</value>        
+        <value>hive</value>
+        <value>pig</value>        
+        <value>mahout</value>
+        <value>zookeeper</value>        
+        <value>flume</value>
+        <value>sqoop</value>
+        <value>oozie</value>                          
+        <value>solr</value>                          
+      </values>
+    </variable>    
+    <variable name="exclude_components">
+      <values>      
+        <value>mr1</value>                           
+        <value>graphbuilder</value>                           
+        <value>avro</value>                           
+        <value>hadoop-crypto</value>                           
+      </values>
+    </variable>        
+    <variable name="test_svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/QA/bigtop_test/bigtop-0.6.0-Intel</value>
+      </values>
+    </variable>
+    <variable name="test_svn_rev">
+    </variable>    
+    <variable name="resultFolder">
+    </variable>    
+    <variable name="isCheckIn">
+      <values>
+        <value>false</value>
+      </values>    
+    </variable>    
+    <variable name="isNightly">
+      <values>
+        <value>false</value>
+      </values>    
+    </variable>    
+    <variable name="compareResult">
+      <values>
+        <value>None</value>      
+        <value>Last Checkin Report</value>
+        <value>Last Nightly Report</value>        
+      </values>    
+    </variable>
+    <!--  Obsolete
+    <variable name="buildtask_url">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/idh3/buildtask.xml</value>
+      </values>
+    </variable>
+    -->
+    <variable name="junittask_url">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/idh3/junittask.xml</value>
+      </values>
+    </variable>
+    <variable name="bigtoptask_url">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/idh3/bigtoptask.xml</value>
+      </values>
+    </variable>
+    <variable name="IDH_patch">
+    </variable>   
+    <variable name="Bigtop_patch">
+    </variable>           
+</variables>
+
+<tasklets>
+    <tasklet public="true" id="IDH.JUnit.Tester.Prepare" sharable="full">
+		<desc>IDH JUnit Tester Preparation</desc>
+		<contributer>Big Data Quality Assurance Team</contributer>
+		<provider>com.intel.cedar.features.IDH.JUnitTesterPrepare</provider>
+    </tasklet>   
+    <tasklet public="true" id="IDH.Builder" sharable="none">
+        <desc>IDH Builder</desc>
+        <contributer>Big Data Quality Assurance Team</contributer>
+        <provider>com.intel.cedar.features.IDH.Builder</provider>
+    </tasklet>    
+    <tasklet public="true" id="IDH.JUnit.Tester" sharable="full">
+		<desc>IDH JUnit Tester</desc>
+		<contributer>Big Data Quality Assurance Team</contributer>
+		<provider>com.intel.cedar.features.IDH.JUnitTester</provider>
+    </tasklet>
+    <tasklet public="true" id="IDH.BigTop.Tester" sharable="none">
+		<desc>IDH BigTop Tester</desc>
+		<contributer>Big Data Quality Assurance Team</contributer>
+		<provider>com.intel.cedar.features.IDH.BigtopTester</provider>
+    </tasklet>    
+</tasklets>
+
+<ui>
+    <window id="example" title="IDH Test Parameters" >
+        <form>
+            <combo label="Target" id="target" bind="target"/>            
+            <combo label="Version" id="version" bind="iso_release_version"/>
+            <combo label="BuildType" id="buildtype" bind="build_type"/>            
+            <combo label="Language" id="language" bind="iso_language"/>
+            <combo label="License" id="licensetype" bind="license_type"/>
+            <combo label="Is CallHome" id="enable_ch" bind="enable_callhome"/>
+            <combo label="Enable RM" id="enable_rm" bind="enable_resmon"/>
+            
+            <combo label="JUnit Test" id="junitTest" bind="junitTest"/>
+            <combo label="Bigtop Test" id="bigtopTest" bind="bigtopTest" />    
+            <checkboxgroup label="Test Components" id="components" bind="components" />         
+            <combo label="Compare with" id="compareResult" bind="compareResult" />               
+            
+            <svn id="svn" label="IDH Source" max="100">
+                <url bind="svn_url" id="svnurl"/>
+                <rev bind="svn_rev" id="svnrev"/>
+                <log id="svnlog"/> 
+            </svn>
+            <fileuploadfield label="Upload IDH patch" id="idhPatch" bind="IDH_patch"/>             
+            <svn id="BUILDTOOLS_svn" label="BUILD_TOOLS location">
+                <url bind="BUILDTOOLS_svn_url" id="BUILDTOOLS_svnurl"/>
+                <rev bind="BUILDTOOLS_svn_rev" id="BUILDTOOLS_svnrev"/>
+            </svn>
+            <svn id="IM_svn" label="IM Source" max="100">
+                <url bind="IM_svn_url" id="IM_svnurl"/>
+                <rev bind="IM_svn_rev" id="IM_svnrev"/>
+            </svn>
+            <svn id="ISOBUILD_svn" label="ISOBUILD Script Location" max="100">
+                <url bind="ISOBUILD_svn_url" id="ISOBUILD_svnurl"/>
+                <rev bind="ISOBUILD_svn_rev" id="ISOBUILD_svnrev"/>
+            </svn>
+            <svn id="IDHTOOLS_svn" label="IDH Tools Location">
+                <url bind="IDHTOOLS_svn_url" id="IDHTOOLS_svnurl"/>
+                <rev bind="IDHTOOLS_svn_rev" id="IDHTOOLS_svnrev"/>
+            </svn>
+            <svn id="test_svn" label="Bigtop Source" max="100">
+                <url bind="test_svn_url" id="test_svnurl"/>
+                <rev bind="test_svn_rev" id="test_svnrev"/>
+                <log id="test_svnlog"/> 
+            </svn>                      
+            <fileuploadfield label="Upload Bigtop patch" id="bigtopPatch" bind="Bigtop_patch"/>              
+        <submit>
+            <formItem depends="svnurl"/>
+            <formItem depends="svnrev"/>
+            <formItem depends="BUILDTOOLS_svnurl"/>
+            <formItem depends="BUILDTOOLS_svnrev"/>
+            <formItem depends="IM_svnurl"/>
+            <formItem depends="IM_svnrev"/>
+            <formItem depends="ISOBUILD_svnurl"/>
+            <formItem depends="ISOBUILD_svnrev"/>
+            <formItem depends="IDHTOOLS_svnurl"/>
+            <formItem depends="IDHTOOLS_svnrev"/>
+            <formItem depends="test_svnurl"/>
+            <formItem depends="test_svnrev"/>            
+            <formItem depends="target"/>
+            <formItem depends="buildtype"/>
+            <formItem depends="version"/>
+            <formItem depends="language"/>
+            <formItem depends="licensetype"/>
+            <formItem depends="enable_ch"/>
+            <formItem depends="enable_rm"/>
+            <formItem depends="junitTest"/>
+            <formItem depends="bigtopTest"/>
+            <formItem depends="components"/>                
+            <formItem depends="compareResult"/>		
+            <formItem depends="idhPatch"/>
+            <formItem depends="bigtopPatch"/>            
+       </submit>
+       </form>
+    </window>
+</ui>
+
+<flow>
+    <sequence>
+        <!--  generate source list file -->
+        <tasklet name="junit_test_prepare" id="IDH.JUnit.Tester.Prepare" timeout="7200" onfail="exit" debug="false">
+            <items provider="embedded"/>
+        </tasklet>
+        <parallel>
+            <tasklet name="junit_test" id="IDH.JUnit.Tester" timeout="72000" onfail="ignore" debug="false">
+                <items provider="embedded"/>
+            </tasklet>        
+            <sequence>
+                <tasklet name="builder" id="IDH.Builder" timeout="28800" onfail="exit" debug="false">
+                    <items provider="embedded"/>
+                </tasklet>
+                <tasklet name="bigtop_test" id="IDH.BigTop.Tester" timeout="$isCheckIn.equals(&quot;true&quot;) ? 3600 : 14400" onfail="$isCheckIn.equals(&quot;true&quot;) ? &quot;exit&quot; : &quot;ignore&quot;" debug="false">
+                    <items provider="embedded"/>
+                </tasklet>        
+                <machine recycle="false">
+                    <properties>
+                      <property name="autotest" value="2c" />
+                      <property name="target" value="$target" />
+                    </properties>
+                    <count min="1" max="1">1</count>
+                    <cpu min="2" max="4">4</cpu>
+                    <mem min="4" max="8">6</mem>        <!-- unit is G -->
+                    <disk min="20" max="20">20</disk>   <!-- unit is G -->
+                </machine>             
+            </sequence>
+        </parallel>
+        <machine>
+            <properties>
+             <property name="autotest" value="2c" />
+             <property name="target" value="$target" />
+            </properties>
+            <count min="1" max="3">$components_length</count>
+            <cpu min="2" max="4">4</cpu>
+            <mem min="4" max="8">6</mem>        <!-- unit is G -->
+            <disk min="20" max="20">20</disk>   <!-- unit is G -->
+        </machine>                
+    </sequence>
+</flow> 
+
+
+<launches> 
+  <launchset name="IDH3_NightlyTest" desc="Launch Configuration for IDH3 Nightly Test" enable="false">
+     <option>
+        <reproducable>false</reproducable>
+        <user></user>  <!-- should be a registered (value not required) -->
+        <comment></comment> <!-- value not required -->
+    <receivers>dsd-bigdata-prc.all@intel.com,ritu.kama@intel.com,joseph.lorenzini@intel.com,anirudhx.jhina@intel.com,andrey.chernyshev@smddev.com,oleg.mokhovikov@smddev.com,oleg.khaschansky@smddev.com,nikolay.kuznetsov@smddev.com,valery.shorin@smddev.com,vitaly.tishkov@smddev.com,chaitanyax.gupta@intel.com,makarandx.m.puranik@intel.com,vikramx.t.godse@intel.com,shatrughanx.rai@intel.com,shikhax.h.sethi@intel.com,ravix.k.mandholia@intel.com,nikitax.n.chavan@intel.com,amolx.s.nawale@intel.com,deepakx.d.dixit@intel.com,tusharx.d.sudake@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+        <failure_receivers>xin.hao@intel.com,xiaomin.zhang@intel.com</failure_receivers>  <!-- comma seperated list of all emails to receive the report -->
+     </option>
+     <launch>
+        <!-- below variables override the declared initialized values -->
+        <variables>
+          <variable name="target"><values><value>CentOS 6.2</value></values></variable>     
+          <variable name="build_type"><values><value>TGZ</value></values></variable>
+          <variable name="iso_release_version"><values><value>3.0.1</value></values></variable>
+          <variable name="iso_language"><values><value>EN</value></values></variable>
+          <variable name="license_type"><values><value>Commercial</value></values></variable>
+          <variable name="enable_callhome"><values><value>NO</value></values></variable>
+          <variable name="enable_resmon"><values><value>YES</value></values></variable>           
+          <variable name="junitTest"><values><value>full</value></values></variable>
+          <variable name="bigtopTest"><values><value>full</value></values></variable>         
+          <variable name="components"><values>
+            <value>hadoop</value>
+            <value>hive</value>
+            <value>hbase</value>        
+            <value>pig</value>        
+            <value>oozie</value>                 
+            <value>mahout</value>
+            <value>zookeeper</value>        
+            <value>flume</value>
+            <value>sqoop</value>        
+            <value>solr</value>        
+          </values></variable>                          
+          <variable name="compareResult"><values><value>Last Nightly Report</value></values></variable>  
+          <variable name="isNightly"><values><value>true</value></values></variable>
+          <variable name="_scm_repository"><values><value>IDH3</value></values></variable>                        
+        </variables>        
+     </launch>
+  </launchset>  
+
+   <launchset name="IDH3_checkin" desc="Launch Configuration for IDH3 Check-in Test" enable="false">
+     <option>
+        <reproducable>false</reproducable>
+        <user></user>  <!-- should be a registered (value not required) -->
+        <comment></comment> <!-- value not required -->
+    <receivers>dsd-bigdata-prc.all@intel.com,ritu.kama@intel.com,joseph.lorenzini@intel.com,anirudhx.jhina@intel.com,andrey.chernyshev@smddev.com,oleg.mokhovikov@smddev.com,oleg.khaschansky@smddev.com,nikolay.kuznetsov@smddev.com,valery.shorin@smddev.com,vitaly.tishkov@smddev.com,chaitanyax.gupta@intel.com,makarandx.m.puranik@intel.com,vikramx.t.godse@intel.com,shatrughanx.rai@intel.com,shikhax.h.sethi@intel.com,ravix.k.mandholia@intel.com,nikitax.n.chavan@intel.com,amolx.s.nawale@intel.com,deepakx.d.dixit@intel.com,tusharx.d.sudake@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+        <failure_receivers>xin.hao@intel.com,xiaomin.zhang@intel.com</failure_receivers>  <!-- comma seperated list of all emails to receive the report -->
+     </option>
+     <launch>
+        <!-- below variables override the declared initialized values -->
+        <variables>
+          <variable name="target"><values><value>CentOS 6.2</value></values></variable>                                   
+          <variable name="build_type"><values><value>TGZ</value></values></variable>
+          <variable name="iso_release_version"><values><value>3.0.1</value></values></variable>
+          <variable name="iso_language"><values><value>EN</value></values></variable>
+          <variable name="license_type"><values><value>Commercial</value></values></variable>
+          <variable name="enable_callhome"><values><value>NO</value></values></variable>
+          <variable name="enable_resmon"><values><value>YES</value></values></variable>           
+          <variable name="junitTest"><values><value>commit</value></values></variable>
+          <variable name="bigtopTest"><values><value>commit</value></values></variable>       
+          <variable name="components"><values>
+            <value>hadoop</value>
+            <value>hbase</value>        
+            <value>hive</value>               
+          </values></variable>                          
+          <variable name="compareResult"><values><value>Last Checkin Report</value></values></variable>  
+          <variable name="isCheckIn"><values><value>true</value></values></variable>                                   
+          <!-- the SVN trigger will set svn_url and svn_rev -->
+        </variables>
+     </launch>
+  </launchset> 
+
+  <launchset name="IM3_checkin" desc="Launch Configuration for IM3 Check-in Test" enable="false">
+     <option>
+        <reproducable>false</reproducable>
+        <user></user>  <!-- should be a registered (value not required) -->
+        <comment></comment> <!-- value not required -->
+    <receivers>dsd-bigdata-prc.all@intel.com,ritu.kama@intel.com,joseph.lorenzini@intel.com,anirudhx.jhina@intel.com,andrey.chernyshev@smddev.com,oleg.mokhovikov@smddev.com,oleg.khaschansky@smddev.com,nikolay.kuznetsov@smddev.com,valery.shorin@smddev.com,vitaly.tishkov@smddev.com,chaitanyax.gupta@intel.com,makarandx.m.puranik@intel.com,vikramx.t.godse@intel.com,shatrughanx.rai@intel.com,shikhax.h.sethi@intel.com,ravix.k.mandholia@intel.com,nikitax.n.chavan@intel.com,amolx.s.nawale@intel.com,deepakx.d.dixit@intel.com,tusharx.d.sudake@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+        <failure_receivers>xin.hao@intel.com,xiaomin.zhang@intel.com</failure_receivers>  <!-- comma seperated list of all emails to receive the report -->
+     </option>
+     <launch>
+        <!-- below variables override the declared initialized values -->
+        <variables>
+          <variable name="target"><values><value>CentOS 6.2</value></values></variable>     
+          <variable name="build_type"><values><value>TGZ</value></values></variable>
+          <variable name="iso_release_version"><values><value>3.0.1</value></values></variable>
+          <variable name="iso_language"><values><value>EN</value></values></variable>
+          <variable name="license_type"><values><value>Commercial</value></values></variable>
+          <variable name="enable_callhome"><values><value>NO</value></values></variable>
+          <variable name="enable_resmon"><values><value>YES</value></values></variable>           
+          <variable name="junitTest"><values><value>Skip</value></values></variable>
+          <variable name="bigtopTest"><values><value>commit</value></values></variable>        
+          <variable name="components"><values>
+            <value>hadoop</value>
+            <value>hbase</value>        
+            <value>hive</value>               
+          </values></variable>                          
+          <variable name="compareResult"><values><value>Last Checkin Report</value></values></variable>  
+          <variable name="isCheckIn"><values><value>true</value></values></variable>                                  
+          <!-- the SVN trigger will set svn_url and svn_rev -->
+        </variables>
+     </launch>
+  </launchset>         
+</launches>
+
+<triggers>
+  <!--
+    Triggers can be customized after deployed
+    trigger attributes:
+    name     the unique name for a trigger acrosss this feature
+    type     supported values are cron and svn
+             for svn trigger, the behavior is the same as cruiseControl,
+             the task will be started only when there's new commit
+    launch   the launch group which contains all the task submission configuration
+  -->
+  <trigger name="IDH3_NightlyTest1" type="cron" launch="IDH3_NightlyTest">
+    <cron>0 0 1 * * ?</cron> <!-- 1:00 AM every day -->
+  </trigger>
+  <trigger name="IDH3_checkin" type="svn" launch="IDH3_checkin">
+    <svn>
+      <!-- svn URL to track (value required) -->
+      <url bind="svn_url">https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/IDH/trunk/IDH3_OSS</url>
+      <!-- start from which svn revision (value optional) -->
+      <rev bind="svn_rev"></rev>
+      <!-- username and password to connect to SVN (value optional) -->
+      <user></user>
+      <password></password>
+      <repository>IDH3</repository>
+    </svn>
+  </trigger>
+  <trigger name="IM3_checkin" type="svn" launch="IM3_checkin">
+    <svn>
+      <!-- svn URL to track (value required) -->
+      <url bind="IM_svn_url">https://sh-ssvn.sh.intel.com/ssg_repos/svn_hadoop/hadoop/hadoop/IM/trunk</url>
+      <!-- start from which svn revision (value optional) -->
+      <rev bind="IM_svn_rev"></rev>
+      <!-- username and password to connect to SVN (value optional) -->
+      <user></user>
+      <password></password>
+      <repository>IM3</repository>
+    </svn>
+  </trigger>    
+</triggers>
+</feature>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig>
+  <TaskConfig duration="7300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">compatibility</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>    
+       <Transaction name="SamlLdapSSO">
+           <Param  name="acsLocation">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/extAuthn/login?IdpEntity=CloudAuthn</Param>
+           <Param  name="appLogoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/iceauth/SLO</Param>
+           <Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/extAuthn/logout</Param>
+           <Param  name="idpIssuer">consumer</Param>   
+           <Param  name="SamlExpire">72000</Param>     
+           <Param  name="SamlClockSkew">864000</Param>
+       </Transaction>        
+    </TaskDriver>
+  </TaskConfig>
+  <Description>ECA360 is deployed at SP side, and configured with an AuthnChain, which contains SAML2 and LDAP authenticators. This AuthnChain is used to build a CloudAuthenticator which is then linked to a CloudAdapter to SaaS</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>    
+    <interval>10</interval>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <name>SOAEStarter</name>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>LDAP</name>
+      <server>dummy-saas.cloudtest.intel.com</server>
+      <process>
+        <name>ns-slapd</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

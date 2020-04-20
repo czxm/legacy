@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password> <!--  not used  -->
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <!--BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig-->
+  <TaskConfig duration="7300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>    
+       <Transaction name="FederationBroker">
+           <Param  name="SPLoginURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/federation/fedperftest/sp/spconsumer_p%d/SSO?idp=idpconsumer_p%d</Param>
+           <Param  name="SPLogoutURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/federation/fedperftest/sp/spconsumer_p%d/SLO</Param>
+           <Param  name="IDPLoginURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/federation/fedperftest/idp/idpconsumer_p%d/SSO</Param>
+           <Param  name="IDPLogoutURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/federation/fedperftest/idp/idpconsumer_p%d/SLO</Param>
+           <Param  name="numIDPs">40</Param>
+           <Param  name="numSPs">40</Param>
+           <Param  name="IDPIssuer">consumer</Param>
+           <Param  name="SPIssuer">consumer</Param> 
+           <Param  name="SamlExpire">72000</Param>     
+           <Param  name="SamlClockSkew">864000</Param>
+           <Param  name="doLogout">true</Param>
+           <Param  name="verifyRelayState">true</Param>           
+       </Transaction>        
+    </TaskDriver>
+  </TaskConfig>
+  <Description>ECA is deployed as Federation Broker, and configured with multiple Parters. Each parter has associated IDPs and SPs</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>    
+    <interval>10</interval>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>533</pid>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

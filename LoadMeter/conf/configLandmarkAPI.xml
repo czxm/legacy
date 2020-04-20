@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <!--BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig-->
+  <TaskConfig duration="1800">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>
+
+       <Param  name="adminbase">https://eca360.cloudtest.intel.com:8443</Param>
+       <Param  name="idp">idpsf</Param>
+       <Param  name="idpIssuer">idpIssuer</Param>
+       
+       <Transaction name="Landmark.EditApp">             
+           <Param  name="wait">1</Param>
+           <Param  name="ordered">false</Param>
+           <Param  name="sequential">false</Param>
+           
+           <Param  name="base">https://eca360.cloudtest.intel.com:8443</Param>
+           <Param  name="idp">idpsf</Param>
+           <Param  name="idpIssuer">idpIssuer</Param>
+           
+           <Param  name="getAuthnToken">/rest/sso/authn?userProfile={"userProfile":{"subject":"%s","email":"%s","username":"%s","orgID":"%s"}}</Param>           <Param  name="getAppCount">/rest/sso/admin/idp/%s/app/count?authnToken=%s</Param>
+           <Param  name="createApp">/rest/sso/admin/idp/%s/app?authnToken=%s</Param>
+           <Param  name="updateApp">/rest/sso/admin/idp/%s/app/%s?authnToken=%s</Param>
+           <Param  name="deleteApp">/rest/sso/admin/idp/%s/app/%s?authnToken=%s</Param>
+           <Param  name="getAppById">/rest/sso/admin/idp/%s/app/%s?authnToken=%s</Param>
+           <Param  name="getAppSum">/rest/sso/admin/idp/%s/app?authnToken=%s&amp;cBegin=%s&amp;cEnd=%s&amp;appStatus=%s</Param>
+           <Param  name="getCategory">/rest/sso/admin/category?authnToken=%s&amp;cBegin=%s&amp;cEnd=%s</Param>
+           <Param  name="getCatalog">/rest/sso/admin/catalog?authnToken=%s&amp;cBegin=%s&amp;cEnd=%s</Param>
+           <Param  name="assignUsersToApp">/rest/sso/admin/idp/%s/app/%s/users?authnToken=%s</Param>
+           <Param  name="getUsersOfApp">/rest/sso/admin/idp/%s/app/%s/users?authnToken=%s&amp;cBegin=%s&amp;cEnd=%s&amp;search=%s</Param>
+           <Param  name="deleteUserOfApp">/rest/sso/admin/idp/%s/app/%s/user?authnToken=%s&amp;user=%s</Param>
+           <Param  name="assignAppsToUser">/rest/sso/admin/idp/%s/user/apps?authnToken=%s</Param>
+           <Param  name="getAppsOfUser">/rest/sso/admin/idp/%s/user/apps?authnToken=%s&amp;user=%s&amp;cBegin=%s&amp;cEnd=%s&amp;search=%s</Param>
+               
+           <Param  name="appCount">10</Param>
+           <Param  name="userPattern">user%d</Param>
+           <Param  name="userCount">10</Param>
+           <Param  name="createAppJSON">{"AppType":{"Value":"Zendesk"},"AppName":{"Value":"MyZendesk_%s_%d"}}</Param>
+           <Param  name="updateAppJSON">{"AppId":{"Name":"AppId","Value":"%s"},"AppStatus":{"Name":"AppConfigStatus","Value":"%s"},"Settings":{"SsoSettings":{"SsoSetting":[{"Name":"AppDomain","Value":"testdomain"}]},"ProvisioningConfig":{"Value":{"Enable":false,"ProvItem":[{"Name":"ProvAdminUser","Value":"admin"},{"Name":"ProvAdminPasswd","Value":"123"}]}}}}</Param>
+           <Param  name="appIdMatcher">"AppName":"MyZendesk_%s_%d","AppId":"(\d+)"</Param>
+           <Param  name="provAppId">1339882119637</Param>
+           <Param  name="usersJSON">users={"users":["%s"]}</Param>
+           <Param  name="userAppsJSON">user=%s&amp;apps={"apps":[%s]}</Param>
+           <Param  name="userMatcher">"userName":"%s"</Param>
+           
+           <Param  name="transaction">Landmark.GetAppCount</Param>
+           <Param  name="transaction">Landmark.CreateApp</Param>
+           <Param  name="transaction">Landmark.DeleteApp</Param>
+           <Param  name="transaction">Landmark.MapUserApp</Param>  
+           <Param  name="transaction">Landmark.ActivateApp</Param>
+           <Param  name="transaction">Landmark.DeactivateApp</Param>                         
+       </Transaction>       
+       <!--
+       <Transaction name="Landmark.EditUserRole">
+              <Param  name="wait">1</Param>
+           <Param  name="ordered">false</Param>
+           <Param  name="sequential">false</Param>
+           
+           <Param  name="base">https://eca360.cloudtest.intel.com:8443</Param>
+           <Param  name="idp">idptest</Param>
+           
+           <Param  name="getAuthnToken">/rest/sso/authn?userProfile={"userProfile":{"subject":"%s","email":"%s","username":"%s"}}</Param>           
+           <Param  name="addRole">/rest/sso/admin/role?authnToken=%s</Param>
+           <Param  name="updateRole">/rest/sso/admin/role?authnToken=%s</Param>
+           <Param  name="getRoles">/rest/sso/admin/roles?authnToken=%s&amp;cBegin=%s&amp;cEnd=%s&amp;search=%s</Param>
+           <Param  name="getRoleById">/rest/sso/admin/role?authnToken=%s&amp;roleId=%s</Param>
+           <Param  name="assignRolesToApp">/rest/sso/admin/idp/%s/app/%s/roles?authnToken=%s</Param> 
+           <Param  name="getRolesOfApp">/rest/sso/admin/idp/%s/app/%s/roles?authnToken=%s&amp;cBegin=%s&amp;cEnd=%s&amp;search=%s</Param>
+           <Param  name="deleteRoleOfApp">/rest/sso/admin/idp/%s/app/%s/role?authnToken=%s&amp;role=%s</Param>  
+           <Param  name="deleteRole">/rest/sso/admin/role?authnToken=%s&amp;roleId=%s</Param>
+           <Param  name="addUsersToRole">/rest/sso/admin/role/users?authnToken=%s</Param>
+           <Param  name="getUsers">/rest/sso/admin/users?authnToken=%s&amp;cBegin=%s&amp;cEnd=%s&amp;search=%s</Param>
+           <Param  name="getUsersOfRole">/rest/sso/admin/role/users?authnToken=%s&amp;roleId=%s&amp;cBegin=%s&amp;cEnd=%s&amp;search=%s</Param>
+           <Param  name="deleteUsersFromRole">/rest/sso/admin/role/users?authnToken=%s&amp;roleId=%s&amp;users=%s</Param>
+           <Param  name="mapAttr">/rest/sso/admin/role/mapping?authnToken=%s</Param>
+       </Transaction> 
+       <Transaction name="Landmark.Pledge">
+              <Param  name="wait">1</Param>
+           <Param  name="ordered">false</Param>
+           <Param  name="sequential">false</Param>
+           
+           <Param  name="base">https://eca360.cloudtest.intel.com:8443</Param>
+           <Param  name="idp">idptest</Param>
+           
+           <Param  name="getAuthnToken">/rest/sso/authn?userProfile={"userProfile":{"subject":"%s","email":"%s","username":"%s"}}</Param>
+           <Param  name="getPledgeProfile">/rest/otp/pledgeProfile/%s?authnToken=%s</Param>
+           <Param  name="setPledgeProfile">/rest/otp/pledgeProfile/%s?authnToken=%s</Param>
+           <Param  name="deletePledgeProfile">/rest/otp/pledgeProfile/%s?authnToken=%s</Param>
+       </Transaction>-->
+     </TaskDriver>
+  </TaskConfig>
+  <Description></Description>
+  <MonitorConfig>
+    <output>result</output>
+    <name>LandmarkAPI</name>    
+    <interval>10</interval>
+    <!--RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>29952</pid>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>MySQL</name>
+      <server>192.168.101.24</server>
+      <process>
+        <name>mysqld</name>
+      </process>
+    </RemoteConfig-->
+  </MonitorConfig>
+</LoadConfig>

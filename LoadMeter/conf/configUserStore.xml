@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password></Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>0</Interval>
+    <BatchUsers>100</BatchUsers>
+    <Rampup>1</Rampup>
+  </BatchConfig>
+  <TaskConfig duration="3600">
+    <Iterations>0</Iterations>
+    <Delay>
+      <VariableDelay>
+        <MinDelay>0</MinDelay>
+        <MaxDelay>10</MaxDelay>
+      </VariableDelay>
+    </Delay>
+    <TaskDriver driver="HibernateDriver">
+       <Param  name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</Param> 
+       <Param  name="hibernate.connection.url">jdbc:mysql://192.168.101.24/eca360</Param>
+       <Param  name="hibernate.connection.username">landm</Param> 
+       <Param  name="hibernate.connection.password">landm123</Param>    
+       <Param  name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</Param> 
+       <Param  name="hibernate.c3p0.max_size">50</Param>    
+       <Param  name="hibernate.c3p0.min_size">0</Param> 
+       <Param  name="hibernate.c3p0.timeout">5</Param>
+       <Param  name="hibernate.c3p0.idle_test_period">5</Param>   
+       <Param  name="hibernate.c3p0.max_statements">0</Param>    
+       <Param  name="hibernate.c3p0.acquire_increment">1</Param>                                                                 
+      <Transaction name="Landmark.UserStore">
+       <Param  name="table">UserStore</Param>
+       <Param  name="totalUsers">500</Param>
+       <Param  name="keepUsers">500</Param>
+       <Param  name="maxAdd">10</Param>
+       <Param  name="maxDel">10</Param>
+       <Param  name="maxUpdate">50</Param>       
+      </Transaction>
+    </TaskDriver>
+  </TaskConfig>
+  <Description>Simulation for SFDC Identity Store</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>HibernateDriver</name>
+    <interval>5</interval>  
+    <RemoteConfig>
+      <name>HSQL</name>
+      <server>localhost</server>
+      <process  java="true">
+        <name>jar</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

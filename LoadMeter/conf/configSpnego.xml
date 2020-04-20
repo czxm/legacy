@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>secret@password123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig>
+  <TaskConfig duration="7300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>
+       <Param  name="java.security.auth.login.config">resource/login.conf</Param>
+       <Param  name="java.security.krb5.conf">resource/krb5.conf</Param>
+       <Param  name="sun.security.krb5.debug">false</Param>
+       <Param  name="javax.security.auth.useSubjectCredsOnly">true</Param>                               
+      <Transaction name="Spnego">
+        <Param  name="loginURL">https://dummy-saas.cloudtest.intel.com:8443/consumer/spnego.jsp</Param>
+        <Param  name="appURL">https://dummy-saas.cloudtest.intel.com:8443/consumer/form/index.jsp</Param>
+        <Param  name="appMatch">Profession</Param>
+        <!--
+        <Param  name="user">user10</Param>
+        <Param  name="passwd">secret@password123456</Param>
+        <Param  name="realm">ACME.COM</Param>
+        -->        
+      </Transaction>
+    </TaskDriver>
+  </TaskConfig>
+  <Description></Description>
+  <MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>
+    <interval>10</interval>
+    <RemoteConfig>
+      <name>AD</name>
+      <server>192.168.101.23</server>
+    </RemoteConfig>    
+    <RemoteConfig>
+      <name>SaaS</name>
+      <server>dummy-saas.cloudtest.intel.com</server>
+      <process  java="true">
+        <name>Bootstrap</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig>
+</LoadConfig>

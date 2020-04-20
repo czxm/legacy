@@ -1,0 +1,8 @@
+Feature-Name: ECA360 Performance Test
+Feature-ShortName: ECA Perf Test
+Feature-Hint: Performance Tests for ECA360 (Based on LoadMeter)
+Feature-Version: 1.33f
+Feature-Contributer: ASIP Conformance & Performance Team
+Feature-Icons: resource/logo.png
+Feature-Descriptor: feature.xml
+Feature-Dependences: lib\commons-collections-3.2.jar lib/commons-lang-2.6.jar lib/jcommon-1.0.10.jar lib/jfreechart-1.0.6.jar lib/joda-time-1.5.2.jar lib/opensaml-2.2.3.jar lib/openws-1.2.2.jar lib/velocity-1.5.jar lib/xalan-2.7.0.jar lib/xercesImpl-2.8.1.jar lib/xmlsec-1.4.5.jar lib/xmltooling-1.2.0.jar lib/httpcore-4.1.jar lib/httpclient-4.1.jar

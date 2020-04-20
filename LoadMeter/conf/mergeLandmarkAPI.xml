@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <LoadMeasureConfig>
+    <FilesConfig>
+      <Files>SimpleHttpDriver.csv SimpleHttpDriver2.csv</Files>
+    </FilesConfig>
+    <MergeResult>merged.csv</MergeResult>
+    <ChartConfig  name="response"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (1 minute)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Response Time (ms)</YAxisName>
+      <YSeries>EditApp_AvgResp</YSeries>
+      <YSeriesLabel>EditApp_AverageResponseTime</YSeriesLabel>
+      <SecondYAxisName>Active Users</SecondYAxisName>
+      <SecondYSeries>ActiveUsers</SecondYSeries>
+      <Title>Workload Response (Landmark API)</Title>
+    </ChartConfig>
+    <ChartConfig  name="throughput"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (1 minute)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Throughput (tran/s)</YAxisName>
+      <YSeries>TPS</YSeries>
+      <YSeriesLabel>EditApp_Throughput</YSeriesLabel>
+      <SecondYAxisName>Active Users</SecondYAxisName>
+      <SecondYSeries>ActiveUsers</SecondYSeries>
+      <Title>Workload Throughput (Landmark API)</Title>
+    </ChartConfig>    
+  </LoadMeasureConfig>
+  <RemoteMeasureConfig>
+    <File>ECA360.csv</File>
+    <ChartConfig  name="ECA360"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (1 minute)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>java:SOAEStarter_VIRT java:SOAEStarter_RES java:SOAEStarter_HEAP</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory JavaHeap</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>java:SOAEStarter_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>ECA360 Performance (Landmark API)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>
+  <RemoteMeasureConfig>
+    <File>ECA360_2.csv</File>
+    <ChartConfig  name="ECA360_2"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (1 minute)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>java:SOAEStarter_VIRT java:SOAEStarter_RES java:SOAEStarter_HEAP</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory JavaHeap</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>java:SOAEStarter_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>Secondary ECA360 Performance (Landmark API)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>
+  <RemoteMeasureConfig>
+    <File>MySQL.csv</File>
+    <ChartConfig  name="MySQL"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (1 minute)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>mysqld_VIRT mysqld_RES</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>mysqld_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>MySQL Performance</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig> 
+  <SummaryConfig>
+    <ActiveUsers>50 100 500 1000 1500 2000 2500 3000 3500 4000 4500 5000 5500 6000 6500 7000 7500 8000 8500 9000 9500 10000</ActiveUsers>
+    <Name>summary</Name>
+    <ChartConfig  name="summary"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Users</XAxisName>
+      <XSeries>ActiveUsers</XSeries>
+      <YAxisName>Response Time (ms)</YAxisName>
+      <YSeries>EditApp_AvgResp</YSeries>
+      <YSeriesLabel>EditApp_AverageResponseTime</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>java:SOAEStarter_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>ECA360 Performance Summary (Landmark API)</Title>
+    </ChartConfig>
+  </SummaryConfig>
+  <Folder>result</Folder>
+</MergeConfig>

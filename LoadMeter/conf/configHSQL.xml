@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>secret@password123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>0</Interval>
+    <BatchUsers>100</BatchUsers>
+    <Rampup>1</Rampup>
+  </BatchConfig>
+  <TaskConfig duration="600">
+    <Iterations>10000000</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="HibernateDriver">
+       <Param  name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</Param> 
+       <Param  name="hibernate.connection.url">jdbc:hsqldb:file:testdb</Param>
+       <Param  name="hibernate.connection.username">sa</Param> 
+       <Param  name="hibernate.connection.password"></Param>    
+       <Param  name="hibernate.connection.autocommit">false</Param> 
+       <Param  name="hibernate.c3p0.max_size">100</Param>    
+       <Param  name="hibernate.c3p0.min_size">5</Param> 
+       <Param  name="hibernate.c3p0.timeout">644400</Param>       
+       <Param  name="hibernate.c3p0.max_statements">0</Param>    
+       <Param  name="hibernate.c3p0.acquire_increment">1</Param> 
+       <Param  name="hibernate.c3p0.idle_test_period">7200</Param>                                                                
+      <Transaction name="CredentialCache">
+       <Param  name="domain">ab - c 1 b</Param>
+      </Transaction>
+    </TaskDriver>
+  </TaskConfig>
+  <Description>HSQL</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>HibernateDriver</name>
+    <interval>5</interval>  
+    <RemoteConfig>
+      <name>HSQL</name>
+      <server>localhost</server>
+      <process  java="true">
+        <name>jar</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

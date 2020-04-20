@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>secret@password123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>0</Interval>
+    <BatchUsers>100</BatchUsers>
+    <Rampup>1</Rampup>
+  </BatchConfig>
+  <TaskConfig duration="600">
+    <Iterations>10000000</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="ADDriver">
+       <Param  name="java.security.auth.login.config">resource/login.conf</Param>
+       <Param  name="java.security.krb5.conf">resource/krb5_2realm.conf</Param>
+       <Param  name="sun.security.krb5.debug">false</Param>
+       <!-- useSubjectCredsOnly is set true to disable JAAS to retrieve Windows logon TGT -->
+       <Param  name="javax.security.auth.useSubjectCredsOnly">true</Param>                          
+      <Transaction name="UnboundidADAuthn">
+        <Param  name="server">192.168.101.23</Param>
+        <Param  name="port">389</Param>
+        <Param  name="realm">ACME.COM</Param>
+        <Param  name="serviceAccount">ECA360</Param>
+        <Param  name="passwd">secret@password123456</Param>                   
+        <Param  name="baseDN">DC=ACME,DC=COM</Param>
+        <Param  name="searchAttr">cn</Param>
+        <Param  name="searchScope">SUBTREE</Param>
+      </Transaction>
+      <Transaction name="UnboundidLdapAuthn">
+        <Param  name="server">192.168.101.24</Param>
+        <Param  name="port">1389</Param>
+        <Param  name="admin">cn=Directory Manager</Param>
+        <Param  name="passwd">a123456b</Param>                   
+        <Param  name="baseDN">dc=acme,dc=com</Param>
+        <Param  name="searchAttr">uid</Param>
+        <Param  name="searchScope">SUBTREE</Param>
+      </Transaction>      
+      <Transaction name="UnboundidADAuthn">
+        <Param  name="server">192.168.100.215</Param>
+        <Param  name="port">389</Param>
+        <Param  name="realm">ECA.COM</Param>
+        <Param  name="serviceAccount">ECA360</Param>
+        <Param  name="passwd">secret@password123456</Param>                   
+        <Param  name="baseDN">DC=ECA,DC=COM</Param>
+        <Param  name="searchAttr">cn</Param>
+        <Param  name="searchScope">SUBTREE</Param>
+      </Transaction>
+    </TaskDriver>
+  </TaskConfig>
+  <Description>Direct AD authentication</Description>
+  <MonitorConfig>
+    <output>result</output>
+    <name>ADDriver</name>
+    <interval>5</interval>
+    <!--RemoteConfig>
+      <name>WindowsAD</name>
+      <server>192.168.101.23</server>
+    </RemoteConfig-->    
+  </MonitorConfig>
+</LoadConfig>

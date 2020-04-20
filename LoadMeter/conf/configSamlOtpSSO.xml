@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <!--BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig-->
+  <TaskConfig duration="1800">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>
+       <Transaction name="SamlOtpSSO">
+           <Param  name="appLoginURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/extAuthn/login</Param>
+           <Param  name="samlApps">5</Param>
+           <Param  name="postApps">5</Param>
+           <Param  name="otpApps">1</Param>           
+           <Param  name="samlAppURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/SSO?SpEntity=Saml2App%d</Param>
+           <Param  name="postAppURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/SSO?SpEntity=PostApp%d</Param>
+           <Param  name="updateCredURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/http/UPDATE?SpEntity=PostApp%d</Param>
+           <Param  name="otpAppURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/SSO?SpEntity=OtpApp%d</Param>      
+           <Param  name="appLogoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/SLO</Param>                                 
+           <!--Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/extAuthn/logout</Param-->           
+           <Param  name="logoutInterval">100</Param>
+           <Param  name="idpIssuer">consumer</Param>
+           <Param  name="SamlExpire">72000</Param>     
+           <Param  name="SamlClockSkew">864000</Param>
+           
+           <Param  name="OTP">698915</Param>
+           <Param  name="UpdatePledgeKeyCounterSQL">update UserStore set PLEDGE_KEY_COUNTER='99DCAB0CCFE634E61A25293FA1D50325EDE165EB:0' where USER_NAME='%s'</Param>
+           <Param  name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</Param> 
+           <Param  name="hibernate.connection.url">jdbc:mysql://192.168.101.24/eca360</Param>
+           <Param  name="hibernate.connection.username">landm</Param> 
+           <Param  name="hibernate.connection.password">landm123</Param>    
+           <Param  name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</Param> 
+           <Param  name="hibernate.c3p0.max_size">50</Param>    
+           <Param  name="hibernate.c3p0.min_size">0</Param> 
+           <Param  name="hibernate.c3p0.timeout">5</Param>
+           <Param  name="hibernate.c3p0.idle_test_period">5</Param>   
+           <Param  name="hibernate.c3p0.max_statements">0</Param>    
+           <Param  name="hibernate.c3p0.acquire_increment">1</Param>            
+       </Transaction>
+     </TaskDriver>
+  </TaskConfig>
+  <Description></Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>    
+    <interval>10</interval>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>29952</pid>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>MySQL</name>
+      <server>192.168.101.24</server>
+      <process>
+        <name>mysqld</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

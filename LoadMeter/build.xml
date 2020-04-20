@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<project name="loadmeter" default="all" basedir=".">
+	<property name="vendor"                 value="Intel" />
+	<property name="product"                value="LoadMeter" />
+	<property name="version"                value="1.0" />		
+	<property name="build.dir" 				value="${basedir}/build" />
+    <property name="build.classes" 			value="${build.dir}" />
+    <property name="java.src" 				value="${basedir}/src" />
+    <property name="generated.java.src" 	value="${basedir}/generated" />
+	<property name="conf.dir" 				value="${build.dir}/conf" />
+	<property name="lib.dir" 				value="${build.dir}/lib"/>
+	<property name="resource.dir" 			value="${build.dir}/resource"/>
+	<property name="scripts.dir" 			value="${build.dir}/scripts"/>
+    <property name="feature.jar.name" 		value="ca360perftest.jar"/>
+	<property name="jar.name"               value="loadmeter.jar"/>
+	<property name="debuglevel" 			value="source,lines,vars"/>
+    <property name="target" 				value="1.6"/>
+    <property name="source" 				value="1.6"/>
+
+    <path id="project.classpath">
+        <fileset dir="${basedir}/lib">
+	      <include name="**/*.jar" />
+	    </fileset>
+    </path>
+	
+	<path id="project.src">
+		<pathelement location="${java.src}" />
+		<pathelement location="${generated.java.src}" />
+	</path>
+    
+	<target name="all" depends="feature.jar">
+	</target>
+	
+	<!-- ================================================================= -->
+    <!-- jar                                                             -->
+   	<!-- ================================================================= -->
+	<target name="feature.jar" depends="compile, moveResource">
+		 <jar destfile="${feature.jar.name}" basedir="${build.dir}" manifest="META-INF/MANIFEST.MF"></jar>
+	</target>
+	
+	<target name="package" depends="compile, moveResource">
+		 <jar destfile="${jar.name}.dep" basedir="lib" filesetmanifest="mergewithoutmain">
+		 	<zipgroupfileset dir="lib" />
+		 </jar>
+		 <jar destfile="${jar.name}" basedir="${build.dir}" excludes="lib/**" filesetmanifest="mergewithoutmain">
+		 	<zipfileset src="${jar.name}.dep" excludes="META-INF/*.SF" />
+		    <manifest>
+		      	<attribute name="Main-Class" value="com.intel.ca360.loadmeter.LoadMeter" />
+		    	<attribute name="Class-Path" value="."/>
+		        <attribute name="Implementation-Vendor" value="${vendor}"/>
+		        <attribute name="Implementation-Title" value="${product}"/>
+		        <attribute name="Implementation-Version" value="${version}"/>
+		    </manifest>		 	
+		 </jar>
+	</target>
+	
+	<!-- ================================================================= -->
+    <!-- Compile the source                                                -->
+    <!-- ================================================================= -->
+    <target name="compile" depends="prepare">
+        <javac destdir="${build.classes}" 
+        	   debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
+			<src refid="project.src" />
+        	<classpath refid="project.classpath"/>
+        </javac>
+    </target>
+	
+	<!-- ================================================================= -->
+	<!-- clean                                                             -->
+	<!-- ================================================================= -->
+	<target name="clean">
+        <delete dir="${build.dir}" quiet="true" />
+        <delete file="${feature.jar.name}" quiet="true" />
+		<delete file="${jar.name}" quiet="true" />
+		<delete file="${jar.name}.dep" quiet="true" />
+    </target>
+
+	<!-- ================================================================= -->
+  	<!-- prepare                                                           -->
+   	<!-- ================================================================= -->
+    <target name="prepare">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.classes}" />
+    </target>
+	
+	<!-- ================================================================= -->
+	<!-- copy resorce                                                           -->
+	<!-- ================================================================= -->
+	<target name="moveResource" depends="prepare">
+		<copy todir="${conf.dir}/" failonerror="false" >  
+		 	<fileset dir="conf" />  
+		</copy>  
+		<copy todir="${resource.dir}" failonerror="false">
+			<fileset dir="resource"></fileset>
+		</copy>
+		<copy todir="${scripts.dir}" failonerror="false">
+			<fileset dir="scripts"></fileset>
+		</copy>
+		<copy todir="${lib.dir}" failonerror="false">
+			<fileset dir="lib">
+				<exclude name="**/cedar-*.jar" />
+				<exclude name="**/commons-codec-1.4*.jar" />
+				<exclude name="**/commons-fileupload-1.2*.jar" />
+				<exclude name="**/commons-io-2.*.jar" />
+				<exclude name="**/commons-logging*.jar" />
+				<!--
+				<exclude name="**/httpclient-4.1.jar" />
+				<exclude name="**/httpcore-4.1.jar" />
+				<exclude name="**/httpmime-4.1.jar" />
+				-->
+				<exclude name="**/jetty6-6.1.19.jar" />
+				<exclude name="**/jetty6-ajp-6.1.19.jar" />
+				<exclude name="**/jetty6-client-6.1.19.jar" />
+				<exclude name="**/jetty6-html-6.1.19.jar" />
+				<exclude name="**/jetty6-management-6.1.19.jar" />
+				<exclude name="**/jetty6-naming-6.1.19.jar" />
+				<exclude name="**/jetty6-rewrite-handler-6.1.19.jar" />
+				<exclude name="**/jetty6-servlet-tester-6.1.19.jar" />
+				<exclude name="**/jetty6-sslengine-6.1.19.jar" />
+				<exclude name="**/jetty6-util-6.1.19.jar" />
+				<exclude name="**/log4j-1.2.16.jar" />
+				<exclude name="**/org.apache.commons.lang_2.4.0.v20081016-1030.jar" />
+				<exclude name="**/servlet-api.jar" />
+				<exclude name="**/slf4j-api-1.6.1.jar" />
+				<exclude name="**/slf4j-log4j12-1.6.1.jar" />
+				<exclude name="**/xstream-1.3.1.jar" />				
+			</fileset>
+		</copy>
+		<copy todir="${build.classes}">
+			<fileset dir="${java.src}">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+			<fileset dir="${generated.java.src}">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>			
+		</copy>
+		<copy file="${basedir}/feature.xml" tofile="${build.dir}/feature.xml" overwrite="true"/>			
+	</target>
+</project>

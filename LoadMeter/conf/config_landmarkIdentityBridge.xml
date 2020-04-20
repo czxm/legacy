@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>100</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+
+  <!--BatchConfig>
+    <Interval>0</Interval>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>                           
+    <Rampup>300</Rampup> 
+  </BatchConfig-->
+
+  <TaskConfig duration="300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>    
+       <Transaction name="Landmark.LandmarkIdentityBridgeSSO">
+        <Param  name="appLoginUrl">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpAgent/portal</Param>
+        <Param  name="iceServerSSOUrl">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpAgent/extAuthn/login</Param>
+        <Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpAgent/SLO</Param>
+       </Transaction>        
+    </TaskDriver>    
+  </TaskConfig>
+  <Description>Intel Cloud SSO Identity Bridge</Description>
+  <MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>
+    <interval>10</interval>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>11366</pid>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>Agent</name>
+      <server>eca360w.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>992</pid>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>LDAP</name>
+      <server>192.168.101.24</server>
+      <process>
+        <name>ns-slapd</name>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>MySQL</name>
+      <server>192.168.101.24</server>
+      <process>
+        <name>mysqld</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig>
+</LoadConfig>

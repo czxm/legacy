@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <!-- how many virtual users for this load test 
+         if the start index is 1, the users will be generated according to UsernamePattern
+         e.g.
+         user1 user2 user3 ...
+    -->
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d@intelcloudsso.com</UsernamePattern>
+      <!-- the password is useless for IntelCloudSSO authentcation -->
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <!-- BatchConfig provides a way to increase users in a batch mode during load test 
+       below configuration will firstly start 1 user, after 300 seconds (rampup), another 1 user will be started in 1 (interval) seconds, and do the same for rest of BatchUsers
+  -->
+  <!--BatchConfig>
+    <Interval>1</Interval>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <BatchUsers>1</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig-->
+  <TaskConfig duration="600">
+    <!-- run the load test for 600 seconds or each user has executed specified Iterations unless 0 is specified
+    -->
+    <Iterations>0</Iterations>
+    <Delay>
+      <!-- delay 0 seconds for each iteration, Random delay is also supported -->
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver" ordered="true">
+      <Param  name="CookiePolicy">relaxed</Param>
+      <Param  name="SO_Timeout">600</Param>
+      <Param  name="Conn_Timeout">600</Param>
+      <Param  name="http.protocol.allow-circular-redirects">true</Param>
+      <Param  name="Restricted_Redirect">true</Param>       
+      <Param  name="proxy">proxy-shz.intel.com</Param>  <!-- specify the HTTP proxy if any -->
+      <Param  name="port">911</Param>
+      <Param  name="proxyExclusion">localhost</Param> <!-- a java RegExp to exclude the host which need direct connection -->
+      <Param  name="base">https://wa01s.server.intelcloudsso.com/tenants/33/</Param>
+      <Param  name="adminbase">https://wa01a.server.intelcloudsso.com/tenants/33/</Param>             
+      <Param  name="idp">idpsf</Param>    
+      <Transaction name="Landmark.LandmarkAuthn">           
+        <Param  name="getAuthnToken">/rest/sso/authn?userProfile={"userProfile":{"subject":"%s","email":"%s","username":"%s","orgID":"%s"}}</Param>
+        <Param  name="getUserAuthnToken">/rest/sso/authn/idp/%s?authnToken=%s</Param>
+        <Param  name="getOneTimeToken">/rest/sso/authn/idp/%s/oneTimeToken?authnToken=%s</Param>
+        <Param  name="idpIssuer">00Dd0000000bs8g</Param>  <!-- this should be the SFDC orgID -->
+        <Param  name="acsLocation">/identityservice/package/idpsf/extAuthn/login</Param>
+        <Param  name="cookiePath">/tenants/33/identityservice/package/idpsf</Param>
+      </Transaction>
+      <Transaction name="Landmark.LandmarkSSO">
+        <Param  name="OTP">698915</Param>
+        <Param  name="UpdatePledgeKeyCounterSQL">update UserStore set PLEDGE_KEY_COUNTER='99DCAB0CCFE634E61A25293FA1D50325EDE165EB:0' where USER_NAME='%s'</Param>
+        <Param  name="hibernate.connection.url">jdbc:mysql://192.168.101.24/eca360</Param>  <!-- this should be the MySQL which hosts the tenant -->
+        <Param  name="hibernate.connection.username">landm</Param> 
+        <Param  name="hibernate.connection.password">landm123</Param>    
+        <Param  name="socksProxyHost"></Param>  <!-- specify the SOCKS5 proxy if any to connect to the MySQL -->
+        <Param  name="socksProxyPort">1080</Param>
+        <Param  name="socksProxyUser"></Param>
+        <Param  name="socksProxyPassword"></Param>               
+        <Param  name="samlAppURLs">  <!-- these are the configured SAML2 applications -->
+          /identityservice/package/idpsf/SSO?SpEntity=1339615269508
+        </Param>
+        <Param  name="postAppURLs">  <!-- these are the configured HTTP Post applications -->
+		  /identityservice/package/idpsf/SSO?SpEntity=1339614984111
+        </Param>
+      </Transaction>
+      <!-- SLO is not required if we only focus on SSO performance
+           If uncommented, make sure samlAppLogoutURLs has the same order of samlAppURLs
+       <Transaction name="Landmark.LandmarkSLO">           
+           <Param  name="spIssuer">consumer</Param>
+           <Param  name="samlAppLogoutURLs">
+             /identityservice/package/idpsf/SSO?SpEntity=1339615269508
+           </Param>
+           <Param  name="appLogoutURL">/identityservice/package/idpsf/SLO</Param>                                 
+           <Param  name="logoutURL">/identityservice/package/idpsf/extAuthn/logout</Param>
+       </Transaction>
+       -->
+    </TaskDriver>
+  </TaskConfig>
+  <Description>IntelCloudSSO is configured to use ECAToken + OTP as authenticator, and SSO to multiple SAML2 and POST connectors</Description>
+  <MonitorConfig>
+    <!-- performance data will be written in 'result' folder with the name SimpleHttpDriver.csv 
+         the test driver writes collected data for each 10 (interval) seconds
+    -->
+    <output>result</output>   
+    <name>SimpleHttpDriver</name>    
+    <interval>10</interval>
+    <!-- the test driver can receive remote machine's CPU/Mem data. This requires the remote machines have corresponding agent started.
+         This is optional.
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>20552</pid>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>MySQL</name>
+      <server>192.168.101.24</server>
+      <process>
+        <name>mysqld</name>
+      </process>
+    </RemoteConfig>
+    -->
+  </MonitorConfig>
+</LoadConfig>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <!--BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig-->
+  <TaskConfig duration="7200">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver" ordered="true">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>
+       <Param  name="Restricted_Redirect">true</Param>       
+       <Param  name="proxy"></Param>
+       <Param  name="port">911</Param>
+       <Param  name="proxyExclusion">localhost</Param>
+       <Param  name="base">https://eca360.cloudtest.intel.com:8443</Param>       
+       <Param  name="adminbase">https://eca360.cloudtest.intel.com:8443</Param>       
+       <Param  name="idp">idpsf</Param>
+       <Transaction name="Landmark.LandmarkAuthn">              
+           <Param  name="getAuthnToken">/rest/sso/authn?userProfile={"userProfile":{"subject":"%s","email":"%s","username":"%s","orgID":"%s"}}</Param>
+           <Param  name="getUserAuthnToken">/rest/sso/authn/idp/%s?authnToken=%s</Param>
+           <Param  name="getOneTimeToken">/rest/sso/authn/idp/%s/oneTimeToken?authnToken=%s</Param>                        
+           <Param  name="idpIssuer">idpIssuer</Param>
+           <Param  name="acsLocation">/identityservice/package/idpsf/extAuthn/login</Param>
+           <Param  name="cookiePath">/identityservice/package/idpsf</Param>
+       </Transaction>
+       <Transaction name="Landmark.LandmarkSSO">
+           <Param  name="OTP">698915</Param>
+           <Param  name="UpdatePledgeKeyCounterSQL">update UserStore set PLEDGE_KEY_COUNTER='99DCAB0CCFE634E61A25293FA1D50325EDE165EB:0' where USER_NAME='%s'</Param>
+           <Param  name="hibernate.connection.url">jdbc:mysql://192.168.101.24/eca360</Param>
+           <Param  name="hibernate.connection.username">landm</Param> 
+           <Param  name="hibernate.connection.password">landm123</Param>
+           <Param  name="socksProxyHost"></Param>
+           <Param  name="socksProxyPort">1080</Param>
+           <Param  name="socksProxyUser"></Param>
+           <Param  name="socksProxyPassword"></Param>
+           <Param  name="samlAppURLs">
+              /identityservice/package/idpsf/SSO?SpEntity=1339990921729   
+           </Param>
+           <Param  name="postAppURLs">
+              /identityservice/package/idpsf/SSO?SpEntity=1339997557350
+           </Param>        
+       </Transaction>
+       <Transaction name="Landmark.LandmarkSLO">           
+           <Param  name="spIssuer">consumer</Param>
+           <Param  name="samlAppLogoutURLs">
+              /identityservice/package/idpsf/saml2/SLO/1339990921729                         
+           </Param>
+           <Param  name="appLogoutURL">/identityservice/package/idpsf/SLO</Param>                                 
+           <Param  name="logoutURL">/identityservice/package/idpsf/extAuthn/logout</Param>
+       </Transaction>
+    </TaskDriver>
+  </TaskConfig>
+  <Description>IntelCloudSSO is configured to use ECAToken + OTP as authenticator, and SSO to multiple SAML2 and POST connectors</Description>
+  <MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>    
+    <interval>10</interval>
+    <!--RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>21695</pid>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>MySQL</name>
+      <server>192.168.101.24</server>
+      <process>
+        <name>mysqld</name>
+      </process>
+    </RemoteConfig-->
+  </MonitorConfig>
+</LoadConfig>

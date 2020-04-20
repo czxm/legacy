@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig>
+  <TaskConfig duration="7300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">compatibility</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>    
+       <Transaction name="CompositeHttp">
+           <Param  name="proxy">proxy01.cd.intel.com</Param>
+           <Param  name="port">911</Param>
+           <Param  name="wait">1</Param>
+           <Param  name="ordered">false</Param>
+           <Param  name="sequential">false</Param>
+           <Param  name="transaction">SimpleHttp</Param>
+             <Param  name="base">http://mail.163.com</Param>
+             <Param  name="GET"></Param>
+             <Param  name="/GET">163</Param>
+           <Param  name="transaction">SimpleHttp</Param>
+                <Param  name="proxy"></Param>
+             <Param  name="base">https://192.168.99.101:8443/identityproxyservice</Param>
+             <Param  name="POST">SforceService/salesforce</Param>
+               <Param  name="body"><![CDATA[<?xml version='1.0' encoding='UTF-8'?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sfdc="urn:enterprise.soap.sforce.com" xmlns:sf="urn:sobject.enterprise.soap.sforce.com">
+   <soapenv:Header>
+      <sfdc:CallOptions>
+         <sfdc:client>Outlook/33110</sfdc:client>
+         <sfdc:remoteApplication>outlook</sfdc:remoteApplication>
+      </sfdc:CallOptions>
+      <sfdc:QueryOptions>
+         <sfdc:batchSize>100</sfdc:batchSize>
+      </sfdc:QueryOptions>
+   </soapenv:Header>
+   <soapenv:Body>
+      <sfdc:login>
+         <sfdc:username xsi:type="xsd:string">Intel.CloudExpressway</sfdc:username>
+         <sfdc:password xsi:type="xsd:string">123456</sfdc:password>
+      </sfdc:login>
+   </soapenv:Body>
+</soapenv:Envelope>]]></Param>
+               <Param  name="ContentType">text/xml</Param>    
+             <Param  name="/POST">sessionId</Param>                    
+       </Transaction>        
+    </TaskDriver>
+  </TaskConfig>
+  <Description>A simple driver to test web server performance</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>    
+    <interval>10</interval>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <name>SOAEStarter</name>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>LDAP</name>
+      <server>dummy-saas.cloudtest.intel.com</server>
+      <process>
+        <name>ns-slapd</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

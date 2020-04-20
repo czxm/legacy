@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>500</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password> <!-- it's actually not used -->
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <!--BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig-->
+  <TaskConfig duration="7300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>    
+       <Transaction name="ReverseProxy">
+           <Param  name="appLoginURL">https://eca360w.cloudtest.intel.com:8443/identityservice/package/idpSAML2-KCD/extAuthn/login</Param>
+           <Param  name="spnegoAppURL">https://app1.eca360w.cloudtest.intel.com:8443/consumer/spnego.jsp</Param>
+           <Param  name="appURL">https://app1.eca360w.cloudtest.intel.com:8443/consumer/form/index.jsp</Param>
+           <Param  name="appMatch">Profession</Param>
+           <Param  name="appLogoutURL">https://eca360w.cloudtest.intel.com:8443/identityservice/package/idpSAML2-KCD/SLO</Param>
+           <Param  name="logoutURL">https://eca360w.cloudtest.intel.com:8443/identityservice/package/idpSAML2-KCD/extAuthn/logout?SpEntity=spnego</Param>
+           <Param  name="idpIssuer">consumer</Param>
+           <Param  name="SamlExpire">72000</Param>     
+           <Param  name="SamlClockSkew">864000</Param>      
+       </Transaction>        
+    </TaskDriver>    
+  </TaskConfig>
+  <Description>ECA360 is deployed at IDP side, and configured with an Authentication Chain which contains SAML2 and KCD authenticator. An impersonation connector is attached to the IDP to SSO into the IWA protected web application</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>
+    <interval>10</interval>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360w.cloudtest.intel.com</server>
+      <process  java="true">
+        <pid>3432</pid>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>AD</name>
+      <server>192.168.101.23</server>
+    </RemoteConfig>    
+    <RemoteConfig>
+      <name>SaaS</name>
+      <server>dummy-saas.cloudtest.intel.com</server>
+      <process  java="true">
+        <name>Bootstrap</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig>
+  <TaskConfig syncStartup="true" duration="7300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">relaxed</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>
+       <Transaction name="SamlSSO">
+           <Param  name="appLoginURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/extAuthn/login</Param>
+           <Param  name="samlApps">10</Param>
+           <Param  name="postApps">10</Param>
+           <Param  name="samlAppURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/SSO?SpEntity=Saml2App%d</Param>
+           <Param  name="postAppURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/SSO?SpEntity=PostApp%d</Param>
+           <Param  name="updateCredURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpCloudAuthn/http/UPDATE?SpEntity=PostApp%d</Param>           
+           <Param  name="idpIssuer">consumer</Param>
+           <Param  name="SamlExpire">72000</Param>     
+           <Param  name="SamlClockSkew">864000</Param>
+       </Transaction>
+    </TaskDriver>
+  </TaskConfig>
+  <Description>ECA360 is deployed at IDP side, and configured with an AuthnChain, which contains a SAML2 authenticator (simulate SFDC SAML2 Authenticator). Multiple Cloud Connectors (including SAML2 and HTTP_POST Connectors) are attached to this Identity Connector</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <name>SimpleHttpDriver</name>
+    <interval>5</interval>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <name>ECAStarter</name>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>MySQL</name>
+      <server>192.168.101.24</server>
+      <process  java="false">
+        <name>mysqld</name>
+      </process>
+    </RemoteConfig>    
+  </MonitorConfig-->
+</LoadConfig>

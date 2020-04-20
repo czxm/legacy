@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.intel.com/loadmeter/config" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.intel.com/loadmeter/config">
+
+    <element name="LoadConfig">
+   	  <complexType>
+    	<sequence>
+    		<element name="VirtualUserConfig"
+    			type="tns:VirtualUserConfigType">
+    		</element>
+    		<element name="BatchConfig" type="tns:BatchConfigType" minOccurs="0" maxOccurs="1"></element>
+    		<element name="TaskConfig" type="tns:TaskConfigType"></element>
+    		<element name="Description" type="string"></element>
+    		<element name="MonitorConfig" type="tns:MonitorConfigType" minOccurs="0" maxOccurs="1"></element>
+    	</sequence>
+      </complexType>
+    </element>
+    
+    <complexType name="VirtualUserConfigType">
+    	<sequence>
+    		<element name="TotalUsers" type="int"></element>
+    		<element name="StartIndex" type="int"></element>
+    		<choice>
+    			<element name="FixedCredential"
+    				type="tns:FixedCredentialType">
+    			</element>
+    			<element name="IndexedCredential" type="tns:IndexedCredentialType"></element>
+    		</choice>
+    	</sequence>
+    </complexType>
+
+    <complexType name="BatchConfigType">
+    	<sequence>
+    		<element name="Interval" type="int"></element>
+    		<element name="BatchUsers" type="int" minOccurs="1" maxOccurs="unbounded"></element>
+    		<element name="Rampup" type="int"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="TaskConfigType">
+    	<sequence>
+    		<element name="Iterations" type="int"></element>
+    		<element name="Delay" type="tns:DelayType"></element>
+    		<element name="TaskDriver" type="tns:TaskDriverType"></element>
+    	</sequence>
+    	<attribute name="duration" type="int" use="optional"></attribute>
+    	<attribute name="syncStartup" type="boolean" use="optional"></attribute>
+    	<attribute name="negRate" type="float" use="optional"></attribute>
+    </complexType>
+
+    <complexType name="DelayType">
+    	<choice>
+    		<element name="FixDelay" type="tns:FixDelayType"></element>
+    		<element name="VariableDelay" type="tns:VariableDelayType"></element>
+    	</choice>
+    </complexType>
+
+    <complexType name="FixDelayType">
+    	<sequence>
+    		<element name="Delay" type="int"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="VariableDelayType">
+    	<sequence>
+    		<element name="MinDelay" type="int"></element>
+    		<element name="MaxDelay" type="int"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="FixedCredentialType">
+    	<sequence>
+    		<element name="Username" type="string"></element>
+    		<element name="Password" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="IndexedCredentialType">
+    	<sequence>
+    		<element name="UsernamePattern" type="string"></element>
+    		<element name="Password" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="TaskDriverType">
+    	<sequence>
+    		<element name="Param" type="tns:ParamType" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    		<element name="Transaction" type="tns:TransactionType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="driver" type="string" use="required"></attribute>
+    	<attribute name="ordered" type="boolean" use="optional"></attribute>
+    </complexType>
+
+    <complexType name="ParamsType">
+    	<sequence>
+    		<element name="Param" type="tns:ParamType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="ParamType">
+    	<simpleContent>
+            <extension base="string">
+    			<attribute name="name" type="string"></attribute>
+    		</extension>
+    	</simpleContent>
+    </complexType>
+
+
+    <complexType name="MonitorConfigType">
+    	<sequence>
+    		<element name="output" type="string"></element>
+    		<element name="name" type="string"></element>
+    		<element name="interval" type="int"></element>
+    		<element name="RemoteConfig" type="tns:RemoteConfigType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+
+    </complexType>
+
+    <complexType name="RemoteConfigType">
+    	<sequence>
+    		<element name="name" type="string" minOccurs="0" maxOccurs="1"></element>
+    		<element name="server" type="string"></element>
+    		<element name="process" type="tns:ProcessConfig"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="ProcessConfig">
+        <choice minOccurs="1" maxOccurs="1">
+    		<element name="pid" type="int"></element>
+    		<element name="name" type="string"></element>
+    	</choice>
+    	<attribute name="java" type="boolean" use="optional"></attribute>
+    </complexType>
+
+    <element name="MergeConfig">
+        <complexType>
+	    	<sequence>
+	    		<element name="LoadMeasureConfig"
+	    			type="tns:LoadMeasureConfigType">
+	    		</element>
+	    		<element name="RemoteMeasureConfig" type="tns:RemoteMeasureConfigType" minOccurs="0" maxOccurs="unbounded"></element>
+	    		<element name="SummaryConfig"
+	    			type="tns:SummaryConfigType">
+	    		</element>
+	    		<element name="Folder" type="string"></element>
+	    	</sequence>
+        </complexType>
+    </element>
+    
+    <complexType name="FilesConfigType">
+    	<choice>
+    		<element name="Files" type="string"></element>
+    		<element name="FilePattern" type="string"></element>
+    	</choice>
+    </complexType>
+
+    <complexType name="RemoteMeasureConfig"></complexType>
+
+    <complexType name="SummaryConfigType">
+    	<sequence>
+    		<element name="ActiveUsers" type="string"></element>
+    		<element name="Name" type="string"></element>
+    		<element name="ChartConfig" type="tns:ChartConfigType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="LoadMeasureConfigType">
+    	<sequence>
+    		<element name="FilesConfig" type="tns:FilesConfigType"></element>
+    		<element name="MergeResult" type="string"></element>
+    		<element name="ChartConfig" type="tns:ChartConfigType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="ChartConfigType">
+    	<sequence>
+    		<element name="XAxisName" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="XSeries" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="YAxisName" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="YSeries" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="YSeriesLabel" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="SecondYAxisName" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="SecondYSeries" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="SecondYSeriesLabel" type="string"
+    			minOccurs="0" maxOccurs="1">
+    		</element>
+    		<element name="Title" type="string"></element>
+    	</sequence>
+    	<attribute name="width" type="int" use="optional"></attribute>
+    	<attribute name="height" type="int" use="optional"></attribute>
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="datasetSize" type="int" use="optional"></attribute>
+    	<attribute name="titleFontSize" type="int" use="optional"></attribute>
+    	<attribute name="labelFontSize" type="int" use="optional"></attribute>
+    </complexType>
+
+    <complexType name="RemoteMeasureConfigType">
+    	<sequence>
+    		<element name="File" type="string"></element>
+    		<element name="ChartConfig" type="tns:ChartConfigType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="TransactionType">
+    	<sequence>
+    		<element name="Param" type="tns:ParamType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="string" use="required"></attribute>
+    </complexType>
+</schema>

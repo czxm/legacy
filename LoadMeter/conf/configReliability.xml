@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>1</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456 secret@password123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>50</Interval>
+    <BatchUsers>100</BatchUsers>
+    <BatchUsers>400</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <BatchUsers>500</BatchUsers>
+    <Rampup>300</Rampup>
+  </BatchConfig>
+  <TaskConfig duration="7300">
+    <Iterations>0</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">compatibility</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>
+       <Param  name="java.security.auth.login.config">login.conf</Param>
+       <Param  name="java.security.krb5.conf">krb5.conf</Param>
+       <Param  name="sun.security.krb5.debug">false</Param>
+       <Param  name="javax.security.auth.useSubjectCredsOnly">true</Param>  
+       <Transaction name="SamlLdapSSO">
+           <Param  name="acsLocation">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/extAuthn/login?IdpEntity=CloudAuthn</Param>
+           <Param  name="appLogoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/iceauth/SLO</Param>
+           <Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/extAuthn/logout</Param>
+           <Param  name="idpIssuer">consumer</Param>   
+           <Param  name="SamlExpire">72000</Param>     
+           <Param  name="SamlClockSkew">864000</Param>
+       </Transaction>
+       <Transaction name="IwaSSO">
+           <Param  name="iceServerSSOUrl">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpACME-AD/SSO?SpEntity=consumer-acme</Param>
+           <Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpACME-AD/saml2/SLO?SpEntity=consumer-acme</Param>
+           <Param  name="SaaS">https://dummy-saas.cloudtest.intel.com:8443/consumer/</Param>        
+       </Transaction>
+       <Transaction name="IwaSSOAuthz">
+            <Param  name="iceServerSSOUrl">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpACME-AD/SSO?SpEntity=consumer-acme-authz</Param>
+            <Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpACME-AD/saml2/SLO?SpEntity=consumer-acme-authz</Param>
+            <Param  name="SaaS">https://dummy-saas.cloudtest.intel.com:8443/consumer/</Param>
+            <Param  name="proxy">eca360.cloudtest.intel.com</Param>
+            <Param  name="port">11111</Param>        
+       </Transaction>
+       <Transaction name="LdapSSO">
+            <Param  name="appLoginUrl">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpACME-LDAP/SSO?SpEntity=consumer-ldap</Param>
+            <Param  name="iceServerSSOUrl">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpACME-LDAP/extAuthn/login</Param>
+            <Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/idpACME-LDAP/saml2/SLO?SpEntity=consumer-ldap</Param>
+       </Transaction>       
+       <Transaction name="LdapSSOPostSignIn">
+            <Param  name="appLoginUrl">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpACME-LDAP/SSO?SpEntity=consumer-post-ldap</Param>
+            <Param  name="iceServerSSOUrl">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpACME-LDAP/extAuthn/login</Param>
+            <Param  name="updateCredURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpACME-LDAP/http/UPDATE?SpEntity=consumer-post-ldap</Param>
+            <Param  name="webAppSSOURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpACME-LDAP/SSO?SpEntity=consumer-post-ldap</Param>        
+            <Param  name="logoutURL">https://eca360.cloudtest.intel.com:8443/identityservice/package/idpACME-LDAP/saml2/SLO?SpEntity=consumer-ldap</Param>
+            <Param  name="updateCredOnly">false</Param>        
+       </Transaction>       
+    </TaskDriver>
+  </TaskConfig>
+  <Description>ECA360 is configured for both IDP and SP with LDAP and IWA authentications</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <interval>5</interval>
+    <name>SimpleHttpDriver</name>
+    <RemoteConfig>
+      <name>ECA360</name>
+      <server>eca360.cloudtest.intel.com</server>
+      <process  java="true">
+        <name>SOAEStarter</name>
+      </process>
+    </RemoteConfig>
+    <RemoteConfig>
+      <name>LDAP</name>
+      <server>ldap.cloudtest.intel.com</server>
+      <process  java="false">
+        <name>ns-slapd</name>
+      </process>
+    </RemoteConfig>    
+  </MonitorConfig-->
+</LoadConfig>

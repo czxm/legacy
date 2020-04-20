@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <LoadMeasureConfig>
+    <FilesConfig>
+      <Files>SimpleHttpDriver.csv SimpleHttpDriver2.csv</Files>
+    </FilesConfig>
+    <MergeResult>merged.csv</MergeResult>
+    <ChartConfig  name="response"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Response Time (ms)</YAxisName>
+      <YSeries>ReverseProxy_MinResp ReverseProxy_AvgResp ReverseProxy_MaxResp</YSeries>
+      <YSeriesLabel>MinResponseTime AverageResponseTime MaxResponseTime</YSeriesLabel>
+      <SecondYAxisName>Active Users</SecondYAxisName>
+      <SecondYSeries>ActiveUsers</SecondYSeries>
+      <Title>Workload Response (ReverseProxy)</Title>
+    </ChartConfig>
+    <ChartConfig  name="throughput"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Throughput (tran/s)</YAxisName>
+      <YSeries>TPS</YSeries>
+      <YSeriesLabel>Throughput</YSeriesLabel>
+      <SecondYAxisName>Active Users</SecondYAxisName>
+      <SecondYSeries>ActiveUsers</SecondYSeries>
+      <Title>Workload Throughput (ReverseProxy)</Title>
+    </ChartConfig>    
+  </LoadMeasureConfig>
+  <RemoteMeasureConfig>
+    <File>ECA360.csv</File>
+    <ChartConfig  name="ECA360"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>java:SOAEStarter_VIRT java:SOAEStarter_RES java:SOAEStarter_HEAP</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory JavaHeap</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>java:SOAEStarter_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>ECA360 Performance (ReverseProxy)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>
+  <RemoteMeasureConfig>
+    <File>ECA360_2.csv</File>
+    <ChartConfig  name="ECA360_2"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>java:SOAEStarter_VIRT java:SOAEStarter_RES java:SOAEStarter_HEAP</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory JavaHeap</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>java:SOAEStarter_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>Secondary ECA360 Performance (ReverseProxy)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>
+  <RemoteMeasureConfig>
+    <File>AD.csv</File>
+    <ChartConfig  name="AD"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>CPU Utilization</YAxisName>
+      <YSeries>Total_%CPU</YSeries>
+      <YSeriesLabel>%CPU</YSeriesLabel>
+      <Title>Active Directory Performance (ReverseProxy)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>
+  <RemoteMeasureConfig>
+    <File>AD2.csv</File>
+    <ChartConfig  name="AD2"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>CPU Utilization</YAxisName>
+      <YSeries>Total_%CPU</YSeries>
+      <YSeriesLabel>%CPU</YSeriesLabel>
+      <Title>Second Active Directory Performance (ReverseProxy)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>    
+  <RemoteMeasureConfig>
+    <File>SaaS.csv</File>
+    <ChartConfig  name="SaaS"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>java:Bootstrap_VIRT java:Bootstrap_RES java:Bootstrap_HEAP</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory JavaHeap</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization</SecondYAxisName>
+      <SecondYSeries>java:Bootstrap_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>SaaS Performance (ReverseProxy)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>  
+  <SummaryConfig>
+    <ActiveUsers>50 100 500 1000 1500 2000 2500 3000 3500 4000 4500 5000 5500 6000 6500 7000 7500 8000 8500 9000 9500 10000</ActiveUsers>
+    <Name>summary</Name>
+    <ChartConfig  name="summary"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Users</XAxisName>
+      <XSeries>ActiveUsers</XSeries>
+      <YAxisName>Response Time (ms)</YAxisName>
+      <YSeries>ReverseProxy_MinResp ReverseProxy_AvgResp ReverseProxy_MaxResp</YSeries>
+      <YSeriesLabel>MinResponseTime AverageResponseTime MaxResponseTime</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>java:SOAEStarter_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>ECA360 Performance Summary (ReverseProxy)</Title>
+    </ChartConfig>
+  </SummaryConfig>
+  <Folder>result</Folder>
+</MergeConfig>

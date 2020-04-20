@@ -1,0 +1,249 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.feature.SplatPerfTestFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+</import>
+<variables>
+    <variable name="scenario">
+      <values>
+        <value>P1</value>
+        <value>P2</value>
+        <value>P2_noSaaS</value>          
+        <value>P3</value>
+        <value>P4</value>         
+        <value>BHWM</value>
+        <value>SamlSSO</value>        
+      </values>
+    </variable>
+    <variable name="users">
+	  <values>
+	  	<value>1000</value>
+		<value>100</value>                
+        <value>500</value> 
+        <value>2000</value>
+        <value>4000</value>
+        <value>5000</value> 
+        <value>8000</value>
+        <value>10000</value>
+        <value>50</value> 
+        <value>10</value>
+        <value>1</value> 		
+      </values>
+	</variable>
+    <variable name="usersPerClient">
+	  <values>
+        <value>100</value>      	  
+	    <value>50</value>  
+        <value>500</value>
+        <value>200</value>
+        <value>10</value>        
+      </values>
+	</variable>	
+    <variable name="type">
+      <values>
+        <value>constant</value>      
+        <value>batch</value>
+     </values>
+    </variable>
+    <variable name="duration">
+      <values>
+        <value>600</value>      
+        <value>7500</value>    
+        <value>60</value>
+        <value>300</value>
+        <value>1800</value>
+        <value>3600</value>   
+        <value>2 hours</value>  
+        <value>4 hours</value>        
+        <value>6 hours</value>
+        <value>8 hours</value>
+        <value>10 hours</value>
+        <value>12 hours</value>
+        <value>1 days</value>
+        <value>3 days</value>
+        <value>7 days</value>                
+     </values>
+    </variable>    
+    <variable name="server">
+      <values>
+        <value>eca360.cloudtest.intel.com</value>
+      </values>
+    </variable>
+    <variable name="multi_tenance">
+      <values>
+        <value>true</value>
+        <value>false</value>
+     </values>
+    </variable>    
+    <variable name="tenances">
+      <values>
+        <value>0</value>
+        <value>1</value>
+        <value>2</value>
+        <value>3</value>
+        <value>4</value>
+        <value>5</value>
+        <value>6</value>
+        <value>7</value>
+        <value>8</value>
+        <value>9</value>        
+        <value>10</value>        
+     </values>
+    </variable>
+    <variable name="multi_iwa">
+      <values>
+        <value>false</value>
+        <value>true</value>
+     </values>
+    </variable>
+    <variable name="updateCredOnly">
+      <values>
+        <value>false</value>
+        <value>true</value>
+     </values>
+    </variable>
+    <variable name="doLogout">
+      <values>
+        <value>true</value>
+        <value>false</value>
+     </values>
+    </variable>     
+    <variable name="neg_rate">
+      <values>
+        <value>0</value>
+      </values>
+    </variable>      
+    <variable name="numSamlApps">
+      <values>
+        <value>5</value>
+      </values>
+    </variable>    
+    <variable name="numPostApps">
+      <values>
+        <value>5</value>
+      </values>
+    </variable>    
+    <variable name="pid">
+      <values>
+        <value>SOAEStarter</value>
+      </values>
+    </variable>    
+    <variable name="delay">
+      <values>
+        <value>0</value>
+      </values>
+    </variable>
+    
+    <!--
+        provider attribute is used to support dynamic variable initialization
+        The UI layer will use this provider class to generate the variable values. 
+        /* below is not yet supported */
+        The runtime will also use it when the task is submitted by Rest servlet and scheduler
+     -->
+</variables>
+<tasklets>
+	<!--
+	    tasklet definition has 3 attributes:
+	    id            a global unique id to identify a tasklet
+	                  no default value, must be specified
+	    public        true means this tasklet could be called by other features
+	                  its default is true
+	    sharable      has 3 values: none, queued, and full (default is queued)
+	                  this attribute reflects the implementation requirement of the tasklet
+	                  for a "none" sharable tasklet, it may modify system configuration so that no other tasklets could be scheduled to the target machine
+	                  for a "queued" sharable tasklet, they will be executed 1 by 1 on the same machine
+	                  for a "full" sharable tasklet, it will be freely executed on the target machine
+	 -->
+    <tasklet public="true" id="splat.perftest.runner" sharable="none">
+		<desc>SplitPoint Performance Test Runner</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.feature.SplatPerfTestRunner</provider>
+	</tasklet>
+</tasklets>
+
+<ui>
+	<window id="example" title="SplitPoint Performance Test Configuration" >
+	    <form>
+	        <checkboxgroup label="Select Scenarios" id="scenario" bind="scenario" />
+	        <combo label="Update Credential for PostConnector" id="updateCredOnly" bind="updateCredOnly"/>
+	        <textfield label="Number of SAML2 Apps" id="numSamlApps" bind="numSamlApps"/>
+	        <textfield label="Number of POST Apps" id="numPostApps" bind="numPostApps"/>
+	        <combo label="Perform Logout" id="doLogout" bind="doLogout"/>	        
+	        <combo label="Users" id="users" bind="users"/>	        
+			<combo label="Users of each client" id="usersPerClient" bind="usersPerClient"/>	        
+	        <combo label="Type" id="type" bind="type"/>
+	        <combo label="Duration" id="duration" bind="duration"/>	     
+	        <textfield label="Fixed Delay (seconds)" id="delay" bind="delay"/>		           
+	        <combo label="MultiTenance Mode" id="multi_tenance" bind="multi_tenance"/>
+	        <combo label="Number of Tenances" id="tenances" bind="tenances"/>
+	        <combo label="Use two ADs for IWA" id="multi_iwa" bind="multi_iwa"/>
+	        <textfield label="Negative Rate" id="neg_rate" bind="neg_rate"/>		        
+            <textfield label="ECA360 Server" id="server" bind="server"/>
+            <textfield label="Java MainClass or Process ID" id="pid" bind="pid"/>
+ 		<submit>
+		<formItem depends="scenario"/>
+       	<formItem depends="users"/>
+		<formItem depends="usersPerClient"/>       
+       	<formItem depends="type"/>
+       	<formItem depends="duration"/>
+       	<formItem depends="delay"/>       	
+       	<formItem depends="server"/>
+       	<formItem depends="multi_tenance"/>
+       	<formItem depends="tenances"/>
+       	<formItem depends="multi_iwa"/>
+       	<formItem depends="neg_rate"/>       	
+       	<formItem depends="updateCredOnly"/>
+       	<formItem depends="doLogout"/>
+       	<formItem depends="numSamlApps"/>
+       	<formItem depends="numPostApps"/>      
+       	<formItem depends="pid"/>   	
+      </submit>
+	    </form>
+
+	</window>
+</ui>
+
+<flow>
+    <sequence>
+        <!--
+           onfail attribute values: 
+             exit        cancel the whole execution ASAP (default)  
+             ignore      continue executing, failed item is recorded as usual
+             redo        continue executing, failed item is rescheduled, 
+                         total count for reschedule is controlled by the 'life' attribute of the TaskItem
+                         the default 'life' attribute's value is 1, means the failed item will be rescheduled for only 1 time
+                         if the TaskItem is not derived from GenericTaskItem, it'll forever redo unless it is succeeded.
+                         
+           name   attribute is used to identify a unique tasklet
+                  If the feature implements ITaskItemProvider, the name attribute value will be delivered to distinguish the tasklets.
+                  if this attribute is omitted, its value will be same as 'id' attribute
+                  
+           <machine> could be declared in <tasklet>, <sequence>, <parallel>
+                     runtime will search the enclosed <machine> declaration to allocate resources.
+                     if there's no <machine> found, runtime will use the default machine(single CPU, with 1G memory and 1G volume)
+         -->
+          <tasklet name="runner" id="splat.perftest.runner" onfail="ignore">
+            <machine>
+                <properties>
+                   <property name="CPP" value="true"/>
+                </properties>
+                <os>linux</os>
+                <!--arch>x86_64</arch-->
+                <count min="1" max="50">$users / $usersPerClient + ($users % $usersPerClient > 0 ? 1 : 0)</count>
+                <cpu min="2" max="8">4</cpu>
+                <mem min="2" max="4">2</mem>    	<!-- unit is G -->
+            </machine>
+            <items provider="embedded"/>
+            <!-- future implementation:
+            <items>
+              <for context="i" in="$case">
+                <item>
+                  <property name="cmdline" value="perl $i"/>
+                </item>
+              </for>
+            </items>
+            -->
+          </tasklet>
+    </sequence>
+</flow> 
+</feature>

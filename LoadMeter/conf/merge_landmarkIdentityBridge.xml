@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<MergeConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <LoadMeasureConfig>
+    <FilesConfig>
+      <Files>SimpleHttpDriver.csv SimpleHttpDriver2.csv</Files>
+    </FilesConfig>
+    <MergeResult>merged.csv</MergeResult>
+    <ChartConfig  name="response"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Response Time (ms)</YAxisName>
+      <YSeries>LandmarkIdentityBridgeSSO_MinResp LandmarkIdentityBridgeSSO_AvgResp LandmarkIdentityBridgeSSO_MaxResp</YSeries>
+      <YSeriesLabel>MinResponseTime AverageResponseTime MaxResponseTime</YSeriesLabel>
+      <SecondYAxisName>Active Users</SecondYAxisName>
+      <SecondYSeries>ActiveUsers</SecondYSeries>
+      <Title>Workload Response (IdentityBridgeAuthn)</Title>
+    </ChartConfig>
+    <ChartConfig  name="throughput"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Throughput (tran/s)</YAxisName>
+      <YSeries>TPS</YSeries>
+      <YSeriesLabel>Throughput</YSeriesLabel>
+      <SecondYAxisName>Active Users</SecondYAxisName>
+      <SecondYSeries>ActiveUsers</SecondYSeries>
+      <Title>Workload Throughput (IdentityBridgeAuthn)</Title>
+    </ChartConfig>    
+  </LoadMeasureConfig>
+  <!-- ECA Server -->
+  <RemoteMeasureConfig>
+    <File>ECA360.csv</File>
+    <ChartConfig  name="ECA360"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>11366_VIRT 11366_RES 11366_HEAP</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory JavaHeap</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>11366_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>ECA360 Performance (IdentityBridgeAuthn)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>
+ <!-- Agent Server --> 
+  <RemoteMeasureConfig>
+    <File>Agent.csv</File>
+    <ChartConfig  name="Agent"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>992_VIRT 992_RES 992_HEAP</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory JavaHeap</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>992_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>Agent Performance (IdentityBridgeAuthn)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>
+  <!-- LDAP Server -->
+  <RemoteMeasureConfig>
+    <File>LDAP.csv</File>
+    <ChartConfig  name="LDAP"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>ns-slapd_VIRT ns-slapd_RES</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization</SecondYAxisName>
+      <SecondYSeries>ns-slapd_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>LDAP Performance (IdentityBridgeAuthn)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig>  
+  <!-- MySQL Server -->
+  <RemoteMeasureConfig>
+    <File>MySQL.csv</File>
+    <ChartConfig  name="MySQL"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Time (10 seconds)</XAxisName>
+      <XSeries>Index</XSeries>
+      <YAxisName>Memory (MB)</YAxisName>
+      <YSeries>mysqld_VIRT mysqld_RES</YSeries>
+      <YSeriesLabel>VirtualMemory ResidentMemory</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization (%)</SecondYAxisName>
+      <SecondYSeries>mysqld_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>MySQL Performance (IdentityBridgeAuthn)</Title>
+    </ChartConfig>
+  </RemoteMeasureConfig> 
+  
+  <SummaryConfig>
+    <ActiveUsers>1 2 3 4 5 6 7 8 9 10 50 100 150 200 250 300 350 400 450 500</ActiveUsers>
+    <Name>summary</Name>
+    <ChartConfig  name="summary"   height="300"  width="600" titleFontSize="15" labelFontSize="10">
+      <XAxisName>Users</XAxisName>
+      <XSeries>ActiveUsers</XSeries>
+      <YAxisName>Response Time (ms)</YAxisName>
+      <YSeries>LandmarkIdentityBridgeSSO_MinResp LandmarkIdentityBridgeSSO_AvgResp LandmarkIdentityBridgeSSO_MaxResp</YSeries>
+      <YSeriesLabel>MinResponseTime AverageResponseTime MaxResponseTime</YSeriesLabel>
+      <SecondYAxisName>CPU Utilization</SecondYAxisName>
+      <SecondYSeries>11366_%CPU</SecondYSeries>
+      <SecondYSeriesLabel>%CPU</SecondYSeriesLabel>
+      <Title>ECA360 Performance Summary (IdentityBridgeAuthn)</Title>
+    </ChartConfig>
+  </SummaryConfig>
+  <Folder>result</Folder>
+</MergeConfig>

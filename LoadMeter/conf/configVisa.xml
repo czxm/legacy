@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<LoadConfig  xmlns="http://www.intel.com/loadmeter/config">
+  <VirtualUserConfig>
+    <TotalUsers>100</TotalUsers>
+    <StartIndex>1</StartIndex>
+    <IndexedCredential>
+      <UsernamePattern>user%d</UsernamePattern>
+      <Password>123456</Password>
+    </IndexedCredential>
+  </VirtualUserConfig>
+  <BatchConfig>
+    <Interval>0</Interval>
+    <BatchUsers>5000</BatchUsers>
+    <Rampup>0</Rampup>
+  </BatchConfig>
+  <TaskConfig syncStartup="true">
+    <Iterations>100</Iterations>
+    <Delay>
+      <FixDelay>
+        <Delay>0</Delay>
+      </FixDelay>
+    </Delay>
+    <TaskDriver driver="SimpleHttpDriver">
+       <Param  name="CookiePolicy">compatibility</Param>
+       <Param  name="SO_Timeout">600</Param>
+       <Param  name="Conn_Timeout">600</Param>
+       <Param  name="http.protocol.allow-circular-redirects">true</Param>
+       <Transaction name="VisaDemo">
+           <Param  name="acsLocation">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/extAuthn/login?IdpEntity=VisaAuthn</Param>
+           <Param  name="appLoginURL">https://eca360.cloudtest.intel.com:8443/splat/identityservice/package/spDotNetSaaS/SSO</Param>
+           <Param  name="idpIssuer">https://eca360b.cloudtest.intel.com:8443/splat/identityservice</Param>
+           <Param  name="SamlExpire">72000</Param>     
+           <Param  name="SamlClockSkew">36000</Param>
+       </Transaction>
+    </TaskDriver>
+  </TaskConfig>
+  <Description>ECA360 is deployed at SP side, and configured with an AuthnChain, which contains SAML2 authenticators. This AuthnChain is used to build a CloudAuthenticator which is then linked to a CloudAdapter to SaaS</Description>
+  <!--MonitorConfig>
+    <output>result</output>
+    <interval>5</interval>
+    <RemoteConfig>
+      <server>eca360.cloudtest.intel.com</server>
+      <name>ECA360</name>
+      <process  java="true">
+        <name>SOAEStarter</name>
+      </process>
+    </RemoteConfig>
+  </MonitorConfig-->
+</LoadConfig>

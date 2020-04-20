@@ -1,0 +1,603 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.cppConf.CppConformanceTestFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+    <tasklet id="vmstat"/>
+    <tasklet id="ping"/>
+</import>
+<variables>
+    <variable name="OS">
+      <values>
+        <value>windows</value>
+        <value>linux</value>
+      </values>
+    </variable>
+    <variable name="ARCH">
+	  <values>
+        <value>x86</value>
+        <value>x86_64</value>
+      </values>
+	</variable>
+    <variable name="platform">
+      <values>
+        <value>Win32</value>
+        <value>Win64</value>
+        <value>Linux32</value>
+        <value>Linux64</value>
+     </values>
+    </variable>
+    <variable name="component">
+      <values>
+        <value>parser</value>
+        <value>validator</value>
+        <value>transform</value>
+        <value>xpath</value>
+      </values>
+    </variable>
+    <variable name="taskId">
+    </variable>    
+    <variable name="isCheckIn">
+    </variable>
+    <variable name="branch">
+    </variable>    
+    
+    <!--
+        provider attribute is used to support dynamic variable initialization
+        The UI layer will use this provider class to generate the variable values. 
+        /* below is not yet supported */
+        The runtime will also use it when the task is submitted by Rest servlet and scheduler
+     -->
+    <variable name="case" provider="com.intel.cedar.features.cppConf.CaseVariableProvider">
+    </variable>
+    <variable name="svn_url">
+      <values>
+        <value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/penngrove/trunk</value>
+      </values>
+    </variable>
+    <variable name="svn_rev">
+    </variable>
+    <variable name="svn_username">
+      <values>
+        <value>lab_xmldev</value>
+      </values>
+    </variable>    
+    <variable name="svn_password">
+      <values>
+        <value>qnn8S*NP</value>
+      </values>
+    </variable>    
+    <variable name="fileupload">
+    </variable>
+</variables>
+<tasklets>
+	<!--
+	    tasklet definition has 3 attributes:
+	    id            a global unique id to identify a tasklet
+	                  no default value, must be specified
+	    public        true means this tasklet could be called by other features
+	                  its default is true
+	    sharable      has 3 values: none, queued, and full (default is queued)
+	                  this attribute reflects the implementation requirement of the tasklet
+	                  for a "none" sharable tasklet, it may modify system configuration so that no other tasklets could be scheduled to the target machine
+	                  for a "queued" sharable tasklet, they will be executed 1 by 1 on the same machine
+	                  for a "full" sharable tasklet, it will be freely executed on the target machine
+	 -->
+    <tasklet public="true" id="xml.library.builder" sharable="queued">
+		<desc>XML Library Builder</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.cppConf.XMLLibraryBuilder</provider>
+	</tasklet>
+	<tasklet public="true" id="xml.cpp.conformance.runner" sharable="full">
+		<desc>XML Library (C++) Conformance Tester</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.cppConf.XMLCppConformanceRunner</provider>
+	</tasklet>
+</tasklets>
+
+<ui>
+	<window id="example" title="Cpp Conformance Parameters" >
+	    <form>
+	    	<!-- <fieldset label="Test Target"> -->
+	    		<combo label="OSName" id="os" bind="OS"/>
+	    		<combo label="Arch" id="arch" bind="ARCH"/>
+	    	<!-- </fieldset> -->
+	    	<checkboxgroup label="Select component" id="component" bind="component" />
+	    	<listfield id="case" label="Select cases" bind="case">
+	    		<depends>
+	    			<depend refid="os" action="getValue"/>
+	    			<depend refid="arch" action="getValue"/>
+	    			<depend refid="component" action="getSelections"/>
+	    		</depends>
+	    	</listfield>
+	    	<svn id="svn" label="XMLCore source">
+          		<url bind="svn_url" id="svnurl"/>
+          		<rev bind="svn_rev" id="svnrev"/>
+          		<log id="svnlog"/> 
+			</svn>
+	    	<composite>
+		    	<combo label="XMLCore Source" id="source">
+		    		<comboitem value="SVN Revision"/>
+		    		<comboitem value="Built Package"/>
+		    	</combo>
+		    	<select depends="source">			 
+			    	<composite show-on-select="SVN Revision">
+			    			<combo id="svnrev" label="SVN Revision" depends="svnurl"/>
+			    			<textarea id="svnlog" label="Checkin Message" depends="svnrev"/>
+			    	</composite>			
+			    	<fileuploadfield id="fileupload" bind="fileupload" show-on-select="Built Package" label="Please upload your built XSS package"/>			    	
+		    	</select>
+		    </composite>
+		<submit>
+       	<formItem depends="os"/>
+       <formItem depends="arch"/>
+       <formItem depends="component"/>
+       <formItem depends="case"/>
+       <formItem depends="svnurl"/>
+       <formItem depends="svnrev"/>       
+      </submit>
+	    </form>
+
+	</window>
+</ui>
+
+<flow>
+    <sequence>
+        <!--
+           onfail attribute values: 
+             exit        cancel the whole execution ASAP (default)  
+             ignore      continue executing, failed item is recorded as usual
+             redo        continue executing, failed item is rescheduled, 
+                         total count for reschedule is controlled by the 'life' attribute of the TaskItem
+                         the default 'life' attribute's value is 1, means the failed item will be rescheduled for only 1 time
+                         if the TaskItem is not derived from GenericTaskItem, it'll forever redo unless it is succeeded.
+                         
+           name   attribute is used to identify a unique tasklet
+                  If the feature implements ITaskItemProvider, the name attribute value will be delivered to distinguish the tasklets.
+                  if this attribute is omitted, its value will be same as 'id' attribute
+                  
+           <machine> could be declared in <tasklet>, <sequence>, <parallel>
+                     runtime will search the enclosed <machine> declaration to allocate resources.
+                     if there's no <machine> found, runtime will use the default machine(single CPU, with 1G memory and 1G volume)
+         -->
+        <tasklet name="builder" id="xml.library.builder" timeout="7200" onfail="exit">
+            <machine>
+                <properties>
+                   <property name="CPP" value="true"/>
+                </properties>
+                <os>$OS</os>
+                <arch>$ARCH</arch>
+                <count min="1" max="1">1</count>
+                <cpu min="2" max="4">4</cpu>
+                <mem min="2" max="4">2</mem>    	<!-- unit is G -->
+                <disk min="10" max="10">10</disk> 	<!-- unit is G -->
+            </machine>
+            <!--
+            provider attribute values:
+              embedded    call pre-defined Java method to collect TaskItems
+                          feature is required to implement ITaskItemProvider interface
+              $v1 $2 ...  a list of defined variables, the runtime will construct all
+                          TaskItems according to the variables
+            if the provider attribute is omitted, there must be a collection of <item> element declared
+             -->
+            <items provider="embedded"/>
+            <!-- future implementation:
+            <items>
+               <item> 
+                <property name="url" value="$svn_url"/>
+                <property name="rev" value="$svn_rev"/>
+               </item>
+            </items>    
+            -->
+        </tasklet>
+        <parallel level="2">
+          <tasklet name="runner" id="xml.cpp.conformance.runner" timeout="7200" onfail="ignore">
+            <machine>
+                <properties>
+                   <property name="CPP" value="true"/>
+                </properties>
+                <os>$OS</os>
+                <arch>$ARCH</arch>
+                <count min="1" max="4">$case_length</count>
+                <cpu min="2" max="8">4</cpu>
+                <mem min="2" max="4">2</mem>    	<!-- unit is G -->
+                <disk min="10" max="10">10</disk> 	<!-- unit is G -->
+            </machine>
+            <items provider="embedded"/>
+            <!-- future implementation:
+            <items>
+              <for context="i" in="$case">
+                <item>
+                  <property name="cmdline" value="perl $i"/>
+                </item>
+              </for>
+            </items>
+            -->
+          </tasklet>
+       </parallel>
+    </sequence>
+</flow> 
+
+<shortcuts>
+  <!-- shortcuts are not configurable after deployed -->
+  <!-- variables can be put here to override the declared initialized values -->
+  <shortcut name="shortcut" desc="Submit all tests" enable="true">
+     <!-- variables can be put here to override the declared initialized values -->
+     <!-- shortcut UI for end users -->
+     <window id="shortcut" title="Click once to submit all tests">
+    	<svn id="svn" label="XMLCore source">
+          <url bind="svn_url" id="svnurl"/>
+          <rev bind="svn_rev" id="svnrev"/>
+          <log id="svnlog"/> 
+		</svn>
+     </window>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>linux</value></values></variable>
+	      <variable name="ARCH"><values><value>x86</value></values></variable>
+	      <variable name="platform"><values><value>Linux32</value></values></variable>
+	    </variables>
+	 </launch>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>linux</value></values></variable>
+	      <variable name="ARCH"><values><value>x86_64</value></values></variable>
+	      <variable name="platform"><values><value>Linux64</value></values></variable>
+	    </variables>	      
+	 </launch>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>windows</value></values></variable>
+	      <variable name="ARCH"><values><value>x86</value></values></variable>
+	      <variable name="platform"><values><value>Win32</value></values></variable>
+	    </variables>	      
+	 </launch>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>windows</value></values></variable>
+	      <variable name="ARCH"><values><value>x86_64</value></values></variable>
+	      <variable name="platform"><values><value>Win64</value></values></variable>
+	    </variables>	      
+	 </launch>	 	 	 
+  </shortcut>
+</shortcuts>
+
+<launches>
+  <!-- launchset can be customized after deployed -->
+  <launchset name="nightly_linux" desc="Launch Configuration for Nightly Test" enable="false">
+	 <option>
+	    <reproducable>false</reproducable>
+	    <user></user>  <!-- should be a registered (value not required) -->
+	    <comment>nightly</comment> <!-- value not required -->
+	    <receivers>jack.z.chen@intel.com,xin.hao@intel.com,jianzhong.chen@intel.com,xiaomin.zhang@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+	    <!-- it's not allowed that both user and receivers are empty -->
+	 </option>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>linux</value></values></variable>
+	      <variable name="ARCH"><values><value>x86</value></values></variable>
+	      <variable name="platform"><values><value>Linux32</value></values></variable>
+	      <variable name="case"> 
+	        <!-- runtime should support dynamic value initialization according to provider -->
+	        <values>
+<value>parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests</value>
+<value>parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests</value>
+<value>parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests</value>
+<value>parser/scripts/memoryleak.pl dri=cppapi-sax#cppapi-dom</value>
+<value>validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests</value>
+<value>validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests</value>
+<value>validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii</value>
+<value>validator/scripts/memoryleak.pl dri=psvi tsu=memleak-light.tests evt=sax#esii</value>
+<value>validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests</value>
+<value>validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests</value>
+<value>validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax</value>
+<value>validator/scripts/conformance.pl dri=cppval-example tsu=options.conf</value>
+<value>validator/scripts/memoryleak.pl dri=cppapi tsu=memleak.tests evt=sax#dom</value>
+<value>transform/scripts/conformance.pl dri=napa2re tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=jit</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=pmap#dumb</value>
+<value>transform/scripts/memoryleak.pl dri=napa2</value>
+<value>transform/scripts/memoryleak.pl dri=cpp-api </value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=melon tsu=melon.tests</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000</value>
+<value>xpath/scripts/conformance.pl dri=napa2#napa2pmap#cpp_api#cpp_api_dom</value>
+<value>xpath/scripts/conformance.pl dri=example mod=ApplyXPath tsu=example-ApplyXPath.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathVariable tsu=example-XPathVariable.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathExternalFunction tsu=example-XPathExternalFunction.tests</value>
+<value>xpath/scripts/nightly-intel-conf.pl</value>
+<value>xpath/scripts/nightly-intel-memleak.pl</value>
+	        </values>          
+	      </variable>
+          <!-- 
+	         svn_rev is not required for nightly test, the feature will automatically fetch the latest rev before executing tests
+	      -->
+	      <variable name="svn_url"><values><value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/penngrove/trunk</value></values></variable>	      
+	    </variables>
+	 </launch>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>linux</value></values></variable>
+	      <variable name="ARCH"><values><value>x86_64</value></values></variable>
+	      <variable name="platform"><values><value>Linux64</value></values></variable>
+	      <variable name="case"> 
+	        <!-- runtime should support dynamic value initialization according to provider -->
+	        <values>
+<value>parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests</value>
+<value>parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests</value>
+<value>parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests</value>
+<value>validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests</value>
+<value>validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests</value>
+<value>validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii</value>
+<value>validator/scripts/memoryleak.pl dri=psvi tsu=memleak-light.tests evt=sax#esii</value>
+<value>validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests</value>
+<value>validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests</value>
+<value>validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax</value>
+<value>validator/scripts/conformance.pl dri=cppval-example tsu=options.conf</value>
+<value>validator/scripts/memoryleak.pl dri=cppapi tsu=memleak.tests evt=sax#dom</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=pmap#dumb</value>
+<value>transform/scripts/memoryleak.pl dri=cpp-api </value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=melon tsu=melon.tests</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000</value>
+<value>xpath/scripts/conformance.pl dri=cpp_api#cpp_api_dom</value>
+<value>xpath/scripts/conformance.pl dri=example mod=ApplyXPath tsu=example-ApplyXPath.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathVariable tsu=example-XPathVariable.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathExternalFunction tsu=example-XPathExternalFunction.tests</value>
+<value>xpath/scripts/nightly-intel-conf.pl</value>
+<value>xpath/scripts/nightly-intel-memleak.pl</value>
+	        </values>          
+	      </variable>
+          <!-- 
+	         svn_rev is not required for nightly test, the feature will automatically fetch the latest rev before executing tests
+	      -->
+	      <variable name="svn_url"><values><value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/penngrove/trunk</value></values></variable>	      
+	    </variables>
+	 </launch>
+  </launchset>
+  <launchset name="nightly_win" desc="Launch Configuration for Nightly Test" enable="false">
+	 <option>
+	    <reproducable>false</reproducable>
+	    <user></user>  <!-- should be a registered (value not required) -->
+	    <comment>nightly</comment> <!-- value not required -->
+	    <receivers>jack.z.chen@intel.com,xin.hao@intel.com,jianzhong.chen@intel.com,xiaomin.zhang@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+	    <!-- it's not allowed that both user and receivers are empty -->
+	 </option>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>windows</value></values></variable>
+	      <variable name="ARCH"><values><value>x86</value></values></variable>
+	      <variable name="platform"><values><value>Win32</value></values></variable>
+	      <variable name="case"> 
+	        <!-- runtime should support dynamic value initialization according to provider -->
+	        <values>
+<value>parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests</value>
+<value>parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests</value>
+<value>parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests</value>
+<value>validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests</value>
+<value>validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests</value>
+<value>validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii</value>
+<value>validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests</value>
+<value>validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests</value>
+<value>validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax</value>
+<value>validator/scripts/conformance.pl dri=cppval-example tsu=options.conf</value>
+<value>transform/scripts/conformance.pl dri=napa2re tsu=xalan-napa2re.tests#xslt-bench-napa2re-win.tests#unittest.tests#MSFT.tests mod=jit</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re-win.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re-win.tests#unittest.tests#MSFT.tests mod=pmap#dumb</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter-win.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain-win.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform-win.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000</value>
+<value>xpath/scripts/conformance.pl dri=example mod=ApplyXPath tsu=example-ApplyXPath.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathVariable tsu=example-XPathVariable.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathExternalFunction tsu=example-XPathExternalFunction.tests</value>
+<value>xpath/scripts/nightly-intel-conf.pl</value>
+	        </values>          
+	      </variable>
+          <!-- 
+	         svn_rev is not required for nightly test, the feature will automatically fetch the latest rev before executing tests
+	      -->
+	      <variable name="svn_url"><values><value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/penngrove/trunk</value></values></variable>	      
+	    </variables>
+	 </launch>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>windows</value></values></variable>
+	      <variable name="ARCH"><values><value>x86_64</value></values></variable>
+	      <variable name="platform"><values><value>Win64</value></values></variable>
+	      <variable name="case"> 
+	        <!-- runtime should support dynamic value initialization according to provider -->
+	        <values>
+<value>parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests</value>
+<value>parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests</value>
+<value>parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests</value>
+<value>validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests</value>
+<value>validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests</value>
+<value>validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii</value>
+<value>validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests</value>
+<value>validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax</value>
+<value>validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests</value>
+<value>validator/scripts/conformance.pl dri=cppval-example tsu=options.conf</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re-win.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re-win.tests#unittest.tests#MSFT.tests mod=pmap#dumb</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter-win.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain-win.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform-win.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000</value>
+	        </values>          
+	      </variable>
+          <!-- 
+	         svn_rev is not required for nightly test, the feature will automatically fetch the latest rev before executing tests
+	      -->
+	      <variable name="svn_url"><values><value>https://sh-ssvn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/penngrove/trunk</value></values></variable>	      
+	    </variables>
+	 </launch>
+  </launchset>
+  <launchset name="checkin_linux32" desc="Launch Configuration for Check-in Test" enable="false">
+	 <option>
+	    <reproducable>false</reproducable>
+	    <user></user>  <!-- should be a registered (value not required) -->
+	    <comment>check-in</comment> <!-- value not required -->
+	    <receivers>jack.z.chen@intel.com,xin.hao@intel.com,jianzhong.chen@intel.com,xiaomin.zhang@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+	    <!-- it's not allowed that both user and receivers are empty -->
+	 </option>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>linux</value></values></variable>
+	      <variable name="ARCH"><values><value>x86</value></values></variable>
+	      <variable name="platform"><values><value>Linux32</value></values></variable>
+	      <variable name="isCheckIn"><values><value>true</value></values></variable>
+	      <variable name="case"> 
+	        <!-- runtime should support dynamic value initialization according to provider -->
+	        <values>
+<value>parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests</value>
+<value>parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests</value>
+<value>parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests</value>
+<value>parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests</value>
+<value>parser/scripts/memoryleak.pl dri=cppapi-sax#cppapi-dom</value>
+<value>validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests</value>
+<value>validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests</value>
+<value>validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii</value>
+<value>validator/scripts/memoryleak.pl dri=psvi tsu=memleak-light.tests evt=sax#esii</value>
+<value>validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests</value>
+<value>validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests</value>
+<value>validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax</value>
+<value>validator/scripts/conformance.pl dri=cppval-example tsu=options.conf</value>
+<value>validator/scripts/memoryleak.pl dri=cppapi tsu=memleak.tests evt=sax#dom</value>
+<value>transform/scripts/conformance.pl dri=napa2re tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=jit</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4</value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=pmap#dumb</value>
+<value>transform/scripts/memoryleak.pl dri=napa2</value>
+<value>transform/scripts/memoryleak.pl dri=cpp-api </value>
+<value>transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false</value>
+<value>transform/scripts/conformance.pl dri=melon tsu=melon.tests</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000</value>
+<value>transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000</value>
+<value>xpath/scripts/conformance.pl dri=napa2#napa2pmap#cpp_api#cpp_api_dom</value>
+<value>xpath/scripts/conformance.pl dri=example mod=ApplyXPath tsu=example-ApplyXPath.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathVariable tsu=example-XPathVariable.tests</value>
+<value>xpath/scripts/conformance.pl dri=example mod=XPathExternalFunction tsu=example-XPathExternalFunction.tests</value>
+<value>xpath/scripts/nightly-intel-conf.pl</value>
+<value>xpath/scripts/nightly-intel-memleak.pl</value>
+	        </values>          
+	      </variable>
+	      <!-- the SVN trigger will set svn_url and svn_rev -->
+ 	    </variables>
+	 </launch>
+  </launchset>  
+</launches>
+
+<triggers>
+  <!--
+    Triggers can be customized after deployed
+    trigger attributes:
+    name     the unique name for a trigger acrosss this feature
+    type     supported values are cron and svn
+             for svn trigger, the behavior is the same as cruiseControl,
+             the task will be started only when there's new commit
+    launch   the launch group which contains all the task submission configuration
+  -->
+  <trigger name="nightly_linux" type="cron" launch="nightly_linux">
+    <cron>0 0 1 * * ?</cron> <!-- 1:00 AM every day -->
+  </trigger>
+  <trigger name="nightly_win" type="cron" launch="nightly_win">
+    <cron>0 30 4 * * ?</cron> <!-- 4:30 AM every day -->
+  </trigger>
+  <trigger name="cpp_checkin_linux32" type="svn" launch="checkin_linux32">
+    <svn>
+      <!-- svn URL to track (value required) -->
+      <url bind="svn_url">https://sh-ssvn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/penngrove/trunk</url>
+      <!-- start from which svn revision (value optional) -->
+      <rev bind="svn_rev"></rev>
+      <!-- username and password to connect to SVN (value optional) -->
+      <user></user>
+      <password></password>
+      <!-- repository name to check the feature's properties store (value required) -->
+      <repository bind="branch">trunk</repository>
+    </svn>
+  </trigger>
+</triggers>
+</feature>

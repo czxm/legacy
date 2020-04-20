@@ -1,0 +1,136 @@
+
+/** Toolbars icons */
+.icon-previous {
+  background: url(resources/images/browse/previous.gif) no-repeat center left !important;
+}
+
+.icon-next {
+  background: url(resources/images/browse/next.gif) no-repeat center left !important;
+}
+
+.icon-display {
+  background: url(resources/images/browse/display.png) no-repeat center left !important;
+}
+
+.icon-organize {
+  background: url(resources/images/browse/organize.gif) no-repeat center left !important;
+}
+
+.icon-display-mosaic {
+  background: url(resources/images/browse/small-icon.gif) no-repeat center left !important;
+}
+.icon-display-list {
+  background: url(resources/images/browse/list.gif) no-repeat center left !important;
+}
+.icon-display-detail {
+  background: url(resources/images/browse/detail.gif) no-repeat center left !important;
+}
+
+.icon-newdirectory {
+  background: url(resources/images/browse/browse/newdir.gif) no-repeat center left !important;
+}
+
+/* Icons which be used for favorite */
+.icon-network {
+  background: url(resources/images/browse/network.gif) no-repeat center left !important;	
+}
+
+.icon-computer {
+  background: url(resources/images/browse/computer.gif) no-repeat center left !important;	
+}
+
+.icon-favorite {
+  background: url(resources/images/browse/favorite.gif) no-repeat center left !important;	
+}
+
+/* Mosaic CSS specific */
+#file-mosaic-view {
+  background: white;
+  font: 11px Arial, Helvetica, sans-serif;
+}
+
+#file-mosaic-view .thumb {
+  padding: 3px;
+  width: 80px;
+  height: 60px;
+}
+
+#file-mosaic-view .thumb img {
+  height: 48px;
+  width: 48px;
+  text-align: 
+}
+
+#file-mosaic-view .thumb-wrap {
+  float: left;
+  margin: 4px;
+  margin-right: 0;
+  padding: 5px;
+}
+
+#file-mosaic-view .thumb-wrap span {
+  display: block;
+  overflow: hidden;
+  text-align: center;
+}
+
+#file-mosaic-view .x-view-over {
+  border: 1px solid #dddddd;
+  background: #efefef repeat-x left top;
+  padding: 4px;
+}
+
+#file-mosaic-view .x-view-selected {
+  background: #DFEDFF;
+  border: 1px solid #6593cf;
+  padding: 4px;
+}
+
+#file-mosaic-view .x-view-selected .thumb {
+  background: transparent;
+}
+
+#file-mosaic-view .x-view-selected span {
+  color: #1A4D8F;
+}
+
+#file-mosaic-view .loading-indicator {
+  font-size: 11px;
+  background-image: url('../../resources/images/default/grid/loading.gif');
+  background-repeat: no-repeat;
+  background-position: left;
+  padding-left: 20px;
+  margin: 10px;
+}
+
+/* File description specific CSS */
+#file-description .img {
+	display: inline;
+}
+
+#file-description .details {
+  padding: 10px;
+  text-align: left;
+}
+
+#file-description .details-info {
+  display: inline;
+  border-left: 1px solid #cccccc;
+  font: 11px Arial, Helvetica, sans-serif;
+  margin-top: 5px;
+  padding-top: 5px;
+  text-align: left;
+}
+
+#file-description .details-info b {
+  color: #555555;
+  display: inline;
+  margin-left: 4px;
+}
+
+#file-description .details-info span {
+  display: inline;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+

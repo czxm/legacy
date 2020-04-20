@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Feature-Name: Cloud Test Service Demo
+Feature-ShortName: Demo
+Feature-Hint: A simple demo for Cloud Test Service
+Feature-Version: 1.2
+Feature-Contributer: ASIP Conformance & Performance Team
+Feature-Icons: resource/demo.png resource/intel.gif
+Feature-Descriptor: feature.xml
+Feature-Dependences: 

@@ -1,0 +1,8 @@
+Feature-Name: SplitPoint Build Test
+Feature-ShortName: ECA Build Test
+Feature-Hint: Build Test for SplitPoint project
+Feature-Version: 1.2
+Feature-Contributer: SplitPoint QA Team
+Feature-Icons: resource/logo.png
+Feature-Descriptor: feature.xml
+Feature-Dependences: lib/svnkit-javahl.jar lib/svnkit.jar

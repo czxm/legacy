@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <!-- Tell to Spring to take care of code annotations -->
+    <context:annotation-config />    
+
+    <!-- Define a class which handles virtual directories substitution -->
+    <bean id="fileSystem" class="com.intel.cedar.service.server.filebrowser.CedarStorage">
+      <property name="descriptionProvider" ref="inMemoryProvider" />
+    </bean>
+    
+    <!-- Define an icon and file description provider -->
+    <bean id="inMemoryProvider" class="com.intel.cedar.service.server.filebrowser.InMemoryProvider" scope="singleton">
+      <property name="baseImage" value="resources/images/browse/mime/" />
+      <property name="directoriesMapping" value="16x16/dir.gif,48x48/dir.gif,Directory"/>
+      <property name="extensionsMapping">
+        <list>
+          <value>csv,16x16/csv.gif,48x48/csv.gif,Text file with separator</value>
+          <value>doc,16x16/doc.gif,48x48/doc.gif,Document file</value>
+          <value>ppt,16x16/ppt.gif,48x48/ppt.gif,Slideshow document</value>
+          <value>txt,16x16/txt.gif,48x48/txt.gif,Text file</value>
+          <value>xls,16x16/xls.gif,48x48/xls.gif,Spreadsheet file</value>
+          <value>zip,16x16/zip.gif,48x48/zip.gif,Compressed file</value>
+          <value>rar,16x16/zip.gif,48x48/zip.gif,Compressed file</value>
+          <value>gz,16x16/zip.gif,48x48/zip.gif,Compressed file</value>          
+          <value>jar,16x16/zip.gif,48x48/zip.gif,Compressed file</value>          
+          <value>war,16x16/zip.gif,48x48/zip.gif,Compressed file</value>          
+          <value>(\.)*,16x16/other.gif,48x48/other.gif,File</value>        
+        </list>
+      </property>
+    </bean>
+</beans>

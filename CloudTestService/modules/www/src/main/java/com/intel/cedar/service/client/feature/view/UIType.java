@@ -1,0 +1,5 @@
+package com.intel.cedar.service.client.feature.view;
+
+public enum UIType {
+    CONTENTPANEL, FORM, FIELDSET, COMBOBOX, CHECKBOX, CHECKBOXGROUP, TEXTFIELD, TEXTAREA, LISTFIELD, BUTTON, ICONBUTTON, FORMITEM, BUTTONBAR;
+}

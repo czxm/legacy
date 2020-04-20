@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<onStart>
+		<execute runas="user" os="Linux">
+<![CDATA[
+]]>
+		</execute>
+	</onStart>
+
+	<item value="project build">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+cd %project_src%/TestJenkins
+ant compile
+[[ $? == 0 ]] && touch ../../BUILD_OK
+]]>
+		</execute>
+	</item>
+	
+	<item value="junit commit">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+cd %project_src%/TestJenkins
+ant test
+]]>
+		</execute>
+	</item>
+	
+	<item value="junit full">
+		<execute runas="user" os="Linux"><![CDATA[
+source /home/user/.bashrc
+cd %project_src%/TestJenkins
+ant test
+]]>
+		</execute>
+	</item>
+	<onFinish>
+	</onFinish>
+</config>

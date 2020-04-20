@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure id="Server" class="org.mortbay.jetty.Server">
+    <Call name="addConnector">
+        <Arg>
+            <New class="org.mortbay.jetty.nio.SelectChannelConnector">
+                <Set name="responseBufferSize">512</Set>
+                <Set name="Port">
+                    <SystemProperty name="agent.www.port" default="10614"/>
+                </Set>
+                <Set name="maxIdleTime">30000</Set>
+                <Set name="ThreadPool">
+                    <New class="org.mortbay.thread.QueuedThreadPool">
+                        <Set name="minThreads">30</Set>
+                        <Set name="maxThreads">200</Set>
+                        <Set name="lowThreads">10</Set>
+                        <Set name="SpawnOrShrinkAt">10</Set>
+                    </New>
+                </Set>
+            </New>
+        </Arg>
+    </Call>
+    <Set name="handler">
+        <New id="Handlers" class="org.mortbay.jetty.handler.HandlerCollection">
+            <Set name="handlers">
+                <Array type="org.mortbay.jetty.Handler">
+                    <Item>
+                        <New id="Contexts" class="org.mortbay.jetty.handler.ContextHandlerCollection"/>
+                    </Item>
+                    <Item>
+                        <New id="DefaultHandler" class="org.mortbay.jetty.handler.DefaultHandler">
+                            <Set name="serveIcon">false</Set>
+                        </New>
+                    </Item>
+                    <Item>
+                        <New id="RequestLog" class="org.mortbay.jetty.handler.RequestLogHandler"/>
+                    </Item>
+                </Array>
+            </Set>
+        </New>
+    </Set>
+    <Call name="addLifeCycle">
+        <Arg>
+            <New class="org.mortbay.jetty.deployer.WebAppDeployer">
+                <Set name="contexts">
+                    <Ref id="Contexts"/>
+                </Set>
+                <Set name="webAppDir"><SystemProperty name="cedar.home" default="."/>/webapps
+                </Set>
+	            <Set name="parentLoaderPriority">false</Set>
+                <Set name="allowDuplicates">false</Set>        
+                <Set name="extract">true</Set>                      
+            </New>
+        </Arg>
+    </Call>
+    <Ref id="RequestLog">
+        <Set name="requestLog">
+            <New id="RequestLogImpl" class="org.mortbay.jetty.NCSARequestLog">
+                <Set name="filename"><SystemProperty name="cedar.home" default="."/>/log/jetty-request-yyyy_mm_dd.log
+                </Set>
+                <Set name="filenameDateFormat">yyyy_MM_dd</Set>
+                <Set name="retainDays">90</Set>
+                <Set name="append">true</Set>
+                <Set name="extended">true</Set>
+                <Set name="logCookies">true</Set>
+                <Set name="LogTimeZone">GMT</Set>
+            </New>
+        </Set>
+    </Ref>
+    <Set name="stopAtShutdown">true</Set>
+    <Set name="sendServerVersion">true</Set>
+    <Set name="sendDateHeader">true</Set>
+    <Set name="gracefulShutdown">1000</Set>
+</Configure>

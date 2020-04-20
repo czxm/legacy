@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>  
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:browse.xml</param-value>
+  </context-param>
+  
+  <filter>
+    <filter-name>GZipFilter</filter-name>
+    <filter-class>org.mortbay.servlet.GzipFilter</filter-class>
+    <init-param>
+      <param-name>mimeTypes</param-name>
+      <param-value>text/html</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>GZipFilter</filter-name>
+    <url-pattern>*.html</url-pattern>
+  </filter-mapping>
+         
+  <listener>
+     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+     <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>    
+  <listener>
+     <listener-class>com.intel.cedar.service.server.ContextListener</listener-class>
+  </listener>
+   
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>cloudServiceServlet</servlet-name>
+    <servlet-class>com.intel.cedar.service.server.CloudRemoteServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>UploadServlet</servlet-name>
+    <servlet-class>com.intel.cedar.service.server.UploadServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>resourceExplorerServlet</servlet-name>
+  	<servlet-class>com.intel.cedar.service.server.ResourceExplorerServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>storageServlet</servlet-name>
+    <servlet-class>com.intel.cedar.service.server.StorageServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>restfulServlet</servlet-name>
+    <servlet-class>com.intel.cedar.service.server.RestfulServlet</servlet-class>
+  </servlet>  
+  
+  <servlet>
+    <servlet-name>jwsServlet</servlet-name>
+    <servlet-class>com.intel.cedar.service.server.JwsServlet</servlet-class>
+  </servlet>    
+  
+  <servlet>
+    <servlet-name>storageBrowser</servlet-name>
+    <servlet-class>com.intel.cedar.service.server.filebrowser.FileServiceImpl</servlet-class>
+  </servlet>  
+    
+  <!--  Servlet Mapping -->
+  <servlet-mapping>
+    <servlet-name>cloudServiceServlet</servlet-name>
+    <url-pattern>/cloudtestservice/cts</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>UploadServlet</servlet-name>
+    <url-pattern>/cloudtestservice/Upload</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>resourceExplorerServlet</servlet-name>
+  	<url-pattern>*.CEDAR.png</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>storageServlet</servlet-name>
+    <url-pattern>/cloudtestservice/storage</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>restfulServlet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>jwsServlet</servlet-name>
+    <url-pattern>/jws/*</url-pattern>
+  </servlet-mapping>  
+  
+  <servlet-mapping>
+    <servlet-name>storageBrowser</servlet-name>
+    <url-pattern>/cloudtestservice/browse</url-pattern>
+  </servlet-mapping>  
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>CloudTestService.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>

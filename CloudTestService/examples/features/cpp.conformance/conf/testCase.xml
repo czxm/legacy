@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testcases name="cpp conformance" version="1.0" xmlns="http://www.intel.com/soae/cedar">
+
+<testcase name="nightly-cpp">
+	<params>
+		<param name="os" value="linux"/>
+		<param name="arch" value="x86"/>
+		<param name="build" value="all"/>
+		<param name="cop" value="t"/>
+	</params>
+	<cases>
+parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests
+parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests
+parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests
+parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests
+parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests
+parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests
+parser/scripts/memoryleak.pl dri=cppapi-sax#cppapi-dom
+validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests
+validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests
+validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii
+validator/scripts/memoryleak.pl dri=psvi tsu=memleak-light.tests evt=sax#esii
+validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests
+validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests
+validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax
+validator/scripts/conformance.pl dri=cppval-example tsu=options.conf
+validator/scripts/memoryleak.pl dri=cppapi tsu=memleak.tests evt=sax#dom
+transform/scripts/conformance.pl dri=napa2re tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=jit
+transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4
+transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=pmap#dumb
+transform/scripts/memoryleak.pl dri=napa2
+transform/scripts/memoryleak.pl dri=cpp-api 
+transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests
+transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests
+transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false
+transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false
+transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter.tests untar=false
+transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain.tests untar=false
+transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false
+transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false
+transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false
+transform/scripts/conformance.pl dri=melon tsu=melon.tests
+transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000
+transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000
+xpath/scripts/conformance.pl dri=napa2#napa2pmap#cpp_api#cpp_api_dom
+xpath/scripts/conformance.pl dri=example mod=ApplyXPath tsu=example-ApplyXPath.tests
+xpath/scripts/conformance.pl dri=example mod=XPathVariable tsu=example-XPathVariable.tests
+xpath/scripts/conformance.pl dri=example mod=XPathExternalFunction tsu=example-XPathExternalFunction.tests
+xpath/scripts/nightly-intel-conf.pl
+xpath/scripts/nightly-intel-memleak.pl
+	</cases>
+</testcase>
+<testcase name="nightly64-cpp">
+	<params>
+		<param name="os" value="linux"/>
+		<param name="arch" value="x86_64"/>
+		<param name="build" value="all"/>
+		<param name="cop" value="t"/>
+	</params>
+	<cases>
+parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests
+parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests
+parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests
+parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests
+parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests
+parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests
+validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests
+validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests
+validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii
+validator/scripts/memoryleak.pl dri=psvi tsu=memleak-light.tests evt=sax#esii
+validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests
+validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests
+validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax
+validator/scripts/conformance.pl dri=cppval-example tsu=options.conf
+validator/scripts/memoryleak.pl dri=cppapi tsu=memleak.tests evt=sax#dom
+transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4
+transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re.tests#unittest.tests#MSFT.tests mod=pmap#dumb
+transform/scripts/memoryleak.pl dri=cpp-api 
+transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests
+transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests
+transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false
+transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false
+transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter.tests untar=false
+transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain.tests untar=false
+transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false
+transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false
+transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false
+transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000
+transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000
+xpath/scripts/conformance.pl dri=cpp_api#cpp_api_dom
+xpath/scripts/conformance.pl dri=example mod=ApplyXPath tsu=example-ApplyXPath.tests
+xpath/scripts/conformance.pl dri=example mod=XPathVariable tsu=example-XPathVariable.tests
+xpath/scripts/conformance.pl dri=example mod=XPathExternalFunction tsu=example-XPathExternalFunction.tests
+xpath/scripts/nightly-intel-conf.pl
+xpath/scripts/nightly-intel-memleak.pl
+	</cases>
+</testcase>
+<testcase name="windows-nightly-cpp">
+	<params>
+		<param name="os" value="windows"/>
+		<param name="arch" value="x86"/>
+		<param name="build" value="all"/>
+		<param name="cop" value="t"/>
+	</params>
+	<cases>
+parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests
+parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests
+parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests
+parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests
+parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests
+parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests
+validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests
+validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests
+validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii
+validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests
+validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests
+validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax
+validator/scripts/conformance.pl dri=cppval-example tsu=options.conf
+transform/scripts/conformance.pl dri=napa2re tsu=xalan-napa2re.tests#xslt-bench-napa2re-win.tests#unittest.tests#MSFT.tests mod=jit
+transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re-win.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4
+transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re-win.tests#unittest.tests#MSFT.tests mod=pmap#dumb
+transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests
+transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests
+transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false
+transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false
+transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter-win.tests untar=false
+transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain-win.tests untar=false
+transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false
+transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform-win.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false
+transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false
+transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000
+transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000
+xpath/scripts/conformance.pl dri=example mod=ApplyXPath tsu=example-ApplyXPath.tests
+xpath/scripts/conformance.pl dri=example mod=XPathVariable tsu=example-XPathVariable.tests
+xpath/scripts/conformance.pl dri=example mod=XPathExternalFunction tsu=example-XPathExternalFunction.tests
+xpath/scripts/nightly-intel-conf.pl
+	</cases>
+</testcase>
+<testcase name="windows-nightly64-cpp">
+	<params>
+		<param name="os" value="windows"/>
+		<param name="arch" value="x86_64"/>
+		<param name="build" value="all"/>
+		<param name="cop" value="t"/>
+	</params>
+	<cases>
+parser/scripts/conformance.pl dri=cppapi-sax tsu=w3c.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=cppapi-dom tsu=w3c-cppdom.tests#russia.tests#ext.tests
+parser/scripts/conformance.pl dri=example mod=SAX2Print tsu=example-SAX2Print.tests
+parser/scripts/conformance.pl dri=example mod=DOMPrint tsu=example-DOMPrint.tests
+parser/scripts/conformance.pl dri=example mod=XMLDocPrint tsu=example-XMLDocPrint.tests
+parser/scripts/conformance.pl dri=example mod=ValidatingParser tsu=example-ValidatingParser.tests
+parser/scripts/conformance.pl dri=jsontoxml tsu=jsontoxml.tests
+parser/scripts/conformance.pl dri=xmltojson tsu=xmltojson.tests
+validator/scripts/conformance.pl dri=ssv-psvi evt=ssv tsu=ssv-w3c-schema.tests
+validator/scripts/conformance.pl dri=new-val-psvi evt=sax#esii tsu=w3c-schema-light.tests
+validator/scripts/conformance.pl dri=psvi-melon tsu=positive-w3c-schema.tests evt=sax#esii
+validator/scripts/conformance.pl dri=intel-val evt=sax#dom tsu=w3c-schema.tests#customer.tests#fixed-bugs.tests#workload.tests#xerces.tests
+validator/scripts/conformance.pl dri=standalone-simpleval tsu=standalone-simpleval.tests evt=sax
+validator/scripts/conformance.pl dri=intel-ssv evt=ssv tsu=ssv-w3c-schema.tests#ssv-customer.tests#ssv-fixed-bugs.tests
+validator/scripts/conformance.pl dri=cppval-example tsu=options.conf
+transform/scripts/conformance.pl dri=cpp-api tsu=xalan-napa2re.tests#xslt-bench-napa2re-win.tests#xslt1-napa2re.tests#unittest.tests#MSFT.tests mod=panapa4
+transform/scripts/conformance.pl dri=cpp-api tsu=xslt1-napa2re.tests#xalan-napa2re.tests#xslt-bench-napa2re-win.tests#unittest.tests#MSFT.tests mod=pmap#dumb
+transform/scripts/conformance.pl dri=cpp-api tsu=extfunc.tests
+transform/scripts/conformance.pl dri=example mod=CompileStylesheet tsu=example-CompileStylesheet.tests
+transform/scripts/conformance.pl dri=example mod=MultiThread tsu=example-MultiThread.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SimpleTransform tsu=example-SimpleTransform.tests untar=false
+transform/scripts/conformance.pl dri=example mod=UDF tsu=example-UDF.tests untar=false
+transform/scripts/conformance.pl dri=example mod=StylesheetParameter tsu=example-StylesheetParameter-win.tests untar=false
+transform/scripts/conformance.pl dri=example mod=TransformChain tsu=example-TransformChain-win.tests untar=false
+transform/scripts/conformance.pl dri=example mod=Redirect tsu=example-Redirect.tests untar=false
+transform/scripts/conformance.pl dri=example mod=MultipleTypeTransform tsu=example-MultipleTypeTransform-win.tests untar=false
+transform/scripts/conformance.pl dri=example mod=SoapMessage tsu=example-SoapMessage.tests untar=false
+transform/scripts/conformance.pl dri=example mod=BookStore tsu=example-BookStore.tests untar=false
+transform/scripts/conformance.pl dri=xslt2 tsu=xslt2r.tests iteration=1000
+transform/scripts/conformance.pl dri=xslt2 tsu=xalan-napa2re.tests mod=XSLT10 iteration=1000
+	</cases>
+</testcase>
+</testcases>

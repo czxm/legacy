@@ -1,0 +1,151 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.demo.DemoFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+</import>
+<variables>
+    <variable name="OS">
+      <values>
+        <value>windows</value>
+        <value>linux</value>
+      </values>
+    </variable>
+    <variable name="ARCH">
+	  <values>
+        <value>x86</value>
+        <value>x86_64</value>
+      </values>
+	</variable>
+	<variable name="machine_count">
+	  <values>
+	    <value>1</value>
+	    <value>2</value>
+	    <value>3</value>
+	    <value>4</value>	    
+	  </values>
+	</variable>	
+	<variable name="test_var">
+	  <values>
+	    <value>1</value>
+	    <value>2</value>
+	    <value>4</value>
+	  </values>
+	</variable>	
+	<variable name="quit">
+	  <values>
+	    <value>111</value>
+	  </values>
+	</variable>		
+	<variable name="command">
+	</variable>	
+	<variable name="timeout">
+	  <values>
+	    <value>0</value>
+	  </values>
+	</variable>
+	<variable name="uploadfile">
+	</variable>		
+</variables>
+<tasklets>
+    <tasklet public="false" id="CommandRunner">
+		<desc>Simple Command Runner</desc>
+		<contributer>ASIP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.demo.CommandRunner</provider>
+	</tasklet>
+    <tasklet public="false" id="demo0">
+		<desc>demo1</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.demo.Demo0Runner</provider>
+	</tasklet>
+    <tasklet public="false" id="demo1">
+		<desc>demo1</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.demo.Demo1Runner</provider>
+	</tasklet>
+	<tasklet public="false" id="demo2"  sharable="full">
+		<desc>demo2</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.demo.Demo2Runner</provider>
+	</tasklet>
+	<tasklet public="false" id="demo3"  sharable="full">
+		<desc>demo3</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.demo.Demo3Runner</provider>
+	</tasklet>	
+</tasklets>
+<ui>
+	<window id="example" title="Demo Parameters" >
+	    <form>
+	    	<!-- <fieldset label="Test Target"> -->
+	    		<combo label="OSName" id="os" bind="OS"/>
+	    		<combo label="Arch" id="arch" bind="ARCH"/>
+	    		<combo label="Number of Machines" id="machine_count" bind="machine_count"/>
+	    		<textfield label="Command" id="command" bind="command"/>  	
+	    		<textfield label="Timeout(seconds)" id="timeout" bind="timeout"/>  	
+	    		<fileuploadfield label="Upload a file" id="uploadfile" bind="uploadfile"/>
+	    		<!--combo label="Shared Variable" id="test_var" bind="test_var"/-->
+	    	    <!--combo label="quit" id="quit" bind="quit"/-->
+	    	<!-- </fieldset> -->
+		<submit>
+       	<formItem depends="os"/>
+       <formItem depends="arch"/>
+       <formItem depends="machine_count"/>       
+       <!--formItem depends="test_var"/-->
+       <!--formItem depends="quit"/-->
+       <formItem depends="command"/>
+       <formItem depends="timeout"/>
+       <formItem depends="uploadfile"/>
+      </submit>
+	    </form>
+	</window>
+</ui>
+
+<flow>
+    <sequence>
+        <tasklet id="CommandRunner" timeout="$timeout">
+            <machine>
+                <os>$OS</os>
+                <arch>$ARCH</arch>
+                <count min="1" max="10">$machine_count </count>
+            </machine>
+            <items provider="embedded"/>
+        </tasklet> 
+    </sequence>            
+    <!--sequence>
+        <tasklet id="demo0" timeout="7200">
+            <machine>
+                <os>$OS</os>
+                <arch>$ARCH</arch>
+                <count min="1" max="10">$machine_count </count>
+            </machine>
+            <items provider="embedded"/>
+        </tasklet>    
+        <tasklet id="demo1" timeout="7200">
+            <machine>
+                <os>$OS</os>
+                <arch>$ARCH</arch>
+                <count min="1" max="1">1</count>
+            </machine>
+            <items provider="embedded"/>
+        </tasklet>
+        <parallel level="2">
+          <tasklet id="demo2" timeout="3600">
+            <items provider="embedded"/>
+	        <machine>
+	             <os>$OS</os>
+	             <arch>$ARCH</arch>
+	             <count min="1" max="1">1</count>
+	        </machine>              
+          </tasklet>
+          <tasklet id="demo3" timeout="3600">
+            <items provider="embedded"/>
+            <machine>
+                <os>$OS</os>
+                <arch>$ARCH</arch>
+                <count min="1" max="1">1</count>
+            </machine>            
+          </tasklet>
+       </parallel>     
+    </sequence-->
+</flow> 
+</feature>

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Feature-Name: SplitPoint Reliability Test
+Feature-ShortName: Reliability
+Feature-Hint: End-to-End/Reliability Test for SplitPoint
+Feature-Version: 0.9e
+Feature-Contributer: SOAP Conformance & Performance Team
+Feature-Icons: resource/logo.png resource/intel.gif
+Feature-Descriptor: feature.xml
+Feature-Dependences: 

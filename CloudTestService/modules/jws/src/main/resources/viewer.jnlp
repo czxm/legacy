@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<jnlp spec="1.0+" codebase="@BASEURL@">  
+    <information>  
+        <title>Cloud Test Service</title>  
+        <vendor>Intel</vendor>  
+        <!--icon kind="splash" href="splash.gif"/-->  
+        <!--offline-allowed/-->  
+    </information>  
+    <security>  
+        <all-permissions/>
+    </security>  
+    <application-desc main-class="com.intel.cedar.jws.viewer.Viewer">  
+        <argument>@SERVICE@</argument>
+        <argument>@DESTHOST@</argument>
+        <argument>@DESTPORT@</argument>
+        <argument>@FORWARDER@</argument>        
+    </application-desc>
+    <resources>  
+        <j2se version="1.4+" />  
+        <jar href="jws.jar" main="true"/>  
+        <jar href="ganymed-ssh2-build251beta1.jar"/>
+        <jar href="vncviewer.jar"/>
+    </resources>  
+</jnlp>  

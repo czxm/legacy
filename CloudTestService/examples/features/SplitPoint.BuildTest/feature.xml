@@ -1,0 +1,190 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.splitpoint.TestFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+</import>
+<variables>
+    <variable name="OS">
+      <values>
+        <value>Windows Server 2003</value>
+        <value>Windows Server 2008</value>
+        <value>RedHat Advanced Server 5</value>
+      </values>
+    </variable>
+    <variable name="ARCH">
+	  <values>
+        <value>x86</value>
+        <value>x86_64</value>
+      </values>
+    </variable>
+    <variable name="svn_url">
+      <values>
+        <value>https://sh-svn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/splitpoint/trunk</value>
+      </values>
+    </variable>
+    <variable name="svn_rev">
+    </variable>
+    <variable name="isCheckIn">
+    </variable>
+    <variable name="branch">
+    </variable>
+    <variable name="trunk_archive_removed">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/trunk_37603.zip</value>
+      </values>
+    </variable>
+    <variable name="branch_landmark_archive">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/landmark_36618.zip</value>
+      </values>
+    </variable>    
+    <variable name="trunk_config_archive">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/ECA360Configuration.zip</value>
+      </values>
+    </variable>
+    <variable name="branch_landmark_config_archive">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/LandmarkConfiguration.zip</value>
+      </values>
+    </variable>    
+    <variable name="trunk_sanity_test_config">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/trunk_sanity.xml</value>
+      </values>
+    </variable>
+    <variable name="branch_landmark_sanity_test_config">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/landmark_sanity.xml</value>
+      </values>
+    </variable>     
+</variables>
+
+<tasklets>
+    <tasklet public="true" id="splitpoint.tester" sharable="none">
+		<desc>SplitPoint Tester</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.splitpoint.Tester</provider>
+    </tasklet>
+</tasklets>
+
+<ui>
+    <window id="example" title="SplitPoint Test Parameters" >
+        <form>
+	    	<!-- <fieldset label="Test Target"> -->
+	    		<combo label="OSName" id="os" bind="OS"/>
+	    		<combo label="Arch" id="arch" bind="ARCH"/>
+	    	<!-- </fieldset> -->
+	    	<svn id="svn" label="SplitPoint source">
+          		<url bind="svn_url" id="svnurl"/>
+          		<rev bind="svn_rev" id="svnrev"/>
+          		<log id="svnlog"/> 
+		</svn>
+		<submit>
+       	<formItem depends="os"/>
+       <formItem depends="arch"/>
+       <formItem depends="svnurl"/>
+       <formItem depends="svnrev"/>
+       </submit>
+       </form>
+    </window>
+</ui>
+
+<flow>
+    <sequence>
+        <tasklet name="test" id="splitpoint.tester" timeout="3600" onfail="ignore" debug="false">
+            <machine>
+                <properties>
+                </properties>
+                <os>$OS</os>
+                <arch>$ARCH</arch>
+                <count min="1" max="1">1</count>
+                <cpu min="2" max="4">4</cpu>
+                <mem min="2" max="4">2</mem>    	<!-- unit is G -->
+                <disk min="10" max="10">10</disk> 	<!-- unit is G -->
+            </machine>
+            <items provider="embedded"/>
+        </tasklet>
+    </sequence>
+</flow> 
+
+
+<launches>
+     <launchset name="splitpoint_checkin_linux32" desc="Launch Configuration for Check-in Test" enable="false">
+	 <option>
+	    <reproducable>false</reproducable>
+	    <user></user>  <!-- should be a registered (value not required) -->
+	    <comment>check-in</comment> <!-- value not required -->
+	    <receivers>split.point@intel.com,haifeng.chen@intel.com,biao.b.chen@intel.com,cheng.a.wang@intel.com,john.g.de.freitas@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+	 </option>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>linux</value></values></variable>
+	      <variable name="ARCH"><values><value>x86</value></values></variable>
+	      <variable name="isCheckIn"><values><value>true</value></values></variable>
+	      <!-- the SVN trigger will set svn_url and svn_rev -->
+ 	    </variables>
+	 </launch>
+  </launchset>  
+
+  <launchset name="daily_win" desc="Launch Configuration for Daily Test" enable="false">
+	 <option>
+	    <reproducable>false</reproducable>
+	    <user></user>  <!-- should be a registered (value not required) -->
+	    <comment></comment> <!-- value not required -->
+	    <receivers>split.point@intel.com,haifeng.chen@intel.com,biao.b.chen@intel.com,cheng.a.wang@intel.com,john.g.de.freitas@intel.com</receivers>  <!-- comma seperated list of all emails to receive the report -->
+	 </option>
+     <launch>
+	    <!-- below variables override the declared initialized values -->
+	    <variables>
+	      <variable name="OS"><values><value>Windows Server 2003</value></values></variable>
+	      <variable name="ARCH"><values><value>x86_64</value></values></variable>
+            <!-- 
+                 svn_rev is not required for nightly test, the feature will automatically fetch the latest rev before executing tests
+            -->
+              <variable name="svn_url"><values><value>https://sh-svn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/splitpoint/trunk</value></values></variable>
+ 	    </variables>
+	 </launch>
+  </launchset>  
+</launches>
+
+<triggers>
+  <!--
+    Triggers can be customized after deployed
+    trigger attributes:
+    name     the unique name for a trigger acrosss this feature
+    type     supported values are cron and svn
+             for svn trigger, the behavior is the same as cruiseControl,
+             the task will be started only when there's new commit
+    launch   the launch group which contains all the task submission configuration
+  -->
+  <trigger name="landmark_checkin_linux32" type="svn" launch="splitpoint_checkin_linux32">
+    <svn>
+      <!-- svn URL to track (value required) -->
+      <url bind="svn_url">https://sh-svn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/splitpoint/branches/branch_landmark</url>
+      <!-- start from which svn revision (value optional) -->
+      <rev bind="svn_rev"></rev>
+      <!-- username and password to connect to SVN (value optional) -->
+      <user></user>
+      <password></password>
+      <repository bind="branch">landmark</repository>
+    </svn>
+  </trigger>
+  <trigger name="trunk_checkin_linux32" type="svn" launch="splitpoint_checkin_linux32">
+    <svn>
+      <!-- svn URL to track (value required) -->
+      <url bind="svn_url">https://sh-svn.sh.intel.com/ssg_repos/svn_xmldev/xmldev/splitpoint/trunk</url>
+      <!-- start from which svn revision (value optional) -->
+      <rev bind="svn_rev"></rev>
+      <!-- username and password to connect to SVN (value optional) -->
+      <user></user>
+      <password></password>
+      <repository bind="branch">trunk</repository>
+    </svn>
+  </trigger>
+  <trigger name="daily_win" type="cron" launch="daily_win">
+    <cron>0 0 10 * * ?</cron> <!-- 10:00 AM every day -->
+  </trigger>
+</triggers>
+</feature>

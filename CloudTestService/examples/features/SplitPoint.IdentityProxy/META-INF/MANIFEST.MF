@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Feature-Name: Identity Proxy Test
+Feature-ShortName: IdentityProxy
+Feature-Hint: Identity Proxy Test for SplitPoint
+Feature-Version: 1.0e
+Feature-Contributer: SOAP Conformance & Performance Team
+Feature-Icons: resource/logo.png resource/intel.gif
+Feature-Descriptor: feature.xml
+Feature-Dependences: 

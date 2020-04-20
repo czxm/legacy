@@ -1,0 +1,24 @@
+<sanity>
+  <Param  name="CookiePolicy">relaxed</Param>
+  <Param  name="SO_Timeout">60</Param>
+  <Param  name="Conn_Timeout">60</Param>
+  <Param  name="http.protocol.allow-circular-redirects">true</Param>
+  <Param  name="wait">1</Param>
+  <Param  name="sequential">true</Param>
+  <Param  name="transaction">SimpleHttp</Param>
+  <Param  name="base">https://localhost:8443</Param>
+  <Param  name="POST">j_security_check</Param>
+  <Param  name="body"><![CDATA[j_username=admin&j_password=passwd]]></Param>
+  <Param  name="ContentType">application/x-www-form-urlencoded</Param>
+  <Param  name="/POST">Loading</Param>
+  <Param  name="transaction">LdapSSO</Param>
+  <Param  name="username">intel.cloudexpressway</Param>
+  <Param  name="password">123456</Param>  
+  <Param  name="proxy">proxy01.cd.intel.com</Param>
+  <Param  name="port">911</Param>
+  <Param  name="proxyExclusion">192.168.*.*</Param>
+  <Param  name="appLoginUrl">https://localhost:8443/splat/identityservice/package/idpDEMO/SSO?SpEntity=salesforceDemo</Param>
+  <Param  name="iceServerSSOUrl">https://localhost:8443/splat/identityservice/package/idpDEMO/extAuthn/login</Param>
+  <Param  name="logoutURL">https://localhost:8443/splat/identityservice/package/idpDEMO/saml2/SLO?SpEntity=salesforceDemo</Param>  
+  <Param  name="matchString">https://na8.salesforce.com/home/home.jsp</Param>  
+</sanity>

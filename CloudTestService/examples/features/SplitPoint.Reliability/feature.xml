@@ -1,0 +1,141 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.splitpoint.reliability.ReliabilityTestFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+</import>
+<variables>
+	<variable name="client_count">
+          <values>
+             <value>1</value>
+             <value>4</value>
+             <value>8</value>
+             <value>16</value>
+             <value>32</value>
+             <value>64</value>
+          </values>
+	</variable>
+	<variable name="spServer">
+          <values>
+             <value>splitpointperf3-linux64.sh.intel.com</value>
+          </values>
+	</variable>
+	<variable name="dummyServer">
+          <values>
+             <value>splatqa-server.sh.intel.com</value>
+          </values>
+	</variable>
+	<variable name="thread_count">
+          <values>
+             <value>1</value>
+             <value>4</value>
+             <value>8</value>
+             <value>16</value>
+             <value>32</value>
+             <value>64</value>
+             <value>128</value>
+             <value>256</value>
+          </values>
+	</variable>
+	<variable name="loop_count">
+          <values>
+             <value>100</value>
+             <value>200</value>
+             <value>400</value>
+             <value>600</value>
+             <value>800</value>                          
+             <value>1000</value>
+             <value>5000</value>             
+             <value>10000</value>
+          </values>
+	</variable>
+	<variable name="perfloop_count">
+          <values>
+             <value>100</value>
+             <value>200</value>
+             <value>400</value>
+             <value>600</value>
+             <value>800</value>                          
+             <value>1000</value>
+             <value>5000</value>             
+             <value>10000</value>
+          </values>
+	</variable>
+	<variable name="interval">
+          <values>
+             <value>10</value>
+             <value>20</value>
+             <value>40</value>                          
+          </values>
+	</variable>
+	<variable name="engine">
+          <values>
+             <value>TestEngineSTC</value>
+             <value>TestEngineMTC</value>
+          </values>
+	</variable>
+	<variable name="driver">
+          <values>
+             <value>ADFederatingDriver</value>
+             <value>AuthorizationDriver</value>
+             <value>AuthorizationNoCahceDriver</value>
+             <value>CASDriver</value>
+             <value>DenyOverridesAuthorizationPolicyDriver</value>
+             <value>DotNetAppHttpPostDriver</value>
+             <value>DotNetAppHttpRedirectDriver</value>
+             <value>IdentityProxyDriver</value>
+             <value>LDAPFederatingDriver</value>
+             <value>OpenIDDriver</value>
+             <value>PermitOverridesAuthorizationPolicyDriver</value>
+          </values>
+	</variable>	
+</variables>
+<tasklets>
+    <tasklet public="false" id="ReliabilityTest" sharable="none">
+		<desc>Test SplitPoint's reliability</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.splitpoint.reliability.ReliablityTest</provider>
+	</tasklet>
+</tasklets>
+<ui>
+	<window id="main" title="Reliability Test Parameters" >
+	    <form>
+                <textfield label="SplitPoint Server" id="spServer" bind="spServer"/>
+                <textfield label="Dummy Server" id="dummyServer" bind="dummyServer"/>
+	        <combo label="TestEngine" id="engine" bind="engine"/>
+	        <combo label="Driver" id="driver" bind="driver"/>
+                <combo label="Number of Clients" id="client_count" bind="client_count"/>
+                <combo label="Number of threads" id="thread_count" bind="thread_count"/>
+                <combo label="Number of Loops" id="loop_count" bind="loop_count"/>
+                <combo label="Number of PerfLoops" id="perfloop_count" bind="perfloop_count"/>
+                <combo label="Interval" id="interval" bind="interval"/>
+		<submit>
+       <formItem depends="spServer"/>
+       <formItem depends="dummyServer"/>
+       <formItem depends="client_count"/>
+       <formItem depends="thread_count"/>
+       <formItem depends="loop_count"/>
+       <formItem depends="perfloop_count"/>
+       <formItem depends="engine"/>
+       <formItem depends="driver"/>
+       <formItem depends="interval"/>
+      </submit>
+	    </form>
+	</window>
+</ui>
+
+<flow>
+    <sequence>
+        <tasklet id="ReliabilityTest">
+            <machine>
+                <properties>
+                   <property name="CPP" value="true"/>
+                </properties>
+                <os>linux</os>
+                <count min="1" max="50">$client_count+1</count>
+                <cpu min="2" max="2">2</cpu>
+            </machine>
+            <items provider="embedded"/>
+        </tasklet>
+    </sequence>
+</flow> 
+</feature>

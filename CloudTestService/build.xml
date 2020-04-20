@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+	Apache Ant build file for CloudTestService
+-->
+<project basedir="." default="build" name="cedar">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+	
+	  <condition property="default_cedar_home" value="c:\cedar">
+		 <os family="windows" />
+	  </condition>
+	  <condition property="default_cedar_home" value="/opt/cedar">
+		 <os family="unix" />
+	  </condition>
+
+  <property environment="localenv"/>
+  <property name="cedar.home.0" value="${localenv.CEDAR_HOME}"/>
+  <condition property="cedar.home" value="${default_cedar_home}" else="${localenv.CEDAR_HOME}">
+    <contains string="${cedar.home.0}" substring="localenv"/>
+  </condition>
+
+  <property name="cedar.bin.dir" value="${cedar.home}/bin"/>
+  <property name="cedar.startup.dir" value="${cedar.home}/startup"/>	
+  <property name="cedar.conf.dir" value="${cedar.home}/conf"/>
+  <property name="cedar.lib.dir" value="${cedar.home}/lib"/>
+  <property name="cedar.log.dir" value="${cedar.home}/log"/>
+  <property name="cedar.webapp.dir" value="${cedar.home}/webapps"/>
+  <property name="cedar.version" value="1.0"/>
+
+  <property name="build.dir" value="${basedir}/build"/>
+  <property name="jar.file" value="${build.dir}/${ant.project.name}-${cedar.version}.jar"/>
+  <property name="bootstrap.jar.file" value="${build.dir}/bootstrap.jar"/>
+  <property name="jws.jar.file" value="${build.dir}/jws.jar"/>
+  <property name="www.war.file" value="${build.dir}/root.war"/>
+  <property name="agent.war.file" value="${build.dir}/agent.war"/>
+  <property name="lib.dir" value="${basedir}/lib"/>
+
+	<path id="CloudTestService.src">
+		<pathelement location="modules/agent/src/main/java"/>
+		<pathelement location="modules/instance-manager/src/main/java"/>
+		<pathelement location="modules/core/src/main/java"/>
+		<pathelement location="modules/www/src/main/java"/>
+		<pathelement location="modules/engine/src/main/java"/>
+		<pathelement location="modules/storage-manager/src/main/java"/>
+		<pathelement location="modules/cloud-manager/src/main/java"/>
+		<pathelement location="modules/user-manager/src/main/java"/>
+		<pathelement location="modules/jws/src/main/java"/>
+	</path>
+
+	<property name="gwt.module.name" value="com.intel.cedar.service.CloudTestService"/>
+	
+	<!-- gwt sdk classpath -->
+	<path id="gwt-sdk.classpath">
+		<pathelement location="modules/www/src/main/java"/>
+		<path refid="CloudTestService.classpath"/>
+	</path>
+	
+    <path id="CloudTestService.classpath">
+        <pathelement location="${build.dir}/classes"/>
+	<fileset dir="${lib.dir}">
+		<include name="**/*.jar" />
+                <exclude name="**/gwt*.jar"/>
+	</fileset>
+	<fileset dir="${lib.dir}">
+		<include name="**/gwt*.jar" />
+	</fileset>
+    </path>
+	
+    <target name="init">
+        <mkdir dir="${build.dir}/classes"/>
+        <mkdir dir="${build.dir}/classes/cedar-tools"/>
+        <copy includeemptydirs="false" todir="${build.dir}/war/WEB-INF/classes">
+            <fileset dir="modules/www/src/main/java" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes/cedar-tools">
+            <fileset dir="${basedir}/cedar-tools" erroronmissingdir="false"></fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/www/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/instance-manager/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+            <fileset dir="modules/instance-manager/src/main/java" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/agent/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/core/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/engine/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+            <fileset dir="modules/engine/src/main/java" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/storage-manager/src/main/resource" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/cloud-manager/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/user-manager/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${build.dir}/classes">
+            <fileset dir="modules/jws/src/main/resources" erroronmissingdir="false">
+                <exclude name="**/keystore.*"/>
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.exe"/>
+            </fileset>
+        </copy>    	
+    </target>
+	
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+    <target depends="clean" name="distclean">
+        <delete dir="${dist.dir}"/>
+    </target>
+	
+    <target depends="build-java,build-gwt" name="build">
+    </target>
+	
+	<target name="check-src">
+		<uptodate property="gwtc.notRequired" targetfile="${www.war.file}">
+			<srcfiles dir="modules/www/src/main/java" includes="**/*" />
+			<!--srcfiles dir="war" includes="**/*" /-->
+		</uptodate>
+	</target>	
+
+    <target depends="init" name="build-java">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${build.dir}/classes" source="${source}" target="${target}">
+            <src refid="CloudTestService.src"/>
+            <classpath refid="CloudTestService.classpath"/>
+        </javac>
+	<jar destfile="${jar.file}">
+      	  <fileset dir="${build.dir}/classes">
+	    <include name="**/*"/>
+         </fileset>
+    </jar>
+    <jar destfile="${bootstrap.jar.file}">
+    	<fileset dir="${build.dir}/classes">
+	    <include name="**/cedar/util/Digester*"/>
+	    <include name="**/cedar/util/Cedar*"/>
+	    <include name="**/cedar/util/NetUtil*"/>
+    	    <include name="**/cedar/util/Service*"/>
+    	    <include name="**/cedar/util/*Directory*"/>
+    	    <include name="**/cedar/core/Bootstrapper*"/>
+       </fileset>
+    </jar>    
+    <jar destfile="${jws.jar.file}">
+		<fileset dir="${build.dir}/classes">
+	    <include name="**/cedar/jws/**"/>
+	   </fileset>
+        <fileset dir="modules/jws/src/main/resources" erroronmissingdir="false">
+            <include name="**/*.exe"/>
+        </fileset>
+    </jar>  
+	<exec executable="jarsigner">
+	    <arg value="-keystore"/>
+	    <arg value="${basedir}/modules/jws/src/main/resources/keystore.cedar"/>
+		<arg value="-storepass"/>
+		<arg value="secret"/>
+	    <arg value="${jws.jar.file}"/>
+		<arg value="cedar"/>
+	</exec>
+	<war destfile="${agent.war.file}" webxml="${basedir}/agent-webapp/agent/WEB-INF/web.xml" basedir="${basedir}/agent-webapp" />
+    </target>
+	
+	<target name="build-gwt" depends="build-java,check-src" unless="gwtc.notRequired">
+		<java classname="com.google.gwt.dev.Compiler"
+			fork="yes"
+			failonerror="true">
+			<classpath refid="gwt-sdk.classpath"/>
+			<jvmarg value="-Xmx512M" />
+			<arg value="-war"/>
+			<arg value="${build.dir}/war"/>
+			<arg value="${gwt.module.name}"/>
+                        <arg value="-draftCompile"/>
+                        <arg value="-localWorkers"/>
+                        <arg value="4"/>
+		</java>
+        <mkdir dir="${build.dir}/war/resources"/>
+	<copy todir="${build.dir}/war/resources">
+	  <fileset dir="${basedir}/war/resources"/>
+        </copy>
+	<copy todir="${build.dir}/war/WEB-INF">
+	  <fileset dir="${basedir}/war/WEB-INF">
+	    <include name="**/*.xml"/>
+          </fileset>
+        </copy>
+        <copy todir="${build.dir}/war">
+	  <fileset dir="${basedir}/war">
+	    <include name="**/*.css"/>
+	    <include name="**/*.html"/>
+          </fileset>
+	</copy>
+	<war destfile="${www.war.file}" webxml="${basedir}/war/WEB-INF/web.xml" basedir="${build.dir}/war" />
+	</target>
+	
+    <target name="deploy" depends="build">
+        <mkdir dir="${cedar.conf.dir}"/>
+        <mkdir dir="${cedar.lib.dir}"/>
+        <mkdir dir="${cedar.log.dir}"/>
+        <mkdir dir="${cedar.webapp.dir}"/>
+        <copy includeemptydirs="false" todir="${cedar.conf.dir}">
+            <fileset dir="${basedir}/conf">
+            	<exclude name="**/agent.conf" />
+            </fileset>
+        </copy>    	
+        <copy file="${basedir}/war/WEB-INF/log4j.properties" tofile="${cedar.conf.dir}/log4j.properties"/>
+    	<copy file="${bootstrap.jar.file}" tofile="${cedar.startup.dir}/bootstrap.jar"/>
+        <copy includeemptydirs="false" todir="${cedar.lib.dir}">
+            <fileset dir="${basedir}/modules/agent/library"/>
+        </copy>
+        <copy includeemptydirs="false" todir="${cedar.startup.dir}">
+            <fileset dir="${basedir}/startup" erroronmissingdir="false"></fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${cedar.lib.dir}">
+            <fileset dir="${lib.dir}" erroronmissingdir="false">
+		       <include name="**/*.jar" />
+		       <exclude name="**/gwt-dev.jar" />
+            </fileset>
+            <fileset dir="${build.dir}" erroronmissingdir="false">
+		       <include name="**/*.jar" />
+               <exclude name="**/bootstrap.jar" />
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${cedar.webapp.dir}">
+            <fileset dir="${build.dir}" erroronmissingdir="false">
+		       <include name="**/root.war" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="deploy-agent" depends="build-java">
+        <mkdir dir="${cedar.conf.dir}"/>
+        <mkdir dir="${cedar.lib.dir}"/>
+        <mkdir dir="${cedar.log.dir}"/>
+        <mkdir dir="${cedar.webapp.dir}"/>
+    	<mkdir dir="${cedar.startup.dir}"/>
+        <copy includeemptydirs="false" todir="${cedar.conf.dir}">
+            <fileset dir="${basedir}/conf">
+            	<include name="**/agent.conf" />
+            </fileset>
+        </copy>  
+        <copy file="${basedir}/war/WEB-INF/log4j.properties" tofile="${cedar.conf.dir}/log4j.properties"/>
+    	<copy file="${bootstrap.jar.file}" tofile="${cedar.startup.dir}/bootstrap.jar"/>
+    	<copy includeemptydirs="false" todir="${cedar.lib.dir}">
+            <fileset dir="${basedir}/modules/agent/library"/>
+        </copy>
+        <copy includeemptydirs="false" todir="${cedar.startup.dir}">
+            <fileset dir="${basedir}/startup" erroronmissingdir="false"></fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${cedar.lib.dir}">
+            <fileset dir="${lib.dir}" erroronmissingdir="false">
+		       <include name="**/*commons*.jar" />
+		       <include name="**/*jetty*.jar" />
+		       <include name="**/*log*.jar" />
+		       <include name="**/*slf*.jar" />
+		       <include name="**/*mail*.jar" />
+		       <include name="**/gxt*.jar" />
+		       <include name="**/cedar*.jar" />
+		       <include name="**/servlet*.jar" />
+		       <include name="**/xstream*.jar" />
+		       <include name="**/*http*.jar" />
+		       <include name="**/*mime*.jar" />
+		       <include name="**/bcprov.jar" />
+                       <include name="**/ganymed-ssh2*.jar" />
+                       <include name="**/svnkit*.jar" />
+            </fileset>
+            <fileset dir="${build.dir}" erroronmissingdir="false">
+		       <include name="**/*.jar" />
+               <exclude name="**/bootstrap.jar" />
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="${cedar.webapp.dir}">
+            <fileset dir="${build.dir}" erroronmissingdir="false">
+		       <include name="**/agent.war" />
+            </fileset>
+        </copy>
+    </target>
+</project>

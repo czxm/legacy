@@ -1,0 +1,366 @@
+/** Add css rules here for your application. */
+
+
+/** Example rules used by the template application (remove for your app) */
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #777777;
+  margin: 40px 0px 70px;
+  text-align: center;
+}
+
+.sendButton {
+  display: block;
+  font-size: 16pt;
+}
+
+.panelHeight {
+  height: 100%;
+}
+
+/** Most GWT widgets already have a style name defined */
+.gwt-DialogBox {
+  width: 400px;
+}
+
+.dialogVPanel {
+  margin: 5px;
+}
+
+.mainpageHeader {
+  background: transparent url(/resources/images/cloudtestservice/mainpage_header_bg_99bbe8.png);
+}
+.reg_form_header {
+  color: #1d6689;
+  font-size: 20;
+  font-family: Verdana;
+  font-weight: bold;	
+}
+
+.reg_form {
+  background-image: url(resources/images/cloudtestservice/reg_form_border_420x560_1d6689.png);
+}
+
+.reg_form_label {
+  color: #1d6689;
+  font-size: 12;
+  font-family: verdana;
+}
+
+.mainpageHeader_user {
+  /*color: #3e88e9;*/
+  color: #1d6689;
+  font-style: italic;
+  font-weight: bold;
+  /*background-image: url(/resources/images/cloudtestservice/user_bg_07397c.png);*/
+}
+
+.warning {
+  color: DarkRed;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.clock {
+  /*color: #3e88e9;*/
+  color: #1d6689;
+  /*background-image: url(/resources/images/cloudtestservice/user_bg_07397c.png);*/
+}
+
+.mainpageHeader_logout{
+  color: #969696;
+  text-decoration: underline;
+}
+
+.mainpageBody {
+  background: transparent url(/resources/images/cloudtestservice/mainpage_body_bg_99bbe8.png);
+}
+
+.regpageBody {
+  background: transparent url(/resources/images/cloudtestservice/regpage_body_bg_99bbe8.png);
+}
+
+.mainpageDiv {
+  background: transparent;
+}
+
+.mainpageLogo {
+  background: transparent url(/resources/images/cloudtestservice/mainpage_logo.png);
+  color: #3399cc
+}
+
+.setting {
+  background-image: url(/resources/images/cloudtestservice/management.png);
+}
+
+.cloud {
+  background-image: url(/resources/images/cloudtestservice/cloud.png);
+}
+
+.image {
+  background-image: url(/resources/images/cloudtestservice/image.png);
+}
+
+.instance {
+  background-image: url(/resources/images/cloudtestservice/instance.png);
+}
+
+.volume {
+  background-image: url(/resources/images/cloudtestservice/volume_16.png);
+}
+
+.host {
+  background-image: url(/resources/images/cloudtestservice/host_16.png);
+}
+
+.list {
+  background-image: url(/resources/images/cloudtestservice/list.png);
+}
+
+.key {
+  background-image: url(/resources/images/cloudtestservice/key.png);
+}
+
+.users {
+  background-image: url(/resources/images/cloudtestservice/user/user_information_16.png);
+}
+
+.features {
+  background-image: url(/resources/images/cloudtestservice/feature/features_16.png);
+}
+
+.services {
+  background-image: url(/resources/images/cloudtestservice/job_16.png);
+}
+
+.history {
+  background-image: url(/resources/images/cloudtestservice/history_16.png);
+}
+
+.addround {
+  background-image: url(/resources/images/cloudtestservice/new.png);
+}
+
+.loading {
+  background: transparent url(/resources/images/cloudtestservice/loading.gif) no-repeat scroll center center;
+}
+
+.logout-over {
+  background-image: url(/resources/images/cloudtestservice/logout_over.png);
+}
+
+.logout-disabled {
+  background-image: url(/resources/images/cloudtestservice/logout.png);
+}
+
+.logout {
+  background-image: url(/resources/images/cloudtestservice/logout.png);
+}
+
+.try_new_user-over{
+  background-image: url(/resources/images/cloudtestservice/try_new_user_over.png);
+}
+
+.try_new_user-disable {
+  background-image: url(/resources/images/cloudtestservice/try_new_user_org.png);
+}
+
+.try_new_user {
+  background-image: url(/resources/images/cloudtestservice/try_new_user_org.png);
+}
+
+.reg_signup-over{
+  background-image: url(/resources/images/cloudtestservice/try_new_user_over_1d6689_458aac_85bbd5_ceefff.png);
+}
+
+.reg_signup-disable {
+  background-image: url(/resources/images/cloudtestservice/try_new_user_org_1d6689.png);
+}
+
+.reg_signup {
+  background-image: url(/resources/images/cloudtestservice/try_new_user_org_1d6689.png);
+}
+
+.reg_cancel-over{
+  background-image: url(/resources/images/cloudtestservice/reg_cancel_over.png);
+}
+
+.reg_cancel-disable {
+  background-image: url(/resources/images/cloudtestservice/reg_cancel_org.png);
+}
+
+.reg_cancel {
+  background-image: url(/resources/images/cloudtestservice/reg_cancel_org.png);
+}
+
+.cedar_submit {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_submit_org.png);
+}
+
+.cedar_submit-disable {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_submit_org.png);
+}
+
+.cedar_submit-over {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_submit_over.png);
+}
+
+.cedar_cancel {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_cancel_org.png);
+}
+
+.cedar_cancel-disable {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_cancel_org.png);
+}
+
+.cedar_cancel-over {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_cancel_over.png);
+}
+
+.cedar_close {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_close_org.png);
+}
+
+.cedar_close-disable {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_close_org.png);
+}
+
+.cedar_close-over {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_close_over.png);
+}
+
+.cedar_save {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_save_org.png);
+}
+
+.cedar_save-disable {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_save_org.png);
+}
+
+.cedar_save-over {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_save_over.png);
+}
+
+.cedar_signin {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_signin_org.png);
+}
+
+.cedar_signin-disable {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_signin_org.png);
+}
+
+.cedar_signin-over {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_signin_over.png);
+}
+
+.cedar_register {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_register_org.png);
+}
+
+.cedar_register-disable {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_register_org.png);
+}
+
+.cedar_register-over {
+  background-image: url(/resources/images/cloudtestservice/icon_btn_register_over.png);
+}
+
+.cedar_label_link {
+  color: #1d6689;
+  font-size: 14px;
+  font-family: Verdana,sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cedar_label_link_disable {
+  color: #bbbbbb;
+  font-size: 14px;
+  font-family: Verdana,sans-serif;
+  text-decoration: underline;
+}
+
+.cedar_label_link_over {
+  color: #1d6689;
+  font-size: 14px;
+  font-family: Verdana,sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+  border: 1px outset #dcdcdc;
+}
+
+.cedar_label {
+  color: #1d6689;
+  font-size: 12px;
+  font-family: Verdana, sans-serif;
+}
+
+#img-chooset-viewer {
+	background: 0xffffff;
+}
+
+#img-chooser-viewer .thumb-wrap {
+	margin: 10px 50px 10px 50px;
+	height: 70px;
+	width: 100px;
+}
+
+#img-chooser-viewer .thumb {
+	margin: 0px 26px 0px 26px;
+}
+
+#img-chooser-viewer .thumb-wrap span {
+	color: steelblue; 
+	font-weight: 500; 
+	font-family: Verdana;
+	display: block;
+	overflow: hidden;
+	text-align: center;
+}
+
+.custom-grid-row-height .x-grid3-cell-inner {
+  line-height: 30px;
+}
+
+
+.serverResponseLabelError {
+  color: red;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+  margin: 15px 6px 6px;
+}
+
+.wizard-list {
+  background-color: #fff;
+}
+
+.wizard-list ul li.wizard-item {
+	float: left;
+	display: block;
+	width: 100%;
+	position: relative;
+	border: 0 0 0 0;
+	color: black;
+	font: normal 12px verdana,sans-serif;
+}
+
+.wizard-text {
+	float: left;
+	display: inline;
+	margin: auto;
+	padding: 10px 0px 10px 5px;
+}
+
+.wizard-item-over {
+	/*background-color: #0a6ae8;*/
+	background-color: #ccd9e8;
+	cursor: pointer;
+}
+
+.wizard-item-selected {
+	font: bold 12px verdana, sans-serif !important;
+	background-color: #dfe8f6;
+}

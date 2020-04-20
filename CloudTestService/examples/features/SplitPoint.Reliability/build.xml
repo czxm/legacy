@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<project name="Reliability" default="all" basedir="."> 
+	<property name="cloudTestService.dir" 	value="${basedir}/../../.."/>
+	<property name="build.dir" 				value="${basedir}/build" />
+    <property name="build.classes" 			value="${build.dir}" />
+    <property name="build.src" 				value="${basedir}/src" />
+	<property name="dist.dir" 				value="${basedir}/dist" />
+	<property name="conf.dir" 				value="${build.dir}/conf" />
+	<property name="lib.dir" 				value="${build.dir}/lib"/>
+	<property name="resource.dir" 			value="${build.dir}/resource"/>
+	<property name="scripts.dir" 			value="${build.dir}/scripts"/>
+    <property name="jar.name" 				value="spReliability.jar"/>
+	<property name="debuglevel" 			value="source,lines,vars"/>
+    <property name="target" 				value="1.6"/>
+    <property name="source" 				value="1.6"/>
+	
+	<path id="gwt-sdk.classpath">
+		<fileset dir="${cloudTestService.dir}/lib">
+			<include name="**/gwt-*.jar" />
+			<include name="**/gxt.jar" />
+		</fileset>
+		<pathelement location="${cloudTestService.dir}/war/WEB-INF/classes"/>
+		<pathelement location="${cloudTestService.dir}/modules/www/src/main/java"/>
+	</path>
+		
+	<path id="CloudTestService.classpath">
+	    <pathelement location="${cloudTestService.dir}/war/WEB-INF/classes"/>
+	   <pathelement location="${cloudTestService.dir}/build/classes"/>
+	    <path refid="gwt-sdk.classpath"/>	    
+        <fileset dir="${cloudTestService.dir}/lib">
+	      <include name="**/*.jar" />
+	    </fileset>
+    </path>
+
+    <path id="reliability.classpath">
+    	<path refid="CloudTestService.classpath"/>
+        <pathelement location="${basedir}/../../../war/WEB-INF/classes"/>
+        <fileset dir="${basedir}/lib">
+	      <include name="**/*.jar" />
+	    </fileset>
+    </path>
+    
+	<target name="all" depends="jar">
+		<copy file="${dist.dir}/${jar.name}" tofile="${basedir}/../${jar.name}" overwrite="true"/>
+	</target>
+	
+	<!-- ================================================================= -->
+    <!-- jar                                                             -->
+   	<!-- ================================================================= -->
+	<target name="jar" depends="compile, moveResource">
+		 <jar destfile="${dist.dir}/${jar.name}" basedir="${build.dir}" manifest="META-INF/MANIFEST.MF">
+		  </jar>
+	</target>
+
+	<!-- ================================================================= -->
+    <!-- Compile the source                                                -->
+    <!-- ================================================================= -->
+    <target name="compile" depends="prepare">
+        <javac srcdir="${build.src}"
+               destdir="${build.classes}" 
+        	   debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
+            <src path="${build.src}" />
+        	<classpath refid="reliability.classpath"/>
+        </javac>
+    </target>
+	
+	<!-- ================================================================= -->
+	<!-- clean                                                             -->
+	<!-- ================================================================= -->
+	<target name="clean">
+        <delete dir="${build.dir}" quiet="true" />
+        <delete dir="${dist.dir}" quiet="true" />
+    </target>
+
+	<!-- ================================================================= -->
+  	<!-- prepare                                                           -->
+   	<!-- ================================================================= -->
+    <target name="prepare" depends="clean">
+        <tstamp />
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.classes}" />
+        <mkdir dir="${dist.dir}" />
+    </target>
+	
+	<!-- ================================================================= -->
+	<!-- copy resorce                                                           -->
+	<!-- ================================================================= -->
+	<target name="moveResource" depends="prepare">
+		<copy todir="${conf.dir}/">  
+		 	<fileset dir="conf" />  
+		</copy>  
+		<copy todir="${resource.dir}">
+			<fileset dir="resource"></fileset>
+		</copy>
+		<copy todir="${scripts.dir}">
+			<fileset dir="scripts"></fileset>
+		</copy>
+		<copy todir="${lib.dir}">
+			<fileset dir="lib"></fileset>
+		</copy>
+		<copy file="${basedir}/feature.xml" tofile="${build.dir}/feature.xml" overwrite="true"/>			
+	</target>
+</project>

@@ -1,0 +1,194 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.gitbuilder.GitBuilderFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+</import>
+<variables>
+    <variable name="target">
+      <values>
+        <value>CentOS 6.2</value>
+      </values>
+    </variable>
+    <variable name="junit">
+      <values>
+        <value>Commit</value>
+        <value>Full</value>        
+      </values>
+    </variable>
+    <variable name="suites">
+      <values>
+        <value>Default</value>     
+      </values>
+    </variable>
+    <variable name="git_url">
+      <values>
+        <value>ssh://git-ccr-1.devtools.intel.com:29418/testjenkins-testjenkins</value>
+      </values>
+    </variable>
+    <variable name="git_rev">
+    </variable>  
+    <variable name="git_username">
+      <values>
+        <value>xzhan27</value>
+      </values>
+    </variable>      
+    <variable name="git_branch">
+    </variable>
+    <variable name="gerrit_refspec">
+    </variable>
+    <variable name="gerrit_event">    
+    </variable>
+    <variable name="gerrit_change_url">
+    </variable>    
+    <variable name="project_src">
+    </variable>
+    <variable name="project_patch">
+    </variable>     
+    <variable name="git_privatekey">
+      <values>
+        <value>LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDV0FJQkFBS0JnSE5maDI0djVlcUVTSDFoTzNpZk9yQklhMkd5K3pDdWVtVm9Ec0l0cmIrRWt6VWNlTitVClU0eTZVTVV1YWpaZE5QbUVrb0JOUnJoQkRmT1FoNEl4UW53NkVQb2dWNDVEQldyaHowVGtGcGwwTE5pU2dGdDkKem9HbldTUGlKVk9MNUJkWFFzeDNTOEo5bzRRV0I1V1I2ZlVVcENmYWkrTisydW1sNW9rY2VSeGJBZ0VsQW9HQQpESGtIdU9LVlpYWVZyTENRenNVYkdmbjl4VjkxR2dVR1VDYnMxcmpVZzJoSFJBTVQvSDY4N0o2RlJiL1VJWTJKCkw3dE9HN1ZUd09Sd05nSEpkZHZQMWU2SzF5Y0kwei9QR04xZi9MT2JyQXBWblBic2FEcW85V1BsK1puZTQzaEIKbmVWeEVCWXc0QUVhcy8yaFZDdmxYbngzVjRoOGM4WnBqWVMyQ3VyQXIyMENRUURIZ2RlMWpkVFdZbXd4Q3FENwpSSkxhcWtkY2YxQjFhUXBVOFdlTUFyT3FRNElzRk5XSlRZSG0rbTB4cWhGcWg1NjdKcWhBN3U2QkJpcFdmNlFICjhmS1pBa0VBbEFyY1FiZ1hYbWRZc1F6Q2EzSVBPZXFsU2ZaRzZjcVpkbGgzaHRUbnlVR2dvTmdpSUxvb2pISVYKK2trNWtWaXNXaTJWNngzR0VvUmlROU1BR1JEVEV3SkFNSWRkKzdxM094RUZqMk56UkFuQzJ6NHRDS2xZd3AwQwpnMTFRaWRja3lJejJKbVh1d0loNWl6WCs0cEVtMUxrMGNyWmdSeVZjbSt5K01MZERrenJhSlFKQVFBU3lSZTY5Ci8wOUk4cDI3MjIrWDRiR1RsWnJ1TzVYaGYwalp2Y1BaMm4wK2lyNVQ4bm9Ec2xyWkVra3RwcUxpdnpaT3F0eHgKVkIyU1J0ZklzT1N1VFFKQVlZRU50ak9tdzJrMVV6Q0RIUlNRTFg3eFlKa01GRVl5YmNQR2lrWlpOQkQvTG83QgpnbmpBOXlJVzUrZDFkMUJ1U0piRHJkVDJoVHNLanpwbVNwejJqUT09Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==</value>
+      </values>
+    </variable>       
+    <variable name="isCheckIn">
+      <values>
+        <value>false</value>
+      </values>    
+    </variable>
+    <variable name="isNightly">
+      <values>
+        <value>false</value>
+      </values>    
+    </variable>    
+    <variable name="compareResult">
+      <values>
+        <value>None</value>      
+        <value>Last Checkin Report</value>
+        <value>Last Nightly Report</value>        
+      </values>    
+    </variable>
+    <variable name="testtask_url">
+      <values>
+        <value>cedar://cloudtest.sh.intel.com/archive/gitbuilder/testtask.xml</value>
+      </values>
+    </variable>     
+</variables>
+
+<tasklets>
+    <tasklet public="true" id="Git.Builder" sharable="none">
+		<desc>Git Project Build</desc>
+		<contributer>Big Data Quality Assurance Team</contributer>
+		<provider>com.intel.cedar.features.gitbuilder.Builder</provider>
+    </tasklet>   
+    <tasklet public="true" id="Git.JUnit.Tester" sharable="none">
+		<desc>Git Project JUnit test</desc>
+		<contributer>Big Data Quality Assurance Team</contributer>
+		<provider>com.intel.cedar.features.gitbuilder.JUnitTester</provider>
+    </tasklet>    
+</tasklets>
+
+<ui>
+    <window id="example" title="Git Project Test Parameters" >
+        <form>
+	    	<combo label="Target" id="target" bind="target"/>   		
+	    	<combo label="JUnit Test" id="junit" bind="junit"/>	
+            <checkboxgroup label="Test Suites" id="suites" bind="suites" />	    		
+            <combo label="Compare with" id="compareResult" bind="compareResult" />
+            
+            <git id="project" label="Project Source" max="20">
+                <url bind="git_url" id="giturl"/>
+                <branch bind="git_branch" id="gitbranch"/>
+                <rev bind="git_rev" id="gitrev"/>
+                <log id="gitlog"/>
+            </git>
+            <fileuploadfield label="Project Patch" id="patch" bind="project_patch"/>         
+		    <submit>
+	       		<formItem depends="giturl"/>
+	       		<formItem depends="gitbranch"/>
+	            <formItem depends="gitrev"/>
+	            <formItem depends="patch"/>   
+	       		<formItem depends="target"/>
+	       		<formItem depends="junit"/>
+	       		<formItem depends="suites"/>
+	            <formItem depends="compareResult"/>       		
+            </submit>
+       </form>
+    </window>
+</ui>
+
+<flow>
+    <sequence>
+        <tasklet name="builder" id="Git.Builder" timeout="1800" onfail="exit" debug="false">
+            <items provider="embedded"/>
+        </tasklet>
+
+        <parallel>
+            <tasklet name="junit_test" id="Git.JUnit.Tester" timeout="3600" onfail="ignore" debug="false">
+                <items provider="embedded"/>
+            </tasklet>
+        </parallel> 
+                
+        <machine>
+            <properties>
+                <property name="autotest" value="2c" />
+                <property name="target" value="$target" />
+            </properties>
+            <count min="1" max="3">$suites_length > 0 ? $suites_length : 1</count>
+            <cpu min="2" max="4">4</cpu>
+            <mem min="4" max="8">6</mem>
+            <disk min="20" max="40">20</disk>
+        </machine>        
+    </sequence>
+</flow> 
+
+
+<launches>
+     <launchset name="master_NightlyTest" desc="Launch Configuration for Nightly Test" enable="false">
+	 <option>
+	    <reproducable>false</reproducable>
+	    <user></user>
+	    <comment></comment>
+	    <receivers>xiaomin.zhang@intel.com</receivers>
+	    <failure_receivers>xiaomin.zhang@intel.com</failure_receivers>
+	 </option>
+     <launch>
+	    <variables>
+	      <variable name="target"><values><value>CentOS 6.2</value></values></variable>
+          <variable name="junit"><values><value>full</value></values></variable>             
+          <variable name="compareResult"><values><value>Last Nightly Report</value></values></variable>	 
+          <variable name="isNightly"><values><value>true</value></values></variable>               
+ 	    </variables>
+	 </launch>
+  </launchset>
+
+  <launchset name="master_checkin" desc="Launch Configuration for Check-in Test" enable="false">
+	 <option>
+	    <reproducable>false</reproducable>
+	    <user></user>
+	    <comment></comment>
+	    <receivers>xiaomin.zhang@intel.com</receivers>
+	    <failure_receivers>xiaomin.zhang@intel.com</failure_receivers>
+	 </option>
+     <launch>
+	    <variables>
+	      <variable name="target"><values><value>CentOS 6.2</value></values></variable>
+          <variable name="junit"><values><value>Commit</value></values></variable>           
+          <variable name="compareResult"><values><value>Last Checkin Report</value></values></variable>	 
+          <variable name="isCheckIn"><values><value>true</value></values></variable>               
+ 	    </variables>
+	 </launch>
+  </launchset>  
+</launches>
+
+<triggers>
+  <trigger name="master_NightlyTest" type="cron" launch="master_NightlyTest">
+    <cron>0 0 1 * * ?</cron>
+  </trigger> 
+  <trigger name="master_checkin" type="git" launch="master_checkin">
+    <git>
+      <url bind="git_url">ssh://git-ccr-1.devtools.intel.com:29418/testjenkins-testjenkins</url>
+      <rev bind="git_rev"></rev>
+      <repository bind="git_branch">master</repository>
+    </git>
+  </trigger>
+</triggers>
+</feature>

@@ -1,0 +1,73 @@
+<feature xmlns="http://www.intel.com/soae/cedar" provider="com.intel.cedar.features.splitpoint.identityproxy.IdentityProxyTestFeature">
+<import>
+    <variable name="OS"/>
+    <variable name="ARCH"/>
+</import>
+<variables>
+	<variable name="client_count">
+	  <values>
+	    <value>1</value>
+	    <value>2</value>
+	    <value>4</value>
+	    <value>10</value>
+	    <value>20</value>
+	    <value>30</value>
+	  </values>
+	</variable>
+	<variable name="spURL">
+	  <values>
+	    <value>https://www.cloud-express.com:8443/splat/identityproxyservice/SforceService/salesforce</value>
+	  </values>
+	</variable>
+	<variable name="users">
+	  <values>
+	    <value>qzhang8</value>
+	  </values>
+	</variable>	
+	<variable name="passwords">
+	  <values>
+	    <value>Front123</value>
+	  </values>
+	</variable>	
+</variables>
+<tasklets>
+    <tasklet public="false" id="OutlookPluginTest">
+		<desc>Test SplitPoint with SFDC Outlook plugin</desc>
+		<contributer>SOAP Conformance and Performance Team</contributer>
+		<provider>com.intel.cedar.features.splitpoint.identityproxy.OutlookPluginTest</provider>
+	</tasklet>
+</tasklets>
+<ui>
+	<window id="main" title="IdentityProxy Test Parameters" >
+	    <form>
+	    	<!-- <fieldset label="Test Target"> -->
+	    		<combo label="Split Point URL:" id="spURL" bind="spURL"/>
+	    		<combo label="Outlook Instances" id="client_count" bind="client_count"/>
+	    	    <combo id="users" label="Users" bind="users" />
+	    	    <combo id="passwords" label="passwords" bind="passwords" />
+	    	<!-- </fieldset> -->
+		<submit>
+       <formItem depends="client_count"/>
+       <formItem depends="spURL"/>
+       <formItem depends="users"/>
+       <formItem depends="passwords"/>
+      </submit>
+	    </form>
+	</window>
+</ui>
+
+<flow>
+    <sequence>
+        <tasklet id="OutlookPluginTest" timeout="600">
+            <machine>
+                <properties>
+                   <property name="autoit" value="true"/>
+                </properties>
+                <count min="1" max="30">$client_count</count>
+                <cpu min="2" max="2">2</cpu>
+            </machine>
+            <items provider="embedded"/>
+        </tasklet>
+    </sequence>
+</flow> 
+</feature>

@@ -22,7 +22,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <hadoop2.version>2.6.0-cdh5.7.5-SNAPSHOT</hadoop2.version>
+                <hadoop2.version>2.10.1</hadoop2.version>
             </properties>
             <dependencies>
                 <dependency>

@@ -86,7 +86,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>3.2.4.RELEASE</spring.version>
+		<spring.version>5.3.18</spring.version>
 		<akka.version>2.3.0-RC2</akka.version>
 		<scala.version>2.10.3</scala.version>
 	</properties>
